@@ -1,9 +1,4 @@
 import os
-import json
-import pickle
-import tensorflow
-import tflearn
-import mysql.connector
 import sys
 
 from flask import Flask, request, abort
