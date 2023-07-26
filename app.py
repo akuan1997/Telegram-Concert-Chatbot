@@ -12,6 +12,18 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
+cnx = mysql.connector.connect(
+        host='192.168.56.1',
+        user='remote_user',
+        passwd='fjfj',
+        database='prc1'
+    )
+cursor = cnx.cursor()
+
+cursor.execute('SELECT * FROM Concerts')
+for x in cursor:
+    print(x)
+
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
@@ -22,11 +34,6 @@ handler = WebhookHandler('3dffbf1fbe8965a51036b07387925f61')
 
 
 # line_bot_api.push_message('@174keasc', TextSendMessage(text='你可以開始了'))
-
-def log(message):
-    print(message)
-    sys.stdout.flush()
-
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -60,15 +67,3 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 
-    cnx = mysql.connector.connect(
-        host='192.168.56.1',
-        user='remote_user',
-        passwd='fjfj',
-        database='prc1'
-    )
-    cursor = cnx.cursor()
-
-    cursor.execute('SELECT * FROM Concerts')
-    for x in cursor:
-        print(x)
-        log(x)
