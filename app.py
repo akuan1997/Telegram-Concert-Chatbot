@@ -1,5 +1,6 @@
 import os
 import sys
+import mysql.connector
 
 from flask import Flask, request, abort
 
@@ -58,3 +59,16 @@ def handle_message(event):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
+    cnx = mysql.connector.connect(
+        host='192.168.56.1',
+        user='remote_user',
+        passwd='fjfj',
+        database='prc1'
+    )
+    cursor = cnx.cursor()
+
+    cursor.execute('SELECT * FROM Concerts')
+    for x in cursor:
+        print(x)
+        log(x)
