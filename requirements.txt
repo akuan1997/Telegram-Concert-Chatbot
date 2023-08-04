@@ -1,5 +1,7 @@
 line-bot-sdk
 flask
 gunicorn
-mysql
-mysql-connector-python
+numpy
+pandas
+autocorrect
+nltk

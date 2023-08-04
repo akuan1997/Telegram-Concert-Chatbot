@@ -1,6 +1,9 @@
 import os
+import json
+import pickle
 import sys
-import mysql.connector
+import threading
+from livenation_folder.livenation import get_livenation
 
 from flask import Flask, request, abort
 
@@ -11,18 +14,6 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-
-cnx = mysql.connector.connect(
-        host='192.168.56.1',
-        user='remote_user',
-        passwd='fjfj',
-        database='prc1'
-    )
-cursor = cnx.cursor()
-
-cursor.execute('SELECT * FROM Concerts')
-for x in cursor:
-    print(x)
 
 app = Flask(__name__)
 
@@ -45,6 +36,9 @@ def callback():
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
+    thread_livenation = threading.Thread(target=get_livenation)
+    thread_livenation.start()
+
     # handle webhook body
     try:
         handler.handle(body, signature)
@@ -66,4 +60,3 @@ def handle_message(event):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
