@@ -1,8 +1,0 @@
-line-bot-sdk
-flask
-gunicorn
-numpy
-pandas
-autocorrect
-nltk
-playwright
