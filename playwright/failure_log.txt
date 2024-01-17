@@ -1,0 +1,6 @@
+indievox
+Timeout 5000ms exceeded.
+=========================== logs ===========================
+waiting for locator("#ticketPriceList > tbody > tr").nth(1).locator("td.fcBlue > h4")
+============================================================
+https://www.indievox.com/activity/detail/24_iv0278935
