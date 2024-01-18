@@ -4,8 +4,8 @@ import json
 import os
 from datetime import datetime
 
-json_filename = '../playwright/ticketplus_new.json'
-txt_filename = '../playwright/ticketplus_temp.txt'
+json_filename = '../web_scraping/ticketplus_new.json'
+txt_filename = '../web_scraping/ticketplus_temp.txt'
 
 with sync_playwright() as p:
     with open(json_filename, 'w', encoding='utf-8') as f:

@@ -1,4 +1,4 @@
-from playwright.sync_api import sync_playwright, Playwright
+from web_scraping.sync_api import sync_playwright, Playwright
 import re
 
 timeout_seconds = 500

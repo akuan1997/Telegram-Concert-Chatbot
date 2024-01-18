@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 # 你的演唱會資料
-with open('../playwright/era_new.json', 'r', encoding='utf-8') as file:
+with open('../web_scraping/era_new.json', 'r', encoding='utf-8') as file:
     concert_data = json.load(file)
 
 # 提取標題、時間、地點的文字信息

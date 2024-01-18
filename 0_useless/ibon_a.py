@@ -238,20 +238,20 @@ def get_ibon():
                     print('跳過')
                     last_finished_index += 1
 
-                    with open('../playwright/failure_log.txt', "r", encoding="utf-8") as f:
+                    with open('../web_scraping/failure_log.txt', "r", encoding="utf-8") as f:
                         lines = f.readlines()
 
                     if page_ibon.url + '\n' not in lines:
                         # txt檔案不存在或是裡面沒資料
-                        if not os.path.exists('../playwright/failure_log.txt') or os.path.getsize(
-                                '../playwright/failure_log.txt') <= 4:
+                        if not os.path.exists('../web_scraping/failure_log.txt') or os.path.getsize(
+                                '../web_scraping/failure_log.txt') <= 4:
                             # 直接寫入第一筆資料
-                            with open('../playwright/failure_log.txt', "w", encoding="utf-8") as f:
+                            with open('../web_scraping/failure_log.txt', "w", encoding="utf-8") as f:
                                 f.write(f'ibon\n{e}\n{page_ibon.url}\n')
                         # txt檔案存在且裡面已經有一筆以上的資料
                         else:
                             # 讀取現在有的檔案
-                            with open('../playwright/failure_log.txt', "a", encoding="utf-8") as f:
+                            with open('../web_scraping/failure_log.txt', "a", encoding="utf-8") as f:
                                 f.write(f'\nibon\n{e}\n{page_ibon.url}\n')
                     else:
                         print('已經寫進錯誤裡面了!')

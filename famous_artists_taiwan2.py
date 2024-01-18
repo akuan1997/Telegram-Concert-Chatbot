@@ -1,5 +1,5 @@
 # https://zh.wikipedia.org/zh-tw/Category:%E5%8F%B0%E7%81%A3%E6%A8%82%E5%9C%98
-from playwright.sync_api import sync_playwright, Playwright
+from web_scraping.sync_api import sync_playwright, Playwright
 
 filename = 'user_defined_lastfm.txt'
 

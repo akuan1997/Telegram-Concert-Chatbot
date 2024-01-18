@@ -1,4 +1,4 @@
-from playwright.sync_api import sync_playwright, Playwright
+from web_scraping.sync_api import sync_playwright, Playwright
 import re
 
 with sync_playwright() as p:

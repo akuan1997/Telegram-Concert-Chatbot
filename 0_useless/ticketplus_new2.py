@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import re
 
-json_filename = '../playwright/ticketplus_new.json'
+json_filename = '../web_scraping/ticketplus_new.json'
 txt_filename = 'ticketplus_temp.txt'
 
 with sync_playwright() as p:
@@ -213,20 +213,20 @@ with sync_playwright() as p:
                     print('跳過')
                     last_finished_index += 1
 
-                    with open('../playwright/failure_log.txt', "r", encoding="utf-8") as f:
+                    with open('../web_scraping/failure_log.txt', "r", encoding="utf-8") as f:
                         lines = f.readlines()
 
                     if page_ticketplus.url + '\n' not in lines:
                         # txt檔案不存在或是裡面沒資料
-                        if not os.path.exists('../playwright/failure_log.txt') or os.path.getsize(
-                                '../playwright/failure_log.txt') <= 4:
+                        if not os.path.exists('../web_scraping/failure_log.txt') or os.path.getsize(
+                                '../web_scraping/failure_log.txt') <= 4:
                             # 直接寫入第一筆資料
-                            with open('../playwright/failure_log.txt', "w", encoding="utf-8") as f:
+                            with open('../web_scraping/failure_log.txt', "w", encoding="utf-8") as f:
                                 f.write(f'Ticketplus\n{e}\n{page_ticketplus.url}\n')
                         # txt檔案存在且裡面已經有一筆以上的資料
                         else:
                             # 讀取現在有的檔案
-                            with open('../playwright/failure_log.txt', "a", encoding="utf-8") as f:
+                            with open('../web_scraping/failure_log.txt', "a", encoding="utf-8") as f:
                                 f.write(f'\nTicketplus\n{e}\n{page_ticketplus.url}\n')
                     else:
                         print('已經寫進錯誤裡面了!')

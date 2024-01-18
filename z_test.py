@@ -1,4 +1,4 @@
-from playwright.sync_api import sync_playwright, Playwright
+from web_scraping.sync_api import sync_playwright, Playwright
 # from get_data_from_text import get_prices, get_time_lines, get_sell, get_performance_location
 import json
 import os
