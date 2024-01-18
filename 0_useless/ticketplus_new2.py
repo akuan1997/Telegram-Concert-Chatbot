@@ -1,10 +1,11 @@
 from playwright.sync_api import sync_playwright, Playwright
-# from get_data_from_text import get_prices, get_time_lines, get_sell, get_performance_location
+from get_data_from_text import get_prices, get_time_lines, get_sell, get_performance_location
 import json
 import os
 from datetime import datetime
+import re
 
-json_filename = 'ticketplus_new.json'
+json_filename = '../playwright/ticketplus_new.json'
 txt_filename = 'ticketplus_temp.txt'
 
 with sync_playwright() as p:
@@ -63,6 +64,10 @@ with sync_playwright() as p:
                     page_ticketplus.locator(
                         "#app > div.v-dialog__content.v-dialog__content--active > div > div > div.px-5.pb-5.font-weight-bold > div.row > div:nth-child(2) > button > span").click()
 
+                # 有時候網路比較慢會什麼都沒讀到就跳出來，如果沒看到內文我就持續讓他等待直到出現
+                while not page_ticketplus.locator("#activityInfo > div > div").is_visible():
+                    page_ticketplus.wait_for_timeout(1000)
+
                 # 處理新資料
                 ''' 內文 '''
                 # 下載內文
@@ -73,9 +78,9 @@ with sync_playwright() as p:
                 with open(txt_filename, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
                 # 票價
-                # prices = get_prices(lines)
+                prices = get_prices(lines)
                 # 售票時間
-                # without_sell_time_lines, sell_datetimes_str = get_sell(get_time_lines(lines))
+                without_sell_time_lines, sell_datetimes_str = get_sell(get_time_lines(lines))
                 ''' 固定位置 '''
                 # 標題
                 title = page_ticketplus.locator("#banner > div.pb-6.col.col-12 > h1").inner_text()
@@ -84,66 +89,77 @@ with sync_playwright() as p:
                 for j in range(len(columns)):
                     column_text = page_ticketplus.locator("#buyTicket > .sesstion-item").nth(j).locator("div > div > div").nth(
                         0).inner_text()
-                    # print(f'column text {column_text}')
                     column_text = column_text.split('\n')
-                    for i in range(len(column_text)):
-                        print(column_text[i])
-                    # print(f'column text after split\n{column_text}')
+
+                    # 第幾個位置是時間?
+                    time_index = -1
+                    for k in range(len(column_text)):
+                        if ':' in column_text[k] or '：' in column_text[k]:
+                            time_index = k
+                            break
+                    # 日期
+                    concert_date = ''
+                    for m in range(1, time_index):
+                        column_text[m] = column_text[m].replace('-', '/')
+                        column_text[m] = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", column_text[m])
+                        concert_date += column_text[m]
+                    # 時間
+                    concert_time = column_text[time_index]
+                    # 我只想要開始的時間，捨棄結束的時間
+                    if '~' in concert_time:
+                        concert_time = concert_time[:concert_time.index('~')]
                     # 日期 & 時間
-                    concert_date = column_text[1].replace('-', '/')
-                    concert_date = concert_date[:concert_date.index('(')]
-                    # print(f'concert date {concert_date}')
-                    concert_time = column_text[2]
-                    # print(f'concert time {concert_time}')
                     pdt = concert_date + ' ' + concert_time
-                    # print(f'performance datetime {pdt}')
+                    pdt = re.sub(r"~", " ~ ", pdt)
+                    pdt = re.sub(r"\s{2,}", " ", pdt)
+                    if pdt[-1] == ' ':
+                        pdt = pdt[:-1]
                     # 地點
                     concert_place = column_text[3]
-                    # print(f'concert place {concert_place}')
                     # 獨一無二的id識別
                     if f"{title}_{pdt}_{concert_place}" not in unique_id:
                         unique_id.append(f"{title}_{pdt}_{concert_place}")
 
-                        # print('tit', title)
-                        # print('sdt', sell_datetimes_str)
-                        # print('prc', prices)
-                        # print('pdt', pdt)
-                        # print('loc', concert_place)
-                        # print('web', 'ticketplus')
-                        # print('url', page_ticketplus.url)
-                        #
-                        # new_data = {
-                        #     'tit': title,
-                        #     'sdt': sell_datetimes_str,
-                        #     'prc': prices,
-                        #     'pdt': [pdt],
-                        #     'loc': [concert_place],
-                        #     'int': inner_text,
-                        #     'web': 'ticketplus',
-                        #     'url': page_ticketplus.url
-                        # }
+                        print('tit', title)
+                        print('sdt', sell_datetimes_str)
+                        print('prc', prices)
+                        print('pdt', pdt)
+                        print('loc', concert_place)
+                        print('web', 'ticketplus')
+                        print('url', page_ticketplus.url)
 
-                        # print('\n--- write new data ---\n')
-                        #
-                        # # json檔案不存在或是裡面沒資料
-                        # if not os.path.exists(json_filename) or os.path.getsize(
-                        #         json_filename) <= 4:
-                        #     # 直接寫入第一筆資料
-                        #     with open(json_filename, "w", encoding="utf-8") as f:
-                        #         json.dump([new_data], f, indent=4, ensure_ascii=False)
-                        # # json檔案存在且裡面已經有一筆以上的資料
-                        # else:
-                        #     # 讀取現在有的檔案
-                        #     with open(json_filename, "r", encoding="utf-8") as f:
-                        #         existing_data = json.load(f)
-                        #     # 並新增即將寫入的一筆
-                        #     existing_data.append(new_data)
-                        #     # 寫入
-                        #     with open(json_filename, "w", encoding="utf-8") as f:
-                        #         json.dump(existing_data, f, indent=4, ensure_ascii=False)
-                        # last_finished_index = i
-                        # if page_ticketplus.url in fail_urls:
-                        #     del fail_urls[fail_urls.index(page_ticketplus.url)]
+                        new_data = {
+                            'tit': title,
+                            'sdt': sell_datetimes_str,
+                            'prc': prices,
+                            'pdt': [pdt],
+                            'loc': [concert_place],
+                            'int': inner_text,
+                            'web': 'ticketplus',
+                            'url': page_ticketplus.url
+                        }
+
+                        print('\n--- write new data ---\n')
+
+                        # json檔案不存在或是裡面沒資料
+                        if not os.path.exists(json_filename) or os.path.getsize(
+                                json_filename) <= 4:
+                            # 直接寫入第一筆資料
+                            with open(json_filename, "w", encoding="utf-8") as f:
+                                json.dump([new_data], f, indent=4, ensure_ascii=False)
+                        # json檔案存在且裡面已經有一筆以上的資料
+                        else:
+                            # 讀取現在有的檔案
+                            with open(json_filename, "r", encoding="utf-8") as f:
+                                existing_data = json.load(f)
+                            # 並新增即將寫入的一筆
+                            existing_data.append(new_data)
+                            # 寫入
+                            with open(json_filename, "w", encoding="utf-8") as f:
+                                json.dump(existing_data, f, indent=4, ensure_ascii=False)
+                        last_finished_index = i
+                        if page_ticketplus.url in fail_urls:
+                            del fail_urls[fail_urls.index(page_ticketplus.url)]
                     else:
                         print('Skip')
                         continue
@@ -197,19 +213,20 @@ with sync_playwright() as p:
                     print('跳過')
                     last_finished_index += 1
 
-                    with open('failure_log.txt', "r", encoding="utf-8") as f:
+                    with open('../playwright/failure_log.txt', "r", encoding="utf-8") as f:
                         lines = f.readlines()
 
                     if page_ticketplus.url + '\n' not in lines:
                         # txt檔案不存在或是裡面沒資料
-                        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+                        if not os.path.exists('../playwright/failure_log.txt') or os.path.getsize(
+                                '../playwright/failure_log.txt') <= 4:
                             # 直接寫入第一筆資料
-                            with open('failure_log.txt', "w", encoding="utf-8") as f:
+                            with open('../playwright/failure_log.txt', "w", encoding="utf-8") as f:
                                 f.write(f'Ticketplus\n{e}\n{page_ticketplus.url}\n')
                         # txt檔案存在且裡面已經有一筆以上的資料
                         else:
                             # 讀取現在有的檔案
-                            with open('failure_log.txt', "a", encoding="utf-8") as f:
+                            with open('../playwright/failure_log.txt', "a", encoding="utf-8") as f:
                                 f.write(f'\nTicketplus\n{e}\n{page_ticketplus.url}\n')
                     else:
                         print('已經寫進錯誤裡面了!')

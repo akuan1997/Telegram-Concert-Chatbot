@@ -8,3 +8,11 @@ https://www.indievox.com/activity/detail/24_iv0278935
 indievox
 Target page, context or browser has been closed
 https://ticketplus.com.tw/
+
+Ticketplus
+string index out of range
+https://ticketplus.com.tw/activity/e79352d85215d03eadb7a0618c200c85
+
+Ticketplus
+list index out of range
+https://ticketplus.com.tw/activity/ed72d6be11fd1d0a6afe93967ecaa236

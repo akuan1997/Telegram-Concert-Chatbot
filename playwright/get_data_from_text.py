@@ -130,7 +130,7 @@ def get_prices_lines(lines):
     """刪除內容"""
     # 空白行
     lines = [line.strip() for line in lines if line.strip()]
-    # 括號中的內容 (不要括號)
+    # page_ticketplus中的內容 (不要括號)
     lines = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", line) for line in lines]
     #  
     lines = [re.sub(r" ", ' ', line) for line in lines]

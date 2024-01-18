@@ -3,6 +3,7 @@ from get_data_from_text import get_prices, get_time_lines, get_sell, get_perform
 import json
 import os
 from datetime import datetime
+import re
 
 json_filename = 'ticketplus_new.json'
 txt_filename = 'ticketplus_temp.txt'
@@ -63,6 +64,10 @@ with sync_playwright() as p:
                     page_ticketplus.locator(
                         "#app > div.v-dialog__content.v-dialog__content--active > div > div > div.px-5.pb-5.font-weight-bold > div.row > div:nth-child(2) > button > span").click()
 
+                # 有時候網路比較慢會什麼都沒讀到就跳出來，如果沒看到內文我就持續讓他等待直到出現
+                while not page_ticketplus.locator("#activityInfo > div > div").is_visible():
+                    page_ticketplus.wait_for_timeout(1000)
+
                 # 處理新資料
                 ''' 內文 '''
                 # 下載內文
@@ -85,11 +90,30 @@ with sync_playwright() as p:
                     column_text = page_ticketplus.locator("#buyTicket > .sesstion-item").nth(j).locator("div > div > div").nth(
                         0).inner_text()
                     column_text = column_text.split('\n')
+
+                    # 第幾個位置是時間?
+                    time_index = -1
+                    for k in range(len(column_text)):
+                        if ':' in column_text[k] or '：' in column_text[k]:
+                            time_index = k
+                            break
+                    # 日期
+                    concert_date = ''
+                    for m in range(1, time_index):
+                        column_text[m] = column_text[m].replace('-', '/')
+                        column_text[m] = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", column_text[m])
+                        concert_date += column_text[m]
+                    # 時間
+                    concert_time = column_text[time_index]
+                    # 我只想要開始的時間，捨棄結束的時間
+                    if '~' in concert_time:
+                        concert_time = concert_time[:concert_time.index('~')]
                     # 日期 & 時間
-                    concert_date = column_text[1].replace('-', '/')
-                    concert_date = concert_date[:concert_date.index('(')]
-                    concert_time = column_text[2]
                     pdt = concert_date + ' ' + concert_time
+                    pdt = re.sub(r"~", " ~ ", pdt)
+                    pdt = re.sub(r"\s{2,}", " ", pdt)
+                    if pdt[-1] == ' ':
+                        pdt = pdt[:-1]
                     # 地點
                     concert_place = column_text[3]
                     # 獨一無二的id識別
