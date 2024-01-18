@@ -40,7 +40,7 @@ def find_similar_concerts(user_input, concert_data, top_n=5):
 
 # 测试功能
 test_input = "怕胖團"  # 这里输入歌手或乐团的名字
-with open('useless/concert_data_s.json', 'r', encoding='utf-8') as f:
+with open('0_useless/concert_data_s.json', 'r', encoding='utf-8') as f:
     concert_data = json.load(f)
 similar_concerts = find_similar_concerts(test_input, concert_data, top_n=5)
 

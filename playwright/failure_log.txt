@@ -4,3 +4,7 @@ Timeout 5000ms exceeded.
 waiting for locator("#ticketPriceList > tbody > tr").nth(1).locator("td.fcBlue > h4")
 ============================================================
 https://www.indievox.com/activity/detail/24_iv0278935
+
+indievox
+Target page, context or browser has been closed
+https://ticketplus.com.tw/

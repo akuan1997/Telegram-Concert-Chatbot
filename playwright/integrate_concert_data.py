@@ -26,7 +26,7 @@ def integrate_json():
 def number_of_each_data():
     with open('era_new.json', 'r', encoding='utf-8') as f:
         era_data = json.load(f)
-    with open('../useless/ibon_new.json', 'r', encoding='utf-8') as f:
+    with open('../0_useless/ibon_new.json', 'r', encoding='utf-8') as f:
         ibon_data = json.load(f)
     with open('indievox_new.json', 'r', encoding='utf-8') as f:
         indievox_data = json.load(f)

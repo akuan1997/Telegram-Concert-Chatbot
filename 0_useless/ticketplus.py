@@ -4,8 +4,8 @@ import json
 import os
 from datetime import datetime
 
-json_filename = 'ticketplus_new.json'
-txt_filename = 'ticketplus_temp.txt'
+json_filename = '../playwright/ticketplus_new.json'
+txt_filename = '../playwright/ticketplus_temp.txt'
 
 with sync_playwright() as p:
     with open(json_filename, 'w', encoding='utf-8') as f:
@@ -31,8 +31,8 @@ with sync_playwright() as p:
             pressed = True
 
     events = page.query_selector_all(".row > div.d-flex.col-sm-6.col-md-4.col-12")
-    numbers = len(events)
     # 獲得活動數量的總數。
+    numbers = len(events)
 
     unique_id = []
     for i in range(numbers):
