@@ -118,21 +118,19 @@ def get_indievox():
                             performance_datetime = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", performance_datetime)
                             performance_datetime = re.sub(r"\s{2,}", " ", performance_datetime)
                             performance_datetime = performance_datetime.strip()
-                            # 地點
-                            # location = page_indievox.locator("#gameList > table > tbody > tr").nth(j).locator("td").nth(
-                            #     2).inner_text()
+                            # 不從這邊獲得地點，因為我們在主頁那邊獲得了
 
                             ''''''
 
-                            # 沒票價 但有購票的按鈕 再往前一個頁面
-                            if no_price and page_indievox.locator('#gameList > table > tbody > tr').nth(j).locator(
-                                    'td > button').is_visible():
-                                no_price = True
-                                page_indievox.locator('#gameList > table > tbody > tr').nth(j).locator(
-                                    'td > button').click()
+                            # 沒票價 但有購票的按鈕 (點開後) 再往前一個頁面
+                            if no_price and page_indievox.locator('#gameList > table > tbody > tr').nth(j).locator('td > button').is_visible():
+                                print('No price, Navigate to price webpage')
+                                # 前往下一頁
+                                page_indievox.locator('#gameList > table > tbody > tr').nth(j).locator('td > button').click()
                                 page_indievox.wait_for_load_state('load')
                                 page_indievox.wait_for_timeout(timeout_seconds)
 
+                                # 購票頁面行數的迴圈
                                 for k in range(len(page_indievox.query_selector_all("#ticketPriceList > tbody > tr"))):
                                     price_line = re.sub(r',', '', page_indievox.locator("#ticketPriceList > tbody > tr").nth(k).locator("td.fcBlue > h4").inner_text())
                                     not_digit_index = 0
@@ -142,11 +140,12 @@ def get_indievox():
                                             break
                                     prices.append(price_line[not_digit_index + 1:])
 
-                                    page_indievox.go_back()
-                                    # 點擊購買按鈕
-                                    page_indievox.locator(".list-inline a.btn.btn-default.btn-lg").click()
-                                    page_indievox.wait_for_load_state('load')
-                                    page_indievox.wait_for_timeout(timeout_seconds)
+                                print(f'Got {prices} from webpage')
+                                page_indievox.go_back()
+                                # 點擊購買按鈕
+                                page_indievox.locator(".list-inline a.btn.btn-default.btn-lg").click()
+                                page_indievox.wait_for_load_state('load')
+                                page_indievox.wait_for_timeout(timeout_seconds)
 
                             ''''''
 
@@ -286,37 +285,40 @@ def get_indievox():
                 # 錯誤
                 print(e, 'indievox restart')
                 print('last finished index = ', last_finished_index)
-                if page_indievox.url not in fail_urls:
-                    print('第一次失敗')
-                    fail_urls.append(page_indievox.url)
+                if page_indievox.url == "https://www.indievox.com/activity/list?type=table&startDate=2023%2F11%2F20&endDate=":
+                    print('是主頁面，沒關係的')
                 else:
-                    print('第二次失敗')
-                    print('跳過')
-                    last_finished_index += 1
-
-                    with open('failure_log.txt', "r", encoding="utf-8") as f:
-                        lines = f.readlines()
-
-                    if page_indievox.url + '\n' not in lines:
-                        # txt檔案不存在或是裡面沒資料
-                        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
-                            # 直接寫入第一筆資料
-                            with open('failure_log.txt', "w", encoding="utf-8") as f:
-                                f.write(f'indievox\n{e}\n{page_indievox.url}\n')
-                        # txt檔案存在且裡面已經有一筆以上的資料
-                        else:
-                            # 讀取現在有的檔案
-                            with open('failure_log.txt', "a", encoding="utf-8") as f:
-                                f.write(f'\nindievox\n{e}\n{page_indievox.url}\n')
+                    if page_indievox.url not in fail_urls:
+                        print('第一次失敗')
+                        fail_urls.append(page_indievox.url)
                     else:
-                        print('已經寫進錯誤裡面了!')
+                        print('第二次失敗')
+                        print('跳過')
+                        last_finished_index += 1
 
-                    print('----------')
-                    print('Fail urls:')
-                    for url in fail_urls:
-                        print(url)
-                    print('----------')
-                    print()
+                        with open('failure_log.txt', "r", encoding="utf-8") as f:
+                            lines = f.readlines()
+
+                        if page_indievox.url + '\n' not in lines:
+                            # txt檔案不存在或是裡面沒資料
+                            if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+                                # 直接寫入第一筆資料
+                                with open('failure_log.txt', "w", encoding="utf-8") as f:
+                                    f.write(f'indievox\n{e}\n{page_indievox.url}\n')
+                            # txt檔案存在且裡面已經有一筆以上的資料
+                            else:
+                                # 讀取現在有的檔案
+                                with open('failure_log.txt', "a", encoding="utf-8") as f:
+                                    f.write(f'\nindievox\n{e}\n{page_indievox.url}\n')
+                        else:
+                            print('已經寫進錯誤裡面了!')
+
+                        print('----------')
+                        print('Fail urls:')
+                        for url in fail_urls:
+                            print(url)
+                        print('----------')
+                        print()
 
                 # 重新啟動
                 continue

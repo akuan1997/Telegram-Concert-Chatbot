@@ -17,10 +17,10 @@ with sync_playwright() as p:
         price_line = re.sub(r',', '', page.locator("#ticketPriceList > tbody > tr").nth(i).locator(
             "td.fcBlue > h4").inner_text())
         not_digit_index = 0
-        for ㄨ in range(len(price_line) - 1, 0, -1):
-            if not price_line[i].isdigit():
-                not_digit_index = i
+        for j in range(len(price_line) - 1, 0, -1):
+            if not price_line[j].isdigit():
+                not_digit_index = j
                 break
         prices.append(price_line[not_digit_index + 1:])
-        print(prices)
+    print(prices)
 
