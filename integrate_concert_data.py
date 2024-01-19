@@ -18,7 +18,7 @@ def integrate_json():
             merged_data.extend(data)
 
     # 定義 concert_data.json 的相對路徑
-    file_path = os.path.join('..', 'concert_data.json')
+    file_path = os.path.join('..', '0_useless/concert_data.json')
 
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(merged_data, f, indent=4, ensure_ascii=False)
@@ -36,7 +36,7 @@ def number_of_each_data():
         livenation_data = json.load(f)
     with open('ticketplus_new.json', 'r', encoding='utf-8') as f:
         ticketplus_data = json.load(f)
-    with open('concert_data.json', 'r', encoding='utf-8') as f:
+    with open('0_useless/concert_data.json', 'r', encoding='utf-8') as f:
         concert_data = json.load(f)
 
     print('era\t\t\t', len(era_data))

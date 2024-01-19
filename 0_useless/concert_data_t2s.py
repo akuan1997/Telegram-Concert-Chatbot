@@ -15,7 +15,7 @@ with open('concert_data_s.json', 'w', encoding='utf-8') as file:
     file.write('')
 
 # 打開'concert_data.json'並讀取資料
-with open('../concert_data.json', 'r', encoding='utf-8') as file:
+with open('concert_data.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # 複製資料到'concert_data_s.json'

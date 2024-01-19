@@ -13,7 +13,7 @@ def chinese_tokenizer(text):
 
 
 # 你的演唱會資料
-with open('../concert_data.json', 'r', encoding='utf-8') as file:
+with open('concert_data.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # for i in range(len(data)):

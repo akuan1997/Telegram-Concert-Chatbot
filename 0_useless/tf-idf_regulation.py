@@ -6,7 +6,7 @@ import json
 user_input = "老王樂隊" # 應該要擺在# 1. 輸入處理下面一行的 但是為了方便我擺在這邊
 
 # 你的演唱會資料
-with open('../concert_data.json', 'r', encoding='utf-8') as file:
+with open('concert_data.json', 'r', encoding='utf-8') as file:
     concert_data = json.load(file)
 
 # 使用'tit'和'int'欄位，並為'tit'增加權重

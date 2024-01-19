@@ -12,7 +12,7 @@ def chinese_tokenizer(text):
     return jieba.lcut(text)
 
 # 你的演唱會資料
-with open('../concert_data.json', 'r', encoding='utf-8') as file:
+with open('../0_useless/concert_data.json', 'r', encoding='utf-8') as file:
     concert_data = json.load(file)
 
 # 使用'tit'和'int'欄位，並為'tit'增加權重

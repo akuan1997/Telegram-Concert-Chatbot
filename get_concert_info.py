@@ -218,23 +218,37 @@ def delete_files():
 
 
 def json_new_to_old():
+    # 打开旧的中文数据文件，读取内容并加载到 old_data 变量中
     with open('concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
         old_data = json.load(old_file)
 
+    # 打开新的中文数据文件，读取内容并加载到 new_data 变量中
     with open('concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
         new_data = json.load(new_file)
 
+    # 将新的中文数据写入旧的中文数据文件，格式化并确保不使用 ASCII 编码
     with open('concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
 
+    # 打开新的中文数据文件，以写入模式清空文件内容
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as new_file:
+        new_file.write('[]')
+
+    # 打开旧的英文数据文件，读取内容并加载到 old_data 变量中
     with open('concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
         old_data = json.load(old_file)
 
+    # 打开新的英文数据文件，读取内容并加载到 new_data 变量中
     with open('concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
         new_data = json.load(new_file)
 
+    # 将新的英文数据写入旧的英文数据文件，格式化并确保不使用 ASCII 编码
     with open('concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
+
+    # 打开新的英文数据文件，以写入模式清空文件内容
+    with open('concert_data_new_en.json', 'w', encoding='utf-8') as new_file:
+        new_file.write('[]')
 
 
 def each_concert_number():
@@ -306,8 +320,8 @@ def get_latest_concert_info():
     # each_concert_number() # 驗算用
     # delete_files()
     # zh_en()
-    new_concerts()
-    # json_new_to_old()
+    # new_concerts()
+    json_new_to_old()
 
 
 get_latest_concert_info()
