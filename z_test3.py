@@ -1,10 +1,10 @@
-import json
+import sys
+# from web_scraping.indievox2 import get_indievox
+# import threading
+# thread_indievox = threading.Thread(target=get_indievox)
+# thread_indievox.start()
 
-with open('concert_data_old.json', 'r', encoding='utf-8') as old_file:
-    old_data = json.load(old_file)
-
-with open('concert_data_new.json', 'r', encoding='utf-8') as new_file:
-    new_data = json.load(new_file)
-
-with open('concert_data_old.json', 'w', encoding='utf-8') as old_file:
-    json.dump(new_data, old_file, indent=4, ensure_ascii=False)
+from web_scraping.get_concert_info import get_latest_concert_info
+import threading
+thread_a = threading.Thread(target=get_latest_concert_info())
+thread_a.start()
