@@ -10,7 +10,7 @@ json_new = ['era_new.json',
 
 
 def integrate_json():
-    # 完成之後先合併，輸出'concert_data_new.json'
+    # 完成之後先合併，輸出'concert_data_new_zh.json'
     merged_data = []
     for json_file in json_new:
         with open(json_file, 'r', encoding='utf-8') as f:

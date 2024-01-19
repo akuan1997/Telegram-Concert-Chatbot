@@ -1,10 +1,14 @@
 import json
 import os
 import threading
+import shutil
+import re
+from googletrans import Translator
+import era, indievox, kktix, livenation, ticketplus
+
 # import sys
 # sys.path.append(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\web_scraping")
 # from web_scraping import era, indievox, kktix, livenation, ticketplus
-import era, indievox, kktix, livenation, ticketplus
 
 json_new = ['era_new.json',
             'indievox_new.json',
@@ -42,24 +46,53 @@ def threads_integration():
         with open(json_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             merged_data.extend(data)
-    with open('concert_data_new.json', 'w', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
         json.dump(merged_data, f, indent=4, ensure_ascii=False)
 
 
-def new_concerts():
-    with open('concert_data_new.json', 'r', encoding='utf-8') as f:
-        new_data = json.load(f)
-    with open('concert_data_old.json', 'r', encoding='utf-8') as f:
-        current_data = json.load(f)
+def load_data(file_name):
+    with open(file_name, 'r', encoding='utf-8') as file:
+        return json.load(file)
 
-    added_data = []
-    for new_item in new_data:
-        found = False
+
+def compare_concerts(new_concert, old_concerts):
+    for old_concert in old_concerts:
+        if new_concert['url'] == old_concert['url']:
+            return old_concert
+    return None
+
+
+def new_concerts():
+    # 加载数据
+    old_concerts = load_data('concert_data_old_zh.json')
+    new_concerts = load_data('concert_data_new_zh.json')
+
+    new_concert_list = []
+
+    # 比较数据
+    for new_concert in new_concerts:
+        matched_concert = compare_concerts(new_concert, old_concerts)
+        if matched_concert is None:
+            new_concert_list.append(new_concert)
+
+    # 打印结果
+    print("新的演唱会信息:")
+    for concert in new_concert_list:
+        print(concert['tit'])
+        if not concert['sdt']:
+            print(f"售票時間:\t已開放售票")
+        else:
+            print(f"售票時間:\t{concert['sdt']}")
+        print(f"票   價:\t{concert['prc']}")
+        print(f"表演時間:\t{concert['pdt']}")
+        print(f"地   點:\t{concert['loc']}")
+        print(f"售票網站:\t{concert['web']}")
+        print(f"網   址:\t{concert['url']}")
 
 
 def delete_files():
     # 1. 刪除kktix那三個不需要的資料
-    with open('concert_data_new.json', 'r', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
@@ -68,19 +101,28 @@ def delete_files():
 
     new_data = [item for item in data if item['tit'] not in delete_titles]
 
-    with open('concert_data_new.json', 'w', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
         json.dump(new_data, f, indent=4, ensure_ascii=False)
     print('Successfully Deleted!')
 
 
 def json_new_to_old():
-    with open('concert_data_old.json', 'r', encoding='utf-8') as old_file:
+    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
         old_data = json.load(old_file)
 
-    with open('concert_data_new.json', 'r', encoding='utf-8') as new_file:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
         new_data = json.load(new_file)
 
-    with open('concert_data_old.json', 'w', encoding='utf-8') as old_file:
+    with open('concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
+        json.dump(new_data, old_file, indent=4, ensure_ascii=False)
+
+    with open('concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
+        old_data = json.load(old_file)
+
+    with open('concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
+        new_data = json.load(new_file)
+
+    with open('concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
 
 
@@ -100,13 +142,44 @@ def each_concert_number():
     print(f'kktixt\t\t\t{len(kktix_data)}')
     print(f'Live nation\t\t{len(livenation_data)}')
     print(f'ticketplus\t\t{len(ticketplus_data)}')
-    with open('concert_data_new.json', 'r', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
         concert_data = json.load(f)
     print(f'concert data\t{len(concert_data)}')
 
 
 def zh_en():
-    pass
+    # Copying the original file to a new file for translated content
+    shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
+
+    translator = Translator()
+
+    # Open the copied file for reading and translation
+    with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    for i in range(len(data)):
+        print(f'current progress {i}/{len(data)}')
+
+        # Check if 'int' field is not None or empty
+        if data[i]['int']:
+            try:
+                # 使用正則表達式移除非中文字符
+                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
+                # Translate the text and update the 'int' field
+                translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
+                data[i]['int'] = translated_text
+                print('Successful')
+            except Exception as e:
+                print(f'Error translating: {e}')
+                print('Skipping this entry')
+        else:
+            print('None or empty, skip')
+
+        print('------------------------------------')
+
+    # Write the translated data back to the file
+    with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 def reset_failure_log():
@@ -121,8 +194,9 @@ def get_latest_concert_info():
     # threads_integration()
     # each_concert_number() # 驗算用
     # delete_files()
-    # new_concerts()
-    json_new_to_old()
+    # zh_en()
+    new_concerts()
+    # json_new_to_old()
 
 
 get_latest_concert_info()

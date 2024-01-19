@@ -1,3 +1,0 @@
-from web_scraping.get_concert_info import get_latest_concert_info
-
-get_latest_concert_info()
