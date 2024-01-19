@@ -244,4 +244,4 @@ def get_ticketplus():
                 # 重新啟動
                 continue
 
-get_ticketplus()
+# get_ticketplus()

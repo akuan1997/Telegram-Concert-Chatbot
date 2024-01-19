@@ -1932,4 +1932,4 @@ def get_kktix():
         print('kktix done')
 
 
-get_kktix()
+# get_kktix()

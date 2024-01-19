@@ -323,4 +323,4 @@ def get_indievox():
                 # 重新啟動
                 continue
 
-get_indievox()
+# get_indievox()

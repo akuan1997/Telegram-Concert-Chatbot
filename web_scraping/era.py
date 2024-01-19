@@ -41,7 +41,6 @@ def get_era():
                     # 內文
                     inner_text = page_era.locator("#ctl00_ContentPlaceHolder1_lbProgramInfo_Content").inner_text()
 
-
                     ''''''
 
                     page_era.locator("#ctl00_ContentPlaceHolder1_btnBuyNow").click()  # 進入售票頁面
@@ -224,6 +223,4 @@ def get_era():
                 # 重新啟動
                 continue
 
-
-
-get_era()
+# get_era()
