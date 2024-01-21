@@ -56,7 +56,9 @@ def image_page_actions(title_name):
     elif page.locator(".mw-mmv-author").is_visible():
         # print(page.locator(".mw-mmv-author").inner_text())
         provider_name = page.locator(".mw-mmv-author").inner_text()
-    # print('provider name', provider_name)
+
+    # 憑證
+    cc = page.locator(".mw-mmv-license-li.cc-license .mw-mmv-license").inner_text()
 
     # 選擇要下載的圖片元素（使用 CSS 選擇器）
     image_element = page.locator('.mw-mmv-image-wrapper > .mw-mmv-image-inner-wrapper > .mw-mmv-image > img').nth(0)
@@ -80,7 +82,7 @@ def image_page_actions(title_name):
     with open(file_path, 'wb') as f:
         f.write(image_data)
         print('Save!')
-    return provider_name
+    return provider_name, cc
 
 
 def click_actions():
@@ -101,7 +103,7 @@ def click_actions():
                     page.wait_for_load_state('load')
                     page.wait_for_timeout(1500)
                     if page.locator(".mw-mmv-author > a").is_visible() or page.locator(".mw-mmv-author").is_visible():
-                        provider_name = image_page_actions(title_name)
+                        provider_name, cc = image_page_actions(title_name)
                         image_page_url = page.url
                         names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
                         names = [name.replace('[編輯]', '') for name in names]
@@ -119,12 +121,14 @@ def click_actions():
                         print('ref', f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia")
                         print('article_url', name_url)
                         print('image_url', image_page_url)
+                        print('cc', cc)
 
                         new_data = {
                             'names': names,
                             'reference': f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia",
                             'article_url': name_url,
-                            'image_url': image_page_url
+                            'image_url': image_page_url,
+                            'cc': cc
                         }
 
                         print('----------------------')
@@ -146,14 +150,14 @@ def click_actions():
                     print('reference', f"{title_name} article, source: Wikipedia")
                     print('article_url', name_url)
                     print('image_url', '-')
-                    print('CC', '-')
+                    print('cc', '-')
 
                     new_data = {
                         'names': names,
                         'reference': f"{title_name} article, source: Wikipedia",
                         'article_url': name_url,
                         'image_url': '-',
-                        'CC': '-'
+                        'cc': '-'
                     }
 
                     print('----------------------')
@@ -199,8 +203,8 @@ with sync_playwright() as p:
     print('載入完成')
     print('----------------------')
 
-    # with open('processed_url.txt', 'w', encoding='utf-8') as f:
-    #     f.write('')
+    with open('processed_url.txt', 'w', encoding='utf-8') as f:
+        f.write('')
 
     # while True:
     #     click_actions()
