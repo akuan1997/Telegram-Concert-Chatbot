@@ -1,4 +1,5 @@
-from web_scraping.sync_api import sync_playwright, Playwright
+from playwright.sync_api import sync_playwright, Playwright
+from playwright.sync_api import sync_playwright, Playwright
 
 filename = 'user_defined_lastfm.txt'
 
@@ -11,7 +12,7 @@ with sync_playwright() as p:
 
     page.wait_for_timeout(1000)
 
-    for i in range(9, 67, 2):
+    for i in range(21, 67, 2):
         # print(f'i = {i}')
         s1 = f"#mw-content-text > div.mw-content-ltr.mw-parser-output > table:nth-child({i}) > tbody > tr"
         singers = page.query_selector_all(s1)
@@ -21,8 +22,11 @@ with sync_playwright() as p:
             s2 = f'#mw-content-text > div.mw-content-ltr.mw-parser-output > table:nth-child({i}) > tbody > tr:nth-child({j}) > td:nth-child(1) > a'
             if page.locator(s2).is_visible():
                 print(page.locator(s2).inner_text())
-                with open('user_defined_taiwan_singers.txt', 'a', encoding='utf-8') as f:
-                    f.write(page.locator(s2).inner_text() + '\n')
+                page.locator(s2).click()
+                page.wait_for_timeout(1500)
+                page.go_back()
+                # with open('user_defined_taiwan_singers.txt', 'a', encoding='utf-8') as f:
+                #     f.write(page.locator(s2).inner_text() + '\n')
             else:
                 print('!!!!!!!')
         print('---')

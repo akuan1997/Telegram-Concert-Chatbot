@@ -1,4 +1,4 @@
-from web_scraping.sync_api import sync_playwright, Playwright
+from playwright.sync_api import sync_playwright, Playwright
 
 filename = 'user_defined_lastfm.txt'
 
