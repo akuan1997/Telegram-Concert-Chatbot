@@ -5,15 +5,16 @@ import re
 import json
 
 folder_path = 'artists_images'
-processed_url = 'processed_url.txt'
-json_filename = 'artists.json'
+processed_url = 'artists1.txt'
+json_filename = 'artists1.json'
 
 
 def reset_files():
-    with open('processed_url.txt', 'w', encoding='utf-8') as f:
+    with open('artists1.txt', 'w', encoding='utf-8') as f:
         f.write('')
     with open(json_filename, 'w', encoding='utf-8') as f:
         f.write('')
+
 
 def write_data_json(json_name, new_data):
     # json檔案不存在或是裡面沒資料
@@ -112,7 +113,7 @@ def image_page_actions(title_name):
 
 def click_actions():
     # 重複的就不要再執行了
-    with open('processed_url.txt', 'r', encoding='utf-8') as f:
+    with open('artists1.txt', 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
     # 頁面有沒有方塊或是作者
@@ -126,11 +127,12 @@ def click_actions():
                 print('右側有方塊')
                 title_name, names = name_page_actions()
                 name_url = page.url
-
                 # 這位歌手有沒有圖片
-                if page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).is_visible():
+                # if page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).is_visible():
+                if page.locator(".mw-default-size .mw-file-description").nth(0).is_visible():
                     print('這位歌手有圖片')
-                    page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).click()
+                    # page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).click()
+                    page.locator(".mw-default-size .mw-file-description").nth(0).click()
                     print('進入歌手圖片頁面')
                     page.wait_for_load_state('load')
                     page.wait_for_timeout(1500)
@@ -155,7 +157,7 @@ def click_actions():
                     names = [name.strip() for name in names]
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為有姓名也有圖片，所以這邊寫上兩個urls
-                    with open('processed_url.txt', 'a', encoding='utf-8') as f:
+                    with open('artists1.txt', 'a', encoding='utf-8') as f:
                         f.write(name_url + '\n' + image_page_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
@@ -191,7 +193,7 @@ def click_actions():
                     names = [name.strip() for name in names]
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為只有姓名，沒有圖片，所以這邊只寫上一個url
-                    with open('processed_url.txt', 'a', encoding='utf-8') as f:
+                    with open('artists1.txt', 'a', encoding='utf-8') as f:
                         f.write(name_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
@@ -224,10 +226,122 @@ def click_actions():
         print('\n--------------------------------------------\n')
         page.go_back()
 
+
+def click_actions_test():
+    # 頁面有沒有方塊或是作者
+    if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(
+            0).is_visible() or page.locator(".mw-mmv-author").nth(0).is_visible():
+        # 有方塊 而且還沒執行過
+        # 有沒有方塊
+        if page.locator(".fn").nth(0).is_visible():
+            print('右側有方塊')
+            title_name, names = name_page_actions()
+            name_url = page.url
+            # 這位歌手有沒有圖片
+            if page.locator(".mw-default-size .mw-file-description").nth(0).is_visible() or \
+                    page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).is_visible():
+                print('這位歌手有圖片')
+                if page.locator(".mw-default-size .mw-file-description").nth(0).is_visible():
+                    page.locator(".mw-default-size .mw-file-description").nth(0).click()
+                elif page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).is_visible():
+                    page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).click()
+
+                print('進入歌手圖片頁面')
+                page.wait_for_load_state('load')
+                page.wait_for_timeout(1500)
+                # 找不找得到作者
+                if page.locator(".mw-mmv-author > a").nth(0).is_visible() or page.locator(".mw-mmv-author").nth(
+                        0).is_visible():
+                    # 找得到作者
+                    print('找得到作者')
+                    if page.locator(".mw-mmv-author > a").nth(0).is_visible():
+                        provider_name = page.locator(".mw-mmv-author > a").nth(0).inner_text()
+                    elif page.locator(".mw-mmv-author").nth(0).is_visible():
+                        provider_name = page.locator(".mw-mmv-author").inner_text()
+                else:
+                    print('找不到作者')
+                    provider_name = '-'
+
+                # title_name 下載圖片的名稱
+                image_name, cc = image_page_actions(title_name)
+                image_page_url = page.url
+                names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
+                names = [name.replace('[編輯]', '') for name in names]
+                names = [name.strip() for name in names]
+                names = list(set(names))
+                # 寫入新資料到json
+                print('\n--- write new data ---\n')
+                print('names', names)
+                print('image name', image_name)
+                print('ref', f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia")
+                print('article_url', name_url)
+                print('image_url', image_page_url)
+                print('cc', cc)
+
+                print('\n--------------------------------------------\n')
+
+                page.go_back()
+                page.wait_for_load_state('load')
+                page.wait_for_timeout(1500)
+                page.go_back()
+
+            # 這位歌手沒有圖片
+            else:
+                print('這位歌手沒有圖片')
+                names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
+                names = [name.replace('[編輯]', '') for name in names]
+                names = [name.strip() for name in names]
+                names = list(set(names))
+                # 寫入新資料到json
+                print('\n--- write new data ---\n')
+                print('names', names)
+                print('image name', '-')
+                print('reference', f"{title_name} article, source: Wikipedia")
+                print('article_url', name_url)
+                print('image_url', '-')
+                print('cc', '-')
+
+                page.go_back()
+
+        else:
+            print('這個頁面已經完成了')
+            page.go_back()
+    else:
+        print('右側沒有方塊，返回', page.url)
+        print('\n--------------------------------------------\n')
+        page.go_back()
+
+with open('artists1.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+urls = []
+for i in range(len(data)):
+    if data[i]['image_name'] == '-':
+        urls.append(data[i]['article_url'])
+
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False, slow_mo=500)
     context = browser.new_context()
     page = context.new_page()
 
-    page.goto("https://zh.wikipedia.org/wiki/%E8%83%A1%E7%93%9C")
+    print(len(urls))
+    for i in range(len(urls)):
+        print(f'i = {i}')
+        page.goto(urls[i])
+        page.wait_for_load_state('load')
+        page.wait_for_timeout(1500)
 
+        click_actions_test()
+
+        print('\n--------------------------------------------\n')
+
+
+    # reset_files()
+
+    # 賀一航
+    # page.goto("https://zh.wikipedia.org/wiki/%E8%B3%80%E4%B8%80%E8%88%AA")
+    # 胡瓜
+    # page.goto("https://zh.wikipedia.org/wiki/%E8%83%A1%E7%93%9C")
+    # 鄧福如
+    page.goto("https://zh.wikipedia.org/zh-tw/%E9%84%A7%E7%A6%8F%E5%A6%82")
+
+    # click_actions()
