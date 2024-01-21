@@ -9,6 +9,30 @@ processed_url = 'processed_url.txt'
 json_filename = 'artists.json'
 
 
+def reset_files():
+    with open('processed_url.txt', 'w', encoding='utf-8') as f:
+        f.write('')
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        f.write('')
+
+def write_data_json(json_name, new_data):
+    # json檔案不存在或是裡面沒資料
+    if not os.path.exists(json_name) or os.path.getsize(json_name) <= 4:
+        # 直接寫入第一筆資料
+        with open(json_name, "w", encoding="utf-8") as f:
+            json.dump([new_data], f, indent=4, ensure_ascii=False)
+    # json檔案存在且裡面已經有一筆以上的資料
+    else:
+        # 讀取現在有的檔案
+        with open(json_name, "r", encoding="utf-8") as f:
+            existing_data = json.load(f)
+        # 並新增即將寫入的一筆
+        existing_data.append(new_data)
+        # 寫入
+        with open(json_name, "w", encoding="utf-8") as f:
+            json.dump(existing_data, f, indent=4, ensure_ascii=False)
+
+
 def name_page_actions():
     names = []
     # 標題
@@ -51,18 +75,9 @@ def name_page_actions():
 
 
 def image_page_actions(title_name):
-    provider_name = ''
-    if page.locator(".mw-mmv-author > a").nth(0).is_visible():
-        # print(page.locator(".mw-mmv-author > a").inner_text())
-        provider_name = page.locator(".mw-mmv-author > a").nth(0).inner_text()
-    elif page.locator(".mw-mmv-author").nth(0).is_visible():
-        # print(page.locator(".mw-mmv-author").inner_text())
-        provider_name = page.locator(".mw-mmv-author").inner_text()
-
-    print('provider okay')
     # 憑證
-    if page.locator(".mw-mmv-license-li > a").is_visible():
-        cc = page.locator(".mw-mmv-license-li > a").inner_text()
+    if page.locator(".mw-mmv-license-li > a").nth(0).is_visible():
+        cc = page.locator(".mw-mmv-license-li > a").nth(0).inner_text()
     else:
         cc = 'check it later'
     print('cc okay')
@@ -79,15 +94,10 @@ def image_page_actions(title_name):
 
     # 取得圖片的URL
     image_url = image_element.get_attribute('src')
-    # print(image_url)
+    # 如果開頭不是https，加上去
     if 'https' not in image_url[:5]:
         image_url = 'https:' + image_url
-        # print('加上去了')
-    # else:
-    # print('原本就有https')
-    # print(f"image url\n{image_url}")
-    # 下載圖片
-    # 保存圖片到本地
+    # 下載圖片到本地
     image_data = page.goto(image_url).body()
     image_name = f'{title_name.strip()}.png'
     file_path = os.path.join(folder_path, image_name)
@@ -97,153 +107,94 @@ def image_page_actions(title_name):
 
     page.go_back()
 
-    return provider_name, image_name, cc
+    return image_name, cc
 
 
 def click_actions():
+    # 重複的就不要再執行了
     with open('processed_url.txt', 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
-
-    if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(0).is_visible() or page.locator(
-            ".mw-mmv-author").nth(0).is_visible():
+    # 頁面有沒有方塊或是作者
+    if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(
+            0).is_visible() or page.locator(
+        ".mw-mmv-author").nth(0).is_visible():
+        # 有方塊 而且還沒執行過
         if page.url not in processed_urls:
+            # 有沒有方塊
             if page.locator(".fn").nth(0).is_visible():
-                print('has block')
+                print('右側有方塊')
                 title_name, names = name_page_actions()
                 name_url = page.url
-                # print('名字 成功')
+
+                # 這位歌手有沒有圖片
                 if page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).is_visible():
+                    print('這位歌手有圖片')
                     page.locator(".infobox.vcard.plainlist .mw-file-description").nth(0).click()
+                    print('進入歌手圖片頁面')
                     page.wait_for_load_state('load')
                     page.wait_for_timeout(1500)
-                    if page.locator(".mw-mmv-author > a").nth(0).is_visible() or page.locator(".mw-mmv-author").nth(0).is_visible():
-                        provider_name, image_name, cc = image_page_actions(title_name)
-                        image_page_url = page.url
-                        names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
-                        names = [name.replace('[編輯]', '') for name in names]
-                        names = [name.strip() for name in names]
-                        names = list(set(names))
-                        # print(f'names: {names}')
-                        # print(f"provider name: {provider_name}")
-                        with open('processed_url.txt', 'a', encoding='utf-8') as f:
-                            f.write(name_url + '\n')
-                        with open('processed_url.txt', 'a', encoding='utf-8') as f:
-                            f.write(image_page_url + '\n')
-
-                        print('\n--- write new data ---\n')
-
-                        # write data
-                        print('names', names)
-                        print('image name', image_name)
-                        print('ref', f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia")
-                        print('article_url', name_url)
-                        print('image_url', image_page_url)
-                        print('cc', cc)
-
-                        new_data = {
-                            'names': names,
-                            'image_name': image_name,
-                            'reference': f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia",
-                            'article_url': name_url,
-                            'image_url': image_page_url,
-                            'cc': cc
-                        }
-
-                        # json檔案不存在或是裡面沒資料
-                        if not os.path.exists(json_filename) or os.path.getsize(
-                                json_filename) <= 4:
-                            # 直接寫入第一筆資料
-                            with open(json_filename, "w", encoding="utf-8") as f:
-                                json.dump([new_data], f, indent=4, ensure_ascii=False)
-                        # json檔案存在且裡面已經有一筆以上的資料
-                        else:
-                            # 讀取現在有的檔案
-                            with open(json_filename, "r", encoding="utf-8") as f:
-                                existing_data = json.load(f)
-                            # 並新增即將寫入的一筆
-                            existing_data.append(new_data)
-                            # 寫入
-                            with open(json_filename, "w", encoding="utf-8") as f:
-                                json.dump(existing_data, f, indent=4, ensure_ascii=False)
-
-                        print('----------------------')
-                        page.go_back()
-                        page.wait_for_load_state('load')
-                        page.wait_for_timeout(1500)
-                        page.go_back()
-
+                    # 找不找得到作者
+                    if page.locator(".mw-mmv-author > a").nth(0).is_visible() or page.locator(".mw-mmv-author").nth(
+                            0).is_visible():
+                        # 找得到作者
+                        print('找得到作者')
+                        if page.locator(".mw-mmv-author > a").nth(0).is_visible():
+                            provider_name = page.locator(".mw-mmv-author > a").nth(0).inner_text()
+                        elif page.locator(".mw-mmv-author").nth(0).is_visible():
+                            provider_name = page.locator(".mw-mmv-author").inner_text()
                     else:
+                        print('找不到作者')
                         provider_name = '-'
-                        print('provider None')
 
-                        if page.locator(".mw-mmv-license-li > a").is_visible():
-                            cc = page.locator(".mw-mmv-license-li > a").inner_text()
-                        else:
-                            cc = 'check it later'
-                        print('cc okay')
-
-                        image_page_url = page.url
-
-                        with open('processed_url.txt', 'a', encoding='utf-8') as f:
-                            f.write(name_url + '\n')
-                        with open('processed_url.txt', 'a', encoding='utf-8') as f:
-                            f.write(image_page_url + '\n')
-
-                        print('\n--- write new data ---\n')
-
-                        # write data
-                        print('names', names)
-                        print('image name', '-')
-                        print('ref', f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia")
-                        print('article_url', name_url)
-                        print('image_url', image_page_url)
-                        print('cc', cc)
-
-                        new_data = {
-                            'names': names,
-                            'image_name': '-',
-                            'reference': f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia",
-                            'article_url': name_url,
-                            'image_url': image_page_url,
-                            'cc': cc
-                        }
-
-                        # json檔案不存在或是裡面沒資料
-                        if not os.path.exists(json_filename) or os.path.getsize(
-                                json_filename) <= 4:
-                            # 直接寫入第一筆資料
-                            with open(json_filename, "w", encoding="utf-8") as f:
-                                json.dump([new_data], f, indent=4, ensure_ascii=False)
-                        # json檔案存在且裡面已經有一筆以上的資料
-                        else:
-                            # 讀取現在有的檔案
-                            with open(json_filename, "r", encoding="utf-8") as f:
-                                existing_data = json.load(f)
-                            # 並新增即將寫入的一筆
-                            existing_data.append(new_data)
-                            # 寫入
-                            with open(json_filename, "w", encoding="utf-8") as f:
-                                json.dump(existing_data, f, indent=4, ensure_ascii=False)
-
-                        print('----------------------')
-                        page.go_back()
-                        page.wait_for_load_state('load')
-                        page.wait_for_timeout(1500)
-                        page.go_back()
-
-                else:
+                    # title_name 下載圖片的名稱
+                    image_name, cc = image_page_actions(title_name)
+                    image_page_url = page.url
                     names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
                     names = [name.replace('[編輯]', '') for name in names]
                     names = [name.strip() for name in names]
                     names = list(set(names))
-                    # print(f'names: {names}')
+                    # 執行完畢，寫入執行完成的url檔案，因為有姓名也有圖片，所以這邊寫上兩個urls
+                    with open('processed_url.txt', 'a', encoding='utf-8') as f:
+                        f.write(name_url + '\n' + image_page_url + '\n')
+                    # 寫入新資料到json
+                    print('\n--- write new data ---\n')
+                    print('names', names)
+                    print('image name', image_name)
+                    print('ref', f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia")
+                    print('article_url', name_url)
+                    print('image_url', image_page_url)
+                    print('cc', cc)
+
+                    new_data = {
+                        'names': names,
+                        'image_name': image_name,
+                        'reference': f"This image is provided by {provider_name}, {title_name} article, source: Wikipedia",
+                        'article_url': name_url,
+                        'image_url': image_page_url,
+                        'cc': cc
+                    }
+
+                    write_data_json(json_filename, new_data)
+                    print('\n--------------------------------------------\n')
+
+                    page.go_back()
+                    page.wait_for_load_state('load')
+                    page.wait_for_timeout(1500)
+                    page.go_back()
+
+                # 這位歌手沒有圖片
+                else:
+                    print('這位歌手沒有圖片')
+                    names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
+                    names = [name.replace('[編輯]', '') for name in names]
+                    names = [name.strip() for name in names]
+                    names = list(set(names))
+                    # 執行完畢，寫入執行完成的url檔案，因為只有姓名，沒有圖片，所以這邊只寫上一個url
                     with open('processed_url.txt', 'a', encoding='utf-8') as f:
                         f.write(name_url + '\n')
-
+                    # 寫入新資料到json
                     print('\n--- write new data ---\n')
-
-                    # write data
                     print('names', names)
                     print('image name', '-')
                     print('reference', f"{title_name} article, source: Wikipedia")
@@ -260,57 +211,23 @@ def click_actions():
                         'cc': '-'
                     }
 
-                    # json檔案不存在或是裡面沒資料
-                    if not os.path.exists(json_filename) or os.path.getsize(
-                            json_filename) <= 4:
-                        # 直接寫入第一筆資料
-                        with open(json_filename, "w", encoding="utf-8") as f:
-                            json.dump([new_data], f, indent=4, ensure_ascii=False)
-                    # json檔案存在且裡面已經有一筆以上的資料
-                    else:
-                        # 讀取現在有的檔案
-                        with open(json_filename, "r", encoding="utf-8") as f:
-                            existing_data = json.load(f)
-                        # 並新增即將寫入的一筆
-                        existing_data.append(new_data)
-                        # 寫入
-                        with open(json_filename, "w", encoding="utf-8") as f:
-                            json.dump(existing_data, f, indent=4, ensure_ascii=False)
+                    write_data_json(json_filename, new_data)
+                    print('\n--------------------------------------------\n')
 
-                    print('----------------------')
                     page.go_back()
 
         else:
-            print('已經完成了')
+            print('這個頁面已經完成了')
             page.go_back()
     else:
-        print('no block')
-        print(page.url)
+        print('右側沒有方塊，返回', page.url)
         page.go_back()
 
+
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=False, slow_mo=1000)
+    browser = p.chromium.launch(headless=False, slow_mo=500)
     context = browser.new_context()
     page = context.new_page()
-
-    # 李玖哲
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E6%9D%8E%E7%8E%96%E5%93%B2")
-    # IVE
-    # page.goto("https://zh.wikipedia.org/zh-tw/IVE_(%E7%B5%84%E5%90%88)")
-    # 羅志祥
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E7%BE%85%E5%BF%97%E7%A5%A5")
-    # jay park
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E6%9C%B4%E8%BC%89%E7%AF%84")
-    # 黃鴻升
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E9%BB%83%E9%B4%BB%E5%8D%87")
-    # Post Malone
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E6%B3%A2%E5%85%B9%C2%B7%E9%A9%AC%E9%BE%99")
-    # 5566
-    # page.goto("https://zh.wikipedia.org/zh-tw/5566")
-    # 安溥
-    # page.goto("https://zh.wikipedia.org/zh-tw/%E5%AE%89%E6%BA%A5")
-
-    # start_url = "https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8"
 
     page.goto("https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8")
 
@@ -320,8 +237,7 @@ with sync_playwright() as p:
     print('載入完成')
     print('----------------------')
 
-    # with open('processed_url.txt', 'w', encoding='utf-8') as f:
-    #     f.write('')
+    reset_files()
 
     # while True:
     #     click_actions()

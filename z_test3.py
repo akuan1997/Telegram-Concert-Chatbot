@@ -1,10 +1,9 @@
-import sys
-# from web_scraping.indievox2 import get_indievox
-# import threading
-# thread_indievox = threading.Thread(target=get_indievox)
-# thread_indievox.start()
+import json
 
-from web_scraping.get_concert_info import get_latest_concert_info
-import threading
-thread_a = threading.Thread(target=get_latest_concert_info())
-thread_a.start()
+with open('artists.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+for i in range(len(data)):
+    if data[i]['image_name'] == '-':
+        print(data[i]['names'])
+        print(data[i]['article_url'])
