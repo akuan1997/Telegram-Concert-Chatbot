@@ -5,12 +5,12 @@ import re
 import json
 
 folder_path = 'artists_images'
-processed_url = 'artists2.txt'  # 要改
+finished_urls = 'artists2.txt'  # 要改
 json_filename = 'artists2.json'  # 要改
 
 
 def reset_files():
-    with open('artists1.txt', 'w', encoding='utf-8') as f:
+    with open(finished_urls, 'w', encoding='utf-8') as f:
         f.write('')
     with open(json_filename, 'w', encoding='utf-8') as f:
         f.write('')
@@ -113,7 +113,7 @@ def image_page_actions(title_name):
 
 def click_actions():
     # 重複的就不要再執行了
-    with open('artists1.txt', 'r', encoding='utf-8') as f:
+    with open(finished_urls, 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
     # 頁面有沒有方塊或是作者
@@ -160,7 +160,7 @@ def click_actions():
                     names = [name.strip() for name in names]
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為有姓名也有圖片，所以這邊寫上兩個urls
-                    with open('artists1.txt', 'a', encoding='utf-8') as f:
+                    with open(finished_urls, 'a', encoding='utf-8') as f:
                         f.write(name_url + '\n' + image_page_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
@@ -197,7 +197,7 @@ def click_actions():
                     names = [name.strip() for name in names]
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為只有姓名，沒有圖片，所以這邊只寫上一個url
-                    with open('artists1.txt', 'a', encoding='utf-8') as f:
+                    with open(finished_urls, 'a', encoding='utf-8') as f:
                         f.write(name_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
@@ -317,6 +317,8 @@ def click_actions_test():
 
 
 with sync_playwright() as p:
+    reset_files()
+
     browser = p.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
@@ -336,7 +338,7 @@ with sync_playwright() as p:
             print('okay')
             page.locator(
                 f".wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({i}) > td:nth-child(1) > a").click()
-
+            click_actions()
             page.go_back()
             page.wait_for_load_state('load')
             page.wait_for_timeout(1500)
