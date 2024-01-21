@@ -1,3 +1,5 @@
+# https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8
+# 上半部的台灣團體
 from playwright.sync_api import sync_playwright, Playwright
 from playwright.sync_api import expect, Page
 import os
@@ -319,7 +321,7 @@ def click_actions_test():
 with sync_playwright() as p:
     reset_files()
 
-    browser = p.chromium.launch(headless=False)
+    browser = p.chromium.launch(headless=False, slow_mo=1000)
     context = browser.new_context()
     page = context.new_page()
 
@@ -339,9 +341,8 @@ with sync_playwright() as p:
             page.locator(
                 f".wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({i}) > td:nth-child(1) > a").click()
             click_actions()
-            page.go_back()
             page.wait_for_load_state('load')
             page.wait_for_timeout(1500)
         else:
             print('!!!!!!!')
-        print('---')
+            print('\n--------------------------------------------\n')

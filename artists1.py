@@ -103,6 +103,9 @@ def image_page_actions(title_name):
     # 下載圖片到本地
     image_data = page.goto(image_url).body()
     image_name = f'{title_name.strip()}.png'
+    # image_name = '123.png'
+    # file_path = os.path.join(folder_path, image_name)
+    # page.screenshot(path=file_path)
     file_path = os.path.join(folder_path, image_name)
     with open(file_path, 'wb') as f:
         f.write(image_data)
