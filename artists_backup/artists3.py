@@ -1,19 +1,16 @@
-# https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8
-# 上半部的台灣團體
+# https://zh.wikipedia.org/zh-tw/Category:%E5%8F%B0%E7%81%A3%E9%A5%92%E8%88%8C%E6%AD%8C%E6%89%8B
 from playwright.sync_api import sync_playwright, Playwright
 from playwright.sync_api import expect, Page
 import os
 import re
 import json
 
-folder_path = 'artists_images'
-finished_urls = 'artists2.txt'  # 要改
-json_filename = 'artists2.json'  # 要改
+folder_path = '../artists_images'
+finished_urls = 'artists_finished.txt'
+json_filename = 'artists3.json'  # 要改
 
 
 def reset_files():
-    with open(finished_urls, 'w', encoding='utf-8') as f:
-        f.write('')
     with open(json_filename, 'w', encoding='utf-8') as f:
         f.write('')
 
@@ -38,28 +35,20 @@ def write_data_json(json_name, new_data):
 
 def name_page_actions():
     names = []
-    # 標題
-    # if page.locator(".mw-page-title-main").is_visible():
-    #     print(page.locator(".mw-page-title-main").inner_text())
-    #     names.append(page.locator(".mw-page-title-main").inner_text())
-    # if page.locator("#firstHeading").nth(0).is_visible():
+    # 標題名字
     title_name = page.locator("#firstHeading").nth(0).inner_text()
     title_name = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", title_name)
     title_name = title_name.replace('[編輯]', '')
     title_name = title_name.strip()
     names.append(title_name)
-
-    # 方塊最上面的名字
-    # print(page.locator(".fn").nth(0).inner_text())
+    # 右側方塊最上面的名字
     if '\n' in page.locator(".fn").nth(0).inner_text():
         split_names = page.locator(".fn").nth(0).inner_text().split('\n')
         for name in split_names:
             names.append(name)
     else:
         names.append(page.locator(".fn").nth(0).inner_text())
-    # print(names)
-
-    # 使用 CSS 選擇器定位元素
+    # lang="en"的英文名字
     element = page.query_selector('span[lang="en"]')
     # 獲得元素的文本
     if element:
@@ -70,6 +59,10 @@ def name_page_actions():
                 names.append(name)
         else:
             names.append(element.text_content())
+    # 所有的nicknames
+    nicknames = page.query_selector_all(".nickname")
+    for nickname in nicknames:
+        names.append(nickname.inner_text())
 
     names = list(set(names))
     # print(names)
@@ -118,12 +111,15 @@ def click_actions():
     with open(finished_urls, 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
+
+    name_codes = [processed_url.split('/')[-1] for processed_url in processed_urls]
+
     # 頁面有沒有方塊或是作者
     if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(
             0).is_visible() or page.locator(
         ".mw-mmv-author").nth(0).is_visible():
         # 有方塊 而且還沒執行過
-        if page.url not in processed_urls:
+        if page.url.split('/')[-1] not in name_codes:
             # 有沒有方塊
             if page.locator(".fn").nth(0).is_visible():
                 print('右側有方塊')
@@ -163,7 +159,8 @@ def click_actions():
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為有姓名也有圖片，所以這邊寫上兩個urls
                     with open(finished_urls, 'a', encoding='utf-8') as f:
-                        f.write(name_url + '\n' + image_page_url + '\n')
+                        # f.write(name_url + '\n' + image_page_url + '\n')
+                        f.write(name_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
                     print('names', names)
@@ -193,7 +190,7 @@ def click_actions():
                 # 這位歌手沒有圖片
                 else:
                     print('這位歌手沒有圖片')
-                    page.screenshot(path=os.path.join('screenshot_no_images', f"{title_name}.png"))
+                    page.screenshot(path=os.path.join('../screenshot_no_images', f"{title_name}.png"))
                     names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
                     names = [name.replace('[編輯]', '') for name in names]
                     names = [name.strip() for name in names]
@@ -227,10 +224,6 @@ def click_actions():
         else:
             print('這個頁面已經完成了')
             page.go_back()
-    else:
-        print('右側沒有方塊，返回', page.url)
-        print('\n--------------------------------------------\n')
-        page.go_back()
 
 
 def click_actions_test():
@@ -318,9 +311,8 @@ def click_actions_test():
         page.go_back()
 
 
-with sync_playwright() as p:
-    reset_files()
 
+with sync_playwright() as p:
     browser = p.chromium.launch(headless=False, slow_mo=1000)
     context = browser.new_context()
     page = context.new_page()
@@ -329,20 +321,8 @@ with sync_playwright() as p:
     page.wait_for_load_state('load')
     page.wait_for_timeout(1500)
 
-    rows = page.query_selector_all(".wikitable.sortable.jquery-tablesorter > tbody > tr")
-    print(len(rows))
+    while True:
+        click_actions()
 
-    page.wait_for_timeout(1500)
-    for i in range(1, len(rows) + 1):
-        s1 = f".wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({i}) > td:nth-child(1) > a"
-        print(f'{i}/{len(rows)}')
-        if page.locator(s1).is_visible():
-            print('okay')
-            page.locator(
-                f".wikitable.sortable.jquery-tablesorter > tbody > tr:nth-child({i}) > td:nth-child(1) > a").click()
-            click_actions()
-            page.wait_for_load_state('load')
-            page.wait_for_timeout(1500)
-        else:
-            print('!!!!!!!')
-            print('\n--------------------------------------------\n')
+
+

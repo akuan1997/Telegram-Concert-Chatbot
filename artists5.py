@@ -1,5 +1,6 @@
-# https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8
-# 下面ㄅㄆㄇ開始
+# https://zh.wikipedia.org/wiki/Category:%E5%8F%B0%E7%81%A3%E5%98%BB%E5%93%88%E9%9F%B3%E6%A8%82%E5%9C%98%E9%AB%94
+# 未完成
+# https://zh.wikipedia.org/zh-tw/Category:%E5%8F%B0%E7%81%A3%E7%94%B7%E6%AD%8C%E6%89%8B
 from playwright.sync_api import sync_playwright, Playwright
 from playwright.sync_api import expect, Page
 import os
@@ -7,13 +8,12 @@ import re
 import json
 
 folder_path = 'artists_images'
-finished_urls = 'artists1.txt'
-json_filename = 'artists1.json'
+finished_urls = 'artists_finished.txt'
+json_filename = 'artists5.json'  # 要改
+finished_categories = 'category_finished.txt'
 
 
 def reset_files():
-    with open(finished_urls, 'w', encoding='utf-8') as f:
-        f.write('')
     with open(json_filename, 'w', encoding='utf-8') as f:
         f.write('')
 
@@ -103,9 +103,6 @@ def image_page_actions(title_name):
     # 下載圖片到本地
     image_data = page.goto(image_url).body()
     image_name = f'{title_name.strip()}.png'
-    # image_name = '123.png'
-    # file_path = os.path.join(folder_path, image_name)
-    # page.screenshot(path=file_path)
     file_path = os.path.join(folder_path, image_name)
     with open(file_path, 'wb') as f:
         f.write(image_data)
@@ -121,12 +118,15 @@ def click_actions():
     with open(finished_urls, 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
+
+    name_codes = [processed_url.split('/')[-1] for processed_url in processed_urls]
+
     # 頁面有沒有方塊或是作者
     if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(
             0).is_visible() or page.locator(
         ".mw-mmv-author").nth(0).is_visible():
         # 有方塊 而且還沒執行過
-        if page.url not in processed_urls:
+        if page.url.split('/')[-1] not in name_codes:
             # 有沒有方塊
             if page.locator(".fn").nth(0).is_visible():
                 print('右側有方塊')
@@ -166,7 +166,8 @@ def click_actions():
                     names = list(set(names))
                     # 執行完畢，寫入執行完成的url檔案，因為有姓名也有圖片，所以這邊寫上兩個urls
                     with open(finished_urls, 'a', encoding='utf-8') as f:
-                        f.write(name_url + '\n' + image_page_url + '\n')
+                        # f.write(name_url + '\n' + image_page_url + '\n')
+                        f.write(name_url + '\n')
                     # 寫入新資料到json
                     print('\n--- write new data ---\n')
                     print('names', names)
@@ -230,16 +231,12 @@ def click_actions():
         else:
             print('這個頁面已經完成了')
             page.go_back()
-    else:
-        print('右側沒有方塊，返回', page.url)
-        print('\n--------------------------------------------\n')
-        page.go_back()
 
 
 def click_actions_test():
-
     # 頁面有沒有方塊或是作者
-    if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(0).is_visible() or page.locator(".mw-mmv-author").nth(0).is_visible():
+    if page.locator(".fn").nth(0).is_visible() or page.locator(".mw-mmv-author > a").nth(
+            0).is_visible() or page.locator(".mw-mmv-author").nth(0).is_visible():
         # 有方塊 而且還沒執行過
         # 有沒有方塊
         if page.locator(".fn").nth(0).is_visible():
@@ -322,34 +319,21 @@ def click_actions_test():
 
 
 with sync_playwright() as p:
-    # reset_files()
     browser = p.chromium.launch(headless=False, slow_mo=1000)
     context = browser.new_context()
     page = context.new_page()
 
     page.goto("https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8")
-
-    # --------------------------------------
-
     page.wait_for_load_state('load')
-    print('載入完成')
-    print('----------------------')
+    page.wait_for_timeout(1500)
 
-    for i in range(9, 67, 2):
-        print(f'i = {i}')
-        s1 = f"#mw-content-text > div.mw-content-ltr.mw-parser-output > table:nth-child({i}) > tbody > tr"
-        singers = page.query_selector_all(s1)
-        print(f'有{len(singers)}個歌手')
-        for j in range(2, len(singers) + 1):
-            print(f'{i} - {j}')
-            s2 = f'#mw-content-text > div.mw-content-ltr.mw-parser-output > table:nth-child({i}) > tbody > tr:nth-child({j}) > td:nth-child(1) > a'
-            if page.locator(s2).is_visible():
-                print(page.locator(s2).inner_text())
-                page.locator(s2).click()
-                click_actions()
-                # page.wait_for_load_state('load')
-                # page.wait_for_timeout(1500)
-                # page.keyboard.press('End')
-            else:
-                print('!!!!!!!')
-        print('---')
+    with open('category_finished.txt', 'r', encoding='utf-8') as f:
+        processed_categories = f.readlines()
+    processed_categories = [processed_category.replace('\n', '') for processed_category in processed_categories]
+
+    while True:
+        if page.url not in processed_categories:
+            click_actions()
+        else:
+            print('已經完成了!')
+            page.wait_for_timeout(3000)
