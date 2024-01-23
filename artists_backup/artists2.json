@@ -83,8 +83,9 @@
     },
     {
         "names": [
-            "Angel 'N' Devil",
-            "A'N'D"
+            "A'N'D",
+            "天使與惡魔",
+            "Angel 'N' Devil"
         ],
         "image_name": "-",
         "reference": "A'N'D article, source: Wikipedia",
@@ -114,8 +115,8 @@
     },
     {
         "names": [
-            "B.A.D",
-            "B.A.D."
+            "B.A.D.",
+            "B.A.D"
         ],
         "image_name": "-",
         "reference": "B.A.D article, source: Wikipedia",
@@ -137,6 +138,8 @@
         "names": [
             "Breeze",
             "微女神 breeze",
+            "微女神",
+            "微風",
             "breeze"
         ],
         "image_name": "-",
@@ -147,9 +150,11 @@
     },
     {
         "names": [
+            "Yio Chu Kang Secondary School",
+            "白緯玲",
+            "白緯芬",
             "BY2",
-            "By2",
-            "Yio Chu Kang Secondary School"
+            "By2"
         ],
         "image_name": "By2.png",
         "reference": "This image is provided by Rico Shen, By2 article, source: Wikipedia",
@@ -169,8 +174,8 @@
     },
     {
         "names": [
-            "Be The One Dance Crew",
-            "B.T.O.D"
+            "B.T.O.D",
+            "Be The One Dance Crew"
         ],
         "image_name": "-",
         "reference": "B.T.O.D article, source: Wikipedia",
@@ -211,6 +216,7 @@
     },
     {
         "names": [
+            "Create Top One",
             "C.T.O"
         ],
         "image_name": "-",
@@ -221,7 +227,8 @@
     },
     {
         "names": [
-            "Dears"
+            "Dears",
+            "國民妹妹"
         ],
         "image_name": "Dears.png",
         "reference": "This image is provided by bombom37, Dears article, source: Wikipedia",
@@ -263,6 +270,7 @@
     },
     {
         "names": [
+            "JVKV",
             "F4"
         ],
         "image_name": "-",
@@ -273,8 +281,8 @@
     },
     {
         "names": [
-            "FUN4",
             "Fun4",
+            "FUN4",
             "FUN4 放肆樂團"
         ],
         "image_name": "-",
@@ -287,7 +295,8 @@
         "names": [
             "Gia",
             "GIA姊阿",
-            "GIA"
+            "GIA",
+            "姊阿"
         ],
         "image_name": "Gia.png",
         "reference": "This image is provided by 蔚藍的天空, Gia article, source: Wikipedia",
@@ -369,6 +378,7 @@
     },
     {
         "names": [
+            "GOGO & MEME",
             "JS"
         ],
         "image_name": "-",
@@ -411,8 +421,8 @@
     },
     {
         "names": [
-            "Rakuten Girls",
-            "樂天女孩"
+            "樂天女孩",
+            "Rakuten Girls"
         ],
         "image_name": "-",
         "reference": "樂天女孩 article, source: Wikipedia",
@@ -422,9 +432,9 @@
     },
     {
         "names": [
-            "Machi 麻吉",
+            "Machi",
             "Taiwanese hip hop",
-            "Machi"
+            "Machi 麻吉"
         ],
         "image_name": "Machi.png",
         "reference": "This image is provided by KevinAction, Machi article, source: Wikipedia",
@@ -434,8 +444,11 @@
     },
     {
         "names": [
+            "Lan Chun-Tian",
+            "李鈞天",
             "藍鈞天",
-            "Lan Chun-Tian"
+            "Gabe",
+            "Gabriel"
         ],
         "image_name": "-",
         "reference": "藍鈞天 article, source: Wikipedia",
@@ -455,8 +468,8 @@
     },
     {
         "names": [
-            "UTC+8",
-            "PER6IX"
+            "PER6IX",
+            "UTC+8"
         ],
         "image_name": "PER6IX.png",
         "reference": "This image is provided by User:Lll99987, PER6IX article, source: Wikipedia",
@@ -476,9 +489,9 @@
     },
     {
         "names": [
+            "Postman",
             "Postm2n→Postm3n",
-            "Postm3n",
-            "Postman"
+            "Postm3n"
         ],
         "image_name": "-",
         "reference": "Postm3n article, source: Wikipedia",
@@ -498,8 +511,9 @@
     },
     {
         "names": [
+            "S.H.E",
             "After the Lights",
-            "S.H.E"
+            "S.H.E 女朋友"
         ],
         "image_name": "S.H.E.png",
         "reference": "This image is provided by 臺北市政府 Taipei City Government, S.H.E article, source: Wikipedia",
@@ -529,7 +543,8 @@
     },
     {
         "names": [
-            "Soler"
+            "Soler",
+            "太陽系"
         ],
         "image_name": "Soler.png",
         "reference": "This image is provided by 楊公, Soler article, source: Wikipedia",
@@ -569,8 +584,9 @@
     },
     {
         "names": [
+            "Tension",
             "TENSION",
-            "Tension"
+            "天炫男孩"
         ],
         "image_name": "-",
         "reference": "TENSION article, source: Wikipedia",
@@ -590,7 +606,8 @@
     },
     {
         "names": [
-            "Twinko"
+            "Twinko",
+            "星星"
         ],
         "image_name": "-",
         "reference": "Twinko article, source: Wikipedia",
@@ -600,8 +617,12 @@
     },
     {
         "names": [
+            "WGS",
+            "天女",
+            "雨女",
             "天氣女孩",
-            "Weather Girls"
+            "Weather Girls",
+            "ウェザーガールズ"
         ],
         "image_name": "天氣女孩.png",
         "reference": "This image is provided by WGS48, 天氣女孩 article, source: Wikipedia",
@@ -621,8 +642,8 @@
     },
     {
         "names": [
-            "ZERO+",
-            "ZERO PLUS"
+            "ZERO PLUS",
+            "ZERO+"
         ],
         "image_name": "-",
         "reference": "ZERO+ article, source: Wikipedia",
@@ -653,8 +674,8 @@
     },
     {
         "names": [
-            "大嘴巴",
-            "Da Mouth"
+            "Da Mouth",
+            "大嘴巴"
         ],
         "image_name": "大嘴巴.png",
         "reference": "This image is provided by Rico Shen, 大嘴巴 article, source: Wikipedia",
@@ -685,8 +706,8 @@
     },
     {
         "names": [
-            "少女隊",
-            "Girl's Team"
+            "Girl's Team",
+            "少女隊"
         ],
         "image_name": "-",
         "reference": "少女隊 article, source: Wikipedia",
@@ -696,8 +717,8 @@
     },
     {
         "names": [
-            "麋先生",
-            "Mixer"
+            "Mixer",
+            "麋先生"
         ],
         "image_name": "麋先生.png",
         "reference": "This image is provided by 嘉義市政府, 麋先生 article, source: Wikipedia",
@@ -707,9 +728,9 @@
     },
     {
         "names": [
-            "Frances & Aiko",
+            "Big Small Sister",
             "大小姐",
-            "Big Small Sister"
+            "Frances & Aiko"
         ],
         "image_name": "大小姐.png",
         "reference": "This image is provided by Fire-opal, 大小姐 article, source: Wikipedia",
@@ -730,8 +751,8 @@
     },
     {
         "names": [
-            "元衛覺醒",
-            "Awaking"
+            "Awaking",
+            "元衛覺醒"
         ],
         "image_name": "-",
         "reference": "元衛覺醒 article, source: Wikipedia",
@@ -752,8 +773,10 @@
     },
     {
         "names": [
-            "五堅情",
-            "W0LF"
+            "W0LF",
+            "最強狼團",
+            "放射天團",
+            "五堅情"
         ],
         "image_name": "-",
         "reference": "五堅情 article, source: Wikipedia",
@@ -763,8 +786,8 @@
     },
     {
         "names": [
-            "脫拉庫",
-            "TOLAKU"
+            "TOLAKU",
+            "脫拉庫"
         ],
         "image_name": "-",
         "reference": "脫拉庫 article, source: Wikipedia",
@@ -787,11 +810,11 @@
         "names": [
             "酷愛樂團"
         ],
-        "image_name": "酷愛樂團.png",
-        "reference": "This image is provided by 小美 范逸臣國際後援會, 酷愛樂團 article, source: Wikipedia",
+        "image_name": "-",
+        "reference": "酷愛樂團 article, source: Wikipedia",
         "article_url": "https://zh.wikipedia.org/wiki/%E9%85%B7%E6%84%9B%E6%A8%82%E5%9C%98",
-        "image_url": "https://zh.wikipedia.org/wiki/%E9%85%B7%E6%84%9B%E6%A8%82%E5%9C%98#/media/File:VanFan-090520.jpg",
-        "cc": "CC BY 2.0"
+        "image_url": "-",
+        "cc": "-"
     },
     {
         "names": [
@@ -840,8 +863,8 @@
     {
         "names": [
             "可米小子",
-            "Arroy",
-            "Comic Boyz"
+            "Comic Boyz",
+            "Arroy"
         ],
         "image_name": "-",
         "reference": "可米小子 article, source: Wikipedia",
@@ -851,9 +874,9 @@
     },
     {
         "names": [
-            "四分衛樂團",
+            "四分衛",
             "Quarterback",
-            "四分衛"
+            "四分衛樂團"
         ],
         "image_name": "四分衛樂團.png",
         "reference": "This image is provided by Glarcfan, 四分衛樂團 article, source: Wikipedia",
@@ -863,6 +886,7 @@
     },
     {
         "names": [
+            "7F",
             "7 Flowers",
             "七朵花"
         ],
@@ -874,7 +898,8 @@
     },
     {
         "names": [
-            "It's fun [1].ITF",
+            "It's fun .ITF",
+            "一直煩",
             "伊梓帆"
         ],
         "image_name": "伊梓帆.png",
@@ -885,8 +910,8 @@
     },
     {
         "names": [
-            "微女孩",
             "微甜女孩",
+            "微女孩",
             "WAYSugar"
         ],
         "image_name": "-",
@@ -897,8 +922,8 @@
     },
     {
         "names": [
-            "刺客",
-            "刺客樂團"
+            "刺客樂團",
+            "刺客"
         ],
         "image_name": "-",
         "reference": "刺客樂團 article, source: Wikipedia",
@@ -929,8 +954,8 @@
     },
     {
         "names": [
-            "羅密歐",
-            "Romeo"
+            "Romeo",
+            "羅密歐"
         ],
         "image_name": "-",
         "reference": "羅密歐 article, source: Wikipedia",
@@ -940,8 +965,9 @@
     },
     {
         "names": [
+            "浩角翔起",
             "Plungon",
-            "浩角翔起"
+            "噗嚨共天團"
         ],
         "image_name": "-",
         "reference": "浩角翔起 article, source: Wikipedia",
@@ -951,8 +977,8 @@
     },
     {
         "names": [
-            "新寶島康樂隊",
-            "New Formosa Band"
+            "New Formosa Band",
+            "新寶島康樂隊"
         ],
         "image_name": "-",
         "reference": "新寶島康樂隊 article, source: Wikipedia",
@@ -995,6 +1021,7 @@
     {
         "names": [
             "百合二重唱",
+            "大小百合",
             "大小百合→百合二重唱"
         ],
         "image_name": "-",
@@ -1035,8 +1062,10 @@
     },
     {
         "names": [
+            "Miss南台灣",
+            "PGST南台灣小姑娘",
             "南台灣小姑娘",
-            "PGST南台灣小姑娘"
+            "P.G.S.T"
         ],
         "image_name": "-",
         "reference": "南台灣小姑娘 article, source: Wikipedia",
@@ -1046,8 +1075,8 @@
     },
     {
         "names": [
-            "ABAO \nBrandy",
-            "阿爆&Brandy"
+            "阿爆&Brandy",
+            "ABAO \nBrandy"
         ],
         "image_name": "-",
         "reference": "阿爆&Brandy article, source: Wikipedia",
@@ -1057,8 +1086,9 @@
     },
     {
         "names": [
+            "阿霈樂團",
             "A Pay",
-            "阿霈樂團"
+            "夢露樂團"
         ],
         "image_name": "-",
         "reference": "阿霈樂團 article, source: Wikipedia",
@@ -1068,8 +1098,8 @@
     },
     {
         "names": [
-            "SHIN BAND",
-            "信樂團"
+            "信樂團",
+            "SHIN BAND"
         ],
         "image_name": "-",
         "reference": "信樂團 article, source: Wikipedia",
@@ -1079,8 +1109,8 @@
     },
     {
         "names": [
-            "Nan Quan Ma Ma",
-            "南拳媽媽"
+            "南拳媽媽",
+            "Nan Quan Ma Ma"
         ],
         "image_name": "-",
         "reference": "南拳媽媽 article, source: Wikipedia",
@@ -1091,7 +1121,8 @@
     {
         "names": [
             "洪言翔",
-            "Hung Yan Siang"
+            "Hung Yan Siang",
+            "Sing Hom"
         ],
         "image_name": "-",
         "reference": "洪言翔 article, source: Wikipedia",
@@ -1101,8 +1132,8 @@
     },
     {
         "names": [
-            "The Drifters",
-            "浪花兄弟"
+            "浪花兄弟",
+            "The Drifters"
         ],
         "image_name": "-",
         "reference": "浪花兄弟 article, source: Wikipedia",
@@ -1112,9 +1143,9 @@
     },
     {
         "names": [
-            "咻比嘟嘩",
             "SBDW",
-            "S.B.D.W."
+            "S.B.D.W.",
+            "咻比嘟嘩"
         ],
         "image_name": "-",
         "reference": "咻比嘟嘩 article, source: Wikipedia",
@@ -1124,7 +1155,8 @@
     },
     {
         "names": [
-            "城市少女"
+            "城市少女",
+            "開心少女組"
         ],
         "image_name": "-",
         "reference": "城市少女 article, source: Wikipedia",
@@ -1155,8 +1187,8 @@
     },
     {
         "names": [
-            "Fahrenheit",
-            "飛輪海"
+            "飛輪海",
+            "Fahrenheit"
         ],
         "image_name": "飛輪海.png",
         "reference": "This image is provided by Richard Masoner / Cyclelicious, 飛輪海 article, source: Wikipedia",
@@ -1186,8 +1218,8 @@
     },
     {
         "names": [
-            "Boxx",
-            "星盒子"
+            "星盒子",
+            "Boxx"
         ],
         "image_name": "-",
         "reference": "星盒子 article, source: Wikipedia",
@@ -1219,8 +1251,8 @@
     },
     {
         "names": [
-            "閃靈樂團",
             "閃靈",
+            "閃靈樂團",
             "CHTHONIC"
         ],
         "image_name": "閃靈樂團.png",
@@ -1231,8 +1263,8 @@
     },
     {
         "names": [
-            "動力火車",
-            "Power Station"
+            "Power Station",
+            "動力火車"
         ],
         "image_name": "動力火車.png",
         "reference": "This image is provided by 輝攝地帶 平面攝影工作室, 動力火車 article, source: Wikipedia",
@@ -1243,6 +1275,7 @@
     {
         "names": [
             "深白色",
+            "Deepwhite2",
             "Deepwhite"
         ],
         "image_name": "-",
@@ -1253,6 +1286,7 @@
     },
     {
         "names": [
+            "光良品冠",
             "無印良品"
         ],
         "image_name": "-",
@@ -1263,9 +1297,16 @@
     },
     {
         "names": [
+            "素顏始祖",
+            "小妞",
+            "貝童彤",
+            "彤彤姐姐",
+            "彤彤",
+            "動感美眉",
             "蔡玓彤",
             "Tsai Ti Tung",
-            "貝童彤"
+            "妙麗",
+            "Julie Tsai"
         ],
         "image_name": "蔡玓彤.png",
         "reference": "This image is provided by Recordforme65536, 蔡玓彤 article, source: Wikipedia",
@@ -1286,19 +1327,20 @@
     },
     {
         "names": [
-            "濁水溪公社",
-            "Loh Tsui Kweh Commune"
+            "Loh Tsui Kweh Commune",
+            "濁水溪公社"
         ],
-        "image_name": "濁水溪公社.png",
-        "reference": "This image is provided by -, 濁水溪公社 article, source: Wikipedia",
+        "image_name": "-",
+        "reference": "濁水溪公社 article, source: Wikipedia",
         "article_url": "https://zh.wikipedia.org/wiki/%E6%BF%81%E6%B0%B4%E6%BA%AA%E5%85%AC%E7%A4%BE",
-        "image_url": "https://zh.wikipedia.org/wiki/%E6%BF%81%E6%B0%B4%E6%BA%AA%E5%85%AC%E7%A4%BE#/media/File:Lo-chui-khe_Kong-sia_2004_live.jpg",
-        "cc": "CC BY-SA 3.0"
+        "image_url": "-",
+        "cc": "-"
     },
     {
         "names": [
-            "中國娃娃",
-            "China Dolls"
+            "China Dolls",
+            "ไชน่า ดอลส์",
+            "中國娃娃"
         ],
         "image_name": "-",
         "reference": "中國娃娃 article, source: Wikipedia",
@@ -1328,9 +1370,9 @@
     },
     {
         "names": [
-            "Sodagreen / Oaeen",
             "蘇打綠",
-            "蘇打綠／魚丁糸"
+            "蘇打綠／魚丁糸",
+            "Sodagreen / Oaeen"
         ],
         "image_name": "蘇打綠.png",
         "reference": "This image is provided by Lionel Leong, 蘇打綠 article, source: Wikipedia",
@@ -1351,8 +1393,8 @@
     },
     {
         "names": [
-            "Cherry Boom",
-            "櫻桃幫"
+            "櫻桃幫",
+            "Cherry Boom"
         ],
         "image_name": "-",
         "reference": "櫻桃幫 article, source: Wikipedia",
@@ -1362,8 +1404,12 @@
     },
     {
         "names": [
-            "Ice Creamusume。",
-            "冰淇淋少女組。"
+            "ICM",
+            "冰淇淋少女組。",
+            "アイスクリー娘。",
+            "冰娘",
+            "雪糕娘",
+            "Ice Creamusume。"
         ],
         "image_name": "冰淇淋少女組。.png",
         "reference": "This image is provided by chungkeng ryu, 冰淇淋少女組。 article, source: Wikipedia",
@@ -1393,8 +1439,8 @@
     },
     {
         "names": [
-            "景行廳男孩",
-            "JXT BOY"
+            "JXT BOY",
+            "景行廳男孩"
         ],
         "image_name": "景行廳男孩.png",
         "reference": "This image is provided by 竹筍弟弟, 景行廳男孩 article, source: Wikipedia",
@@ -1404,8 +1450,8 @@
     },
     {
         "names": [
-            "自由發揮",
-            "OneTwoFree"
+            "OneTwoFree",
+            "自由發揮"
         ],
         "image_name": "自由發揮.png",
         "reference": "This image is provided by Onlymyself65536, 自由發揮 article, source: Wikipedia",
