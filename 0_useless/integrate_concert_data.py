@@ -1,12 +1,12 @@
 import json
 import os
 
-json_new = ['era_new.json',
+json_new = ['era.json',
             'ibon_new.json',
-            'indievox_new.json',
+            'indievox.json',
             'kktix_new.json',
-            'livenation_new.json',
-            'ticketplus_new.json']
+            'livenation.json',
+            'ticketplus.json']
 
 
 def integrate_json():
@@ -24,17 +24,17 @@ def integrate_json():
         json.dump(merged_data, f, indent=4, ensure_ascii=False)
 
 def number_of_each_data():
-    with open('../era_new.json', 'r', encoding='utf-8') as f:
+    with open('../era.json', 'r', encoding='utf-8') as f:
         era_data = json.load(f)
     with open('../0_useless/ibon_new.json', 'r', encoding='utf-8') as f:
         ibon_data = json.load(f)
-    with open('../indievox_new.json', 'r', encoding='utf-8') as f:
+    with open('../indievox.json', 'r', encoding='utf-8') as f:
         indievox_data = json.load(f)
     with open('../kktix_new.json', 'r', encoding='utf-8') as f:
         kktix_data = json.load(f)
-    with open('../livenation_new.json', 'r', encoding='utf-8') as f:
+    with open('../livenation.json', 'r', encoding='utf-8') as f:
         livenation_data = json.load(f)
-    with open('../ticketplus_new.json', 'r', encoding='utf-8') as f:
+    with open('../ticketplus.json', 'r', encoding='utf-8') as f:
         ticketplus_data = json.load(f)
     with open('concert_data.json', 'r', encoding='utf-8') as f:
         concert_data = json.load(f)

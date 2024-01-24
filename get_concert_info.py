@@ -1,5 +1,4 @@
 import json
-import os
 import threading
 import shutil
 import re
@@ -11,11 +10,11 @@ from get_data_from_text import sort_datetime
 # sys.path.append(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\web_scraping")
 # from web_scraping import era, indievox, kktix, livenation, ticketplus
 
-json_new = ['era_new.json',
-            'indievox_new.json',
+json_new = ['era.json',
+            'indievox.json',
             'kktix_new.json',
-            'livenation_new.json',
-            'ticketplus_new.json']
+            'livenation.json',
+            'ticketplus.json']
 
 thread_era = threading.Thread(target=era.get_era)
 thread_indievox = threading.Thread(target=indievox.get_indievox)
@@ -252,15 +251,15 @@ def json_new_to_old():
 
 
 def each_concert_number():
-    with open('era_new.json', 'r', encoding='utf-8') as f:
+    with open('era.json', 'r', encoding='utf-8') as f:
         era_data = json.load(f)
-    with open('indievox_new.json', 'r', encoding='utf-8') as f:
+    with open('indievox.json', 'r', encoding='utf-8') as f:
         indievox_data = json.load(f)
     with open('kktix_new.json', 'r', encoding='utf-8') as f:
         kktix_data = json.load(f)
-    with open('livenation_new.json', 'r', encoding='utf-8') as f:
+    with open('livenation.json', 'r', encoding='utf-8') as f:
         livenation_data = json.load(f)
-    with open('ticketplus_new.json', 'r', encoding='utf-8') as f:
+    with open('ticketplus.json', 'r', encoding='utf-8') as f:
         ticketplus_data = json.load(f)
     print(f'era\t\t\t\t{len(era_data)}')
     print(f'indievox\t\t{len(indievox_data)}')

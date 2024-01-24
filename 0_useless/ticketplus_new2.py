@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import re
 
-json_filename = '../web_scraping/ticketplus_new.json'
+json_filename = '../web_scraping/ticketplus.json'
 txt_filename = 'ticketplus_temp.txt'
 
 with sync_playwright() as p:

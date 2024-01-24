@@ -6,7 +6,7 @@ import os, sys
 
 # 如果售票時間對於現在來說是過去，捨棄
 
-json_filename = 'era_new.json'
+json_filename = '../era.json'
 
 
 def get_era():
@@ -199,19 +199,19 @@ def get_era():
                     print('跳過')
                     last_finished_index += 1
 
-                    with open('failure_log.txt', "r", encoding="utf-8") as f:
+                    with open('../failure_log.txt', "r", encoding="utf-8") as f:
                         lines = f.readlines()
 
                     if page_era.url + '\n' not in lines:
                         # txt檔案不存在或是裡面沒資料
-                        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+                        if not os.path.exists('../failure_log.txt') or os.path.getsize('../failure_log.txt') <= 4:
                             # 直接寫入第一筆資料
-                            with open('failure_log.txt', "w", encoding="utf-8") as f:
+                            with open('../failure_log.txt', "w", encoding="utf-8") as f:
                                 f.write(f'era\n{e}\n{page_era.url}\n')
                         # txt檔案存在且裡面已經有一筆以上的資料
                         else:
                             # 讀取現在有的檔案
-                            with open('failure_log.txt', "a", encoding="utf-8") as f:
+                            with open('../failure_log.txt', "a", encoding="utf-8") as f:
                                 f.write(f'\nera\n{e}\n{page_era.url}\n')
                     else:
                         print('已經寫進錯誤裡面了!')

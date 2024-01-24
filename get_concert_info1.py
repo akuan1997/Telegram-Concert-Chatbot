@@ -834,25 +834,25 @@ def get_ticketplus(website, json_filename, txt_filename):
                 continue
 
 
-# get_era('era', 'era_new.json', _)
-# get_livenation('Live Nation', 'livenation_new.json', 'livenation_temp.txt')
-# get_indievox('Indievox', 'indievox_new.json', 'indievox_temp.txt')
-# get_ticketplus('Ticket Plus', 'ticketplus_new.json', 'ticketplus_temp.txt')
+# get_era('era', 'era.json', _)
+# get_livenation('Live Nation', 'livenation.json', 'livenation_temp.txt')
+# get_indievox('Indievox', 'indievox.json', 'indievox_temp.txt')
+# get_ticketplus('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt')
 # get_kktix('KKTIX', 'kktix_new.json', 'kktix_temp.txt')
 
-json_new = ['era_new.json',
-            'indievox_new.json',
+json_new = ['era.json',
+            'indievox.json',
             'kktix_new.json',
-            'livenation_new.json',
-            'ticketplus_new.json']
+            'livenation.json',
+            'ticketplus.json']
 
-thread_era = threading.Thread(target=get_era, args=('era', 'era_new.json', 'era_temp.txt'))
+thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
 thread_livenation = threading.Thread(target=get_livenation,
-                                     args=('Live Nation', 'livenation_new.json', 'livenation_temp.txt'))
+                                     args=('Live Nation', 'livenation.json', 'livenation_temp.txt'))
 
 
-# thread_indievox = threading.Thread(target=get_indievox, args=('Indievox', 'indievox_new.json', 'indievox_temp.txt'))
-# threading_ticketplus = threading.Thread(target=get_ticketplus, args=('Ticket Plus', 'ticketplus_new.json', 'ticketplus_temp.txt'))
+# thread_indievox = threading.Thread(target=get_indievox, args=('Indievox', 'indievox.json', 'indievox_temp.txt'))
+# threading_ticketplus = threading.Thread(target=get_ticketplus, args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 # thread_kktix = threading.Thread(target=get_kktix, args=('KKITX', 'kktix_new.json', 'kktix_temp.txt'))
 def threads_start():
     thread_era.start()
@@ -1085,15 +1085,15 @@ def json_new_to_old():
 
 
 def each_concert_number():
-    with open('era_new.json', 'r', encoding='utf-8') as f:
+    with open('era.json', 'r', encoding='utf-8') as f:
         era_data = json.load(f)
-    with open('indievox_new.json', 'r', encoding='utf-8') as f:
+    with open('indievox.json', 'r', encoding='utf-8') as f:
         indievox_data = json.load(f)
     with open('kktix_new.json', 'r', encoding='utf-8') as f:
         kktix_data = json.load(f)
-    with open('livenation_new.json', 'r', encoding='utf-8') as f:
+    with open('livenation.json', 'r', encoding='utf-8') as f:
         livenation_data = json.load(f)
-    with open('ticketplus_new.json', 'r', encoding='utf-8') as f:
+    with open('ticketplus.json', 'r', encoding='utf-8') as f:
         ticketplus_data = json.load(f)
     print(f'era\t\t\t\t{len(era_data)}')
     print(f'indievox\t\t{len(indievox_data)}')
