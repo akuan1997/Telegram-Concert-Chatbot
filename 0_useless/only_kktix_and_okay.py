@@ -62,19 +62,19 @@ def delete_past_ticketing_time(website, json_filename):
 
 
 def write_error(website, url, error):
-    with open('failure_log.txt', "r", encoding="utf-8") as f:
+    with open('../failure_log.txt', "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     if url + '\n' not in lines:
         # txt檔案不存在或是裡面沒資料
-        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+        if not os.path.exists('../failure_log.txt') or os.path.getsize('../failure_log.txt') <= 4:
             # 直接寫入第一筆資料
-            with open('failure_log.txt', "w", encoding="utf-8") as f:
+            with open('../failure_log.txt', "w", encoding="utf-8") as f:
                 f.write(f'{website}\n{error}\n{url}\n')
         # txt檔案存在且裡面已經有一筆以上的資料
         else:
             # 讀取現在有的檔案
-            with open('failure_log.txt', "a", encoding="utf-8") as f:
+            with open('../failure_log.txt', "a", encoding="utf-8") as f:
                 f.write(f'\n{website}\n{error}\n{url}\n')
     else:
         print('已經寫進錯誤裡面了!')
@@ -1544,4 +1544,4 @@ def get_kktix(website, json_filename, txt_filename):
     #             continue
 
 
-get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
+get_kktix('KKTIX', '../kktix.json', "kktix_temp.txt")

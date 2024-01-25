@@ -9,6 +9,7 @@ from datetime import datetime, time
 from googletrans import Translator
 from get_data_from_text import *
 
+
 def write_data_json(json_name, new_data):
     # json檔案不存在或是裡面沒資料
     if not os.path.exists(json_name) or os.path.getsize(json_name) <= 4:
@@ -2518,7 +2519,7 @@ def json_new_to_old():
         new_file.write('[]')
 
 
-def each_concert_number(): # 驗算用
+def each_concert_number():  # 驗算用
     with open('era.json', 'r', encoding='utf-8') as f:
         era_data = json.load(f)
     with open('indievox.json', 'r', encoding='utf-8') as f:
@@ -2579,18 +2580,31 @@ def reset_failure_log():
         f.write('')
 
 
+def move_concert_files(concert_json_filenames):
+    for concert_json_file in concert_json_filenames:
+        source_file = concert_json_file
+        target_folder = 'concert_json_files'
+
+        # 检查目标文件是否存在，如果存在，删除它
+        if os.path.exists(os.path.join(target_folder, source_file)):
+            os.remove(os.path.join(target_folder, source_file))
+
+        # 使用shutil.move()函数来移动文件
+        shutil.move(source_file, target_folder)
+
+
 def get_latest_concert_info():
+    concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
     # reset_failure_log()
     # threads_start()
     # threads_join()
-    # json_new = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
-    # merge_json_data(json_new, 'concert_data_new_zh.json')
+    # merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
+    # move_concert_files(concert_json_filenames)
     # each_concert_number() # 驗算用
     # delete_files()
     # zh_en()
     # new_concerts()
     # json_new_to_old()
-    pass
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
