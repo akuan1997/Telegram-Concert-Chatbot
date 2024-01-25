@@ -30,7 +30,7 @@ def number_of_each_data():
         ibon_data = json.load(f)
     with open('../indievox.json', 'r', encoding='utf-8') as f:
         indievox_data = json.load(f)
-    with open('../kktix_new.json', 'r', encoding='utf-8') as f:
+    with open('kktix_new.json', 'r', encoding='utf-8') as f:
         kktix_data = json.load(f)
     with open('../livenation.json', 'r', encoding='utf-8') as f:
         livenation_data = json.load(f)

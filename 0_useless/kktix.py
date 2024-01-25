@@ -9,7 +9,7 @@ import threading
 json_filename_first = 'kktix_new_first.json'
 json_filename_second = 'kktix_new_second.json'
 json_filename_third = 'kktix_new_third.json'
-json_filename = '../kktix_new.json'
+json_filename = '../../kktix_new.json'
 
 integrate_webs = []
 
@@ -1932,4 +1932,4 @@ def get_kktix():
         print('kktix done')
 
 
-# get_kktix()
+get_kktix()
