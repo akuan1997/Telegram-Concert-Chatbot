@@ -769,7 +769,7 @@ def get_ticketplus(website, json_filename, txt_filename):
                         if pdt[-1] == ' ':
                             pdt = pdt[:-1]
                         # 地點
-                        concert_place = column_text[3]
+                        concert_place = column_text[time_index + 1]
                         # 獨一無二的id識別
                         if f"{title}_{pdt}_{concert_place}" not in unique_id:
                             unique_id.append(f"{title}_{pdt}_{concert_place}")
@@ -904,6 +904,27 @@ def kktix_get_location_str(page, location):
         print('locations no')
 
     return location
+
+
+def kktix_get_location_str1(page, location, address):
+    # 地點 str
+    if page.locator("tbody > tr").nth(1).locator("th").is_visible():
+        if page.locator("tbody > tr").nth(1).locator(
+                "th").inner_text() == '活動地點':
+            location_address = \
+                page.locator("tbody > tr").nth(1).locator(
+                    "td").inner_text().split(
+                    '檢視地圖')[
+                    0].strip().split(' / ')
+            location = location_address[0]
+            if len(location_address) == 1:
+                address = '-'
+            else:
+                address = location_address[1]
+    else:
+        print('locations no')
+
+    return location, address
 
 
 def kktix_get_performance_list(page, performance_datetimes_str_list):
@@ -1704,7 +1725,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                           "min_price=&page=9"
                           "&search=&start_at=")
 
-                print('kktix start!')
+                print(f'{website} start!')
 
                 ''''''
 
@@ -1721,7 +1742,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                         if last_finished_selling_index != len(type_selling) - 1:
                             print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
                             for i in range(last_finished_selling_index + 1, len(type_selling)):
-                                print(f'kktix selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
+                                print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
                                 # print(f'selling {page_index}-{i}')
                                 # 演唱會頁面
                                 type_selling[i].click()
@@ -1822,7 +1843,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'pdt': performance_datetimes_str_list,
                                                 'loc': [location],
                                                 'int': inner_text,
-                                                'web': 'kktix',
+                                                'web': f'{website}',
                                                 'url': page.url
                                             }
 
@@ -1862,7 +1883,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                         type_view = page.query_selector_all('li.type-view')
                         print(f'\n\nview start from {page_index}-{last_finished_view_index + 2}\n\n')
                         for i in range(last_finished_view_index + 1, len(type_view)):
-                            print(f'kktix view progress - page {page_index}, {i + 1}/{len(type_view)}')
+                            print(f'{website} view progress - page {page_index}, {i + 1}/{len(type_view)}')
                             # print(f'view {page_index}-{i}')
                             # 演唱會頁面
                             type_view[i].click()
@@ -1958,7 +1979,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                                             'pdt': performance_datetimes_str_list,
                                             'loc': [location],
                                             'int': inner_text,
-                                            'web': 'kktix',
+                                            'web': f'{website}',
                                             'url': page.url
                                         }
 
@@ -2007,7 +2028,7 @@ def get_kktix_third(website, json_filename, txt_filename):
 
                     # 最後一頁
                     else:
-                        print('kktix finished')
+                        print(f'{website} finished')
 
                         # 程式確認沒有最後一頁後跳出while True的break
                         break
@@ -2018,7 +2039,7 @@ def get_kktix_third(website, json_filename, txt_filename):
             except Exception as e:
                 # 錯誤
                 page.close()
-                print(e, 'kktix restart')
+                print(e, f'{website} restart')
                 if [current_page_index, last_finished_selling_index, last_finished_view_index] not in fail_indices:
                     fail_indices.append([current_page_index, last_finished_selling_index, last_finished_view_index])
                     print('第一次失敗')
@@ -2595,16 +2616,16 @@ def move_concert_files(concert_json_filenames):
 
 def get_latest_concert_info():
     concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
-    # reset_failure_log()
-    # threads_start()
-    # threads_join()
-    # merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
-    # move_concert_files(concert_json_filenames)
+    reset_failure_log()
+    threads_start()
+    threads_join()
+    merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
+    move_concert_files(concert_json_filenames)
     # each_concert_number() # 驗算用
-    # delete_files()
-    # zh_en()
-    # new_concerts()
-    # json_new_to_old()
+    delete_files()
+    zh_en()
+    new_concerts()
+    json_new_to_old()
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -2616,3 +2637,29 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
 thread_kktix = threading.Thread(target=get_kktix, args=('KKITX', 'kktix.json', "kktix_temp.txt"))
 
 get_latest_concert_info()
+
+
+# 沒有地址
+# era
+# indievox
+# live nation
+
+# 有地址
+# kktix
+# ticketplus
+
+# def get_kktix_first1(website, json_filename, txt_filename):
+#     # global integrate_webs
+#     with sync_playwright() as p:
+#         browser = p.chromium.launch(headless=False)
+#         context = browser.new_context()
+#         page = context.new_page()
+#
+#         page.goto("https://kktix.com/events/452dac5f-copy-1/registrations/new")
+#
+#         location = ''
+#         address = ''
+#         # 地點 str
+#         location, address = kktix_get_location_str1(page, location, address)
+#         print(location)
+#         print(address)

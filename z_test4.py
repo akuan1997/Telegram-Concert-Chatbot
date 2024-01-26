@@ -1,14 +1,9 @@
 import json
-from playwright.sync_api import sync_playwright, Playwright
-from playwright.sync_api import expect, Page
-from fuzzywuzzy import process, fuzz
+
+from fuzzywuzzy import process
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
-
-en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Miaoli",
-             "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
-             "Lienchiang"]
 
 
 def load_table_from_txt(filename):
@@ -18,12 +13,6 @@ def load_table_from_txt(filename):
             key, value = line.strip().split(':')
             zh_table[key] = value
     return zh_table
-
-
-# def write_table_to_txt(filename, data):
-#     with open(filename, 'w', encoding='utf-8') as file:
-#         for key, value in data.items():
-#             file.write(f"{key}:{value}\n")
 
 
 def stadium_city(stadium, lang, table):
@@ -40,16 +29,15 @@ def stadium_city(stadium, lang, table):
         # 沒超過代表找不到
         else:
             return ''
-    # 英文 之後再加入
 
 
-def find_stadium_city():
+def add_stadium_city(json_filename, zh_table):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
 
-        with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+        with open(json_filename, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
         for i in range(len(data)):
@@ -72,7 +60,7 @@ def find_stadium_city():
                 if city == '':
                     print('table!')
                     # 使用table對照表尋找看看
-                    city = stadium_city(data[i]['loc'][0], 'zh', load_table_from_txt('zh_stadium_table1.txt'))
+                    city = stadium_city(data[i]['loc'][0], 'zh', load_table_from_txt(zh_table))
 
                 # playwright (如果連table裡面也沒有找到)
                 if city == '':
@@ -119,16 +107,16 @@ def find_stadium_city():
                             if city == '':
                                 print('真的找不到')
                             else:
-                                with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
+                                with open(zh_table, 'a', encoding='utf-8') as f:
                                     f.write(f"{data[i]['loc'][0].lower().replace(' ', '')}:{city}\n")
 
                         # 有找到 把配對寫進table裡面
                         else:
                             if page.locator(".DoxwDb .PZPZlf").is_visible():
                                 print(page.locator(".DoxwDb .PZPZlf").inner_text())
-                                with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
+                                with open(zh_table, 'a', encoding='utf-8') as f:
                                     f.write(f"{page.locator('.DoxwDb .PZPZlf').inner_text()}:{city}\n")
-                            with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
+                            with open(zh_table, 'a', encoding='utf-8') as f:
                                 f.write(f"{data[i]['loc'][0].lower().replace(' ', '')}:{city}\n")
 
                     # 搜尋結果有找到城市 把這個配對寫進table裡面
@@ -137,55 +125,8 @@ def find_stadium_city():
                         print(f"寫入新資料! {data[i]['loc'][0]} & {city}")
                         data[i]['loc'][0] = data[i]['loc'][0].lower()
                         data[i]['loc'][0] = data[i]['loc'][0].replace(' ', '')
-                        with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
+                        with open(zh_table, 'a', encoding='utf-8') as f:
                             f.write(f"{data[i]['loc'][0]}:{city}\n")
 
                 print(city)
                 print('---')
-
-
-find_stadium_city()
-
-# with sync_playwright() as p:
-#     browser = p.chromium.launch(headless=False)
-#     context = browser.new_context()
-#     page = context.new_page()
-#
-#     page.goto("https://www.google.com/search?q=%E8%80%81%E7%AA%96%E5%AE%A4+Cellarsroom&sca_esv=601452934&rlz=1C1JJTC_zh-TWTW1052TW1052&sxsrf=ACQVn0_J99rr9tLp8vrHd-Nc3Q8LKV2cUQ%3A1706211001924&ei=ubayZYWJONX81e8P7NeA4A0&ved=0ahUKEwjFybmlo_mDAxVVfvUHHewrANwQ4dUDCBA&uact=5&oq=%E8%80%81%E7%AA%96%E5%AE%A4+Cellarsroom&gs_lp=Egxnd3Mtd2l6LXNlcnAiFeiAgeeqluWupCBDZWxsYXJzcm9vbTIEECMYJ0iAA1CVAViVAXABeAGQAQCYATKgATKqAQExuAEDyAEA-AEC-AEBwgIKEAAYRxjWBBiwA-IDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp")
-#
-#     kuans = page.query_selector_all(".MjjYud")
-#     for zh_city in zh_cities:
-#         if zh_city in kuans[0].inner_text():
-#             city = zh_city
-#             break
-# print(page.locator(".MjjYud").inner_text())
-
-#     for kuan in kuans:
-#         city = ''
-#         page.goto("https://www.google.com/")
-#         page.locator("#APjFqb").fill(kuan)
-#         page.wait_for_timeout(1500)
-#         page.keyboard.press('Enter')
-#         page.wait_for_timeout(1500)
-#         print('stadium', kuan)
-#
-#         address_phone = page.query_selector_all(".zloOqf.PZPZlf .LrzXr")
-#         for i in range(len(address_phone)):
-#             for zh_city in zh_cities:
-#                 if zh_city in address_phone[i].inner_text():
-#                     city = zh_city
-#                     break
-#
-#         print('city', city)
-#         if city == '':
-#             print('沒有找到')
-#             # do something
-#         else:
-#             if page.locator(".DoxwDb .PZPZlf").is_visible():
-#                 print(page.locator(".DoxwDb .PZPZlf").inner_text())
-#                 with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
-#                     f.write(f"{page.locator('.DoxwDb .PZPZlf').inner_text()}:{city}\n")
-#             with open('zh_stadium_table1.txt', 'a', encoding='utf-8') as f:
-#                 f.write(f"{kuan}:{city}\n")
-#
-#         print('---')
