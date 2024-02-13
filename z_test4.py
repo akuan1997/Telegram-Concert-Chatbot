@@ -1,5 +1,6 @@
 import json
-
+from playwright.sync_api import sync_playwright, Playwright
+from playwright.sync_api import expect, Page
 from fuzzywuzzy import process
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "新竹", "苗栗", "彰化", "南投", "雲林",
@@ -11,8 +12,22 @@ def load_table_from_txt(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         for line in file:
             key, value = line.strip().split(':')
+            print(key, value)
             zh_table[key] = value
     return zh_table
+
+
+def load_table_from_txt1(filename):
+    zh_table = {}
+    with open(filename, 'r', encoding='utf-8') as file:
+        for line in file:
+            key, value = line.strip().split(':')
+            print(key, value)
+            zh_table[key] = value
+    return zh_table
+
+
+load_table_from_txt("zh_stadium_table.txt")
 
 
 def stadium_city(stadium, lang, table):

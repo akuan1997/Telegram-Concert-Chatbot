@@ -77,6 +77,8 @@ def delete_blank_sdt(website, json_name):
 
 
 def delete_past_ticketing_time(website, json_filename):
+    # live nation, indievox, ticketplus
+    # era, kktix 補上
     print(f'準備刪除{website}中sdt為過去的時間')
     # 刪除時間已經過去的售票時間
     with open(json_filename, 'r', encoding='utf-8') as f:
@@ -759,7 +761,7 @@ def get_ticketplus(website, json_filename, txt_filename):
 
                         # 第幾個位置是時間?
                         time_index = -1
-                        for k in range(len(column_text)):
+                        for k in range(1, len(column_text)):
                             if ':' in column_text[k] or '：' in column_text[k]:
                                 time_index = k
                                 break
@@ -2105,10 +2107,13 @@ def get_kktix(website, json_filename, txt_filename):
     thread_second.join()
     thread_third.join()
 
-    print('--- Scraping finished!! ---')
+    print('--- 3 KKTIX Scraping Threads Finished!! ---')
 
     kktix_json_files = ['kktix1.json', 'kktix2.json', 'kktix3.json']
     merge_json_data(kktix_json_files, json_filename)
+
+    delete_blank_sdt(website, json_filename)
+    delete_past_ticketing_time(website, json_filename)
 
     for json_filename in kktix_json_files:
         os.remove(json_filename)
@@ -2384,7 +2389,7 @@ def new_concerts():
             new_concert_list.append(new_concert)
 
     # 打印结果
-    print("新的演唱会信息:")
+    print("New Concert information:")
     for concert in new_concert_list:
         print(concert['tit'])
 
@@ -2521,7 +2526,6 @@ def delete_files():
 
     with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
         json.dump(new_data, f, indent=4, ensure_ascii=False)
-    print('Successfully Deleted!')
 
 
 def json_new_to_old():
@@ -2577,50 +2581,6 @@ def each_concert_number():  # 驗算用
     with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
         concert_data = json.load(f)
     print(f'concert data\t{len(concert_data)}')
-
-
-def zh_en():
-    city_mapping = dict(zip(zh_cities, en_cities))
-    # Copying the original file to a new file for translated content
-    shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
-
-    translator = Translator()
-
-    # Open the copied file for reading and translation
-    with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    for i in range(len(data)):
-        print(f'current progress {i + 1}/{len(data)}')
-
-        # Check if 'int' field is not None or empty
-        if data[i]['int']:
-            try:
-                # 使用正則表達式移除非中文字符
-                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
-                # Translate the text and update the 'int' field
-                translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
-                data[i]['int'] = translated_text
-                print('Successful')
-            except Exception as e:
-                print(f'Error translating: {e}')
-                print('Skipping this entry')
-        else:
-            print('None or empty, skip')
-
-        if 'cit' in data[i]:
-            if data[i]['cit'] in city_mapping:
-                data[i]['cit'] = city_mapping[data[i]['cit']]
-                print(data[i]['cit'])
-
-                # with open('concert_test.json', 'w', encoding='utf-8') as f:
-                #     json.dump(data, f, indent=4, ensure_ascii=False)
-
-        print('------------------------------------')
-
-    # Write the translated data back to the file
-    with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 def reset_failure_log():
@@ -2775,18 +2735,70 @@ def get_city_from_stadium():
                 print('---')
 
 
+def zh_to_en():
+    pass
+
+
+def zh_en():
+    city_mapping = dict(zip(zh_cities, en_cities))
+    # Copying the original file to a new file for translated content
+    shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
+
+    translator = Translator()
+
+    # Open the copied file for reading and translation
+    with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    for i in range(len(data)):
+        print(f'current progress {i + 1}/{len(data)}')
+
+        # Check if 'int' field is not None or empty
+        if data[i]['int']:
+            try:
+                # 使用正則表達式移除非中文字符
+                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
+                # Translate the text and update the 'int' field
+                translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
+                data[i]['int'] = translated_text
+                print('Successful')
+            except Exception as e:
+                print(f'Error translating: {e}')
+                print('Skipping this entry')
+        else:
+            print('None or empty, skip')
+
+        if 'cit' in data[i]:
+            if data[i]['cit'] in city_mapping:
+                data[i]['cit'] = city_mapping[data[i]['cit']]
+                print(data[i]['cit'])
+
+                # with open('concert_test.json', 'w', encoding='utf-8') as f:
+                #     json.dump(data, f, indent=4, ensure_ascii=False)
+
+        print('------------------------------------')
+
+    # Write the translated data back to the file
+    with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+
 def get_latest_concert_info():
     reset_failure_log()
     threads_start()
     threads_join()
-    print('All Threads Finished!')
+    print('--- All Scraping Threads Finished! ---')
     merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
+    print('--- Merge okay! ---')
     move_concert_files(concert_json_filenames)
+    print('--- Move okay! ---')
     delete_files()
+    print('--- Delete okay! ---')
     get_city_from_stadium()
-    print('zh okay!')
-    zh_en()  # 把中文的內文翻譯成英文並寫入en.json
+    print('--- Get City okay! ---')
+    print(f'\n------------------\nzh okay!\n------------------\n')
     new_concerts()
+    zh_en()  # 把中文的內文翻譯成英文並寫入en.json
     json_new_to_old()
 
 
@@ -2796,9 +2808,9 @@ thread_livenation = threading.Thread(target=get_livenation,
 thread_indievox = threading.Thread(target=get_indievox, args=('Indievox', 'indievox.json', 'indievox_temp.txt'))
 threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
-thread_kktix = threading.Thread(target=get_kktix, args=('KKITX', 'kktix.json', "kktix_temp.txt"))
+thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
-get_latest_concert_info()
+# get_latest_concert_info()
 
 # 沒有地址
 # era
@@ -2824,3 +2836,4 @@ get_latest_concert_info()
 #         location, address = kktix_get_location_str1(page, location, address)
 #         print(location)
 #         print(address)
+get_kktix_first()

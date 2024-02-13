@@ -2,27 +2,80 @@ from rank_bm25 import BM25Okapi
 import jieba
 import numpy as np
 import json
+import re
 
-jieba.load_userdict('user_defined_lastfm.txt')
+jieba.load_userdict('user_dict.txt')
 
-user_input = "音樂祭"
+user_input = "zepp new taipei"
+
+
+def jieba_english_tokenize(words):
+    pattern = r'^[a-zA-Z0-9]+$'
+    blank_space_indexes = []
+    for i in range(len(words) - 1):
+        if words[i] == ' ' and re.match(pattern, words[i - 1]) and re.match(pattern, words[i + 1]):
+            blank_space_indexes.append(i)
+    # print('空格有這些', blank_space_indexes)
+    # --- #
+    processed_indexes = []
+    english_words = []
+    for index in blank_space_indexes:
+        if index not in processed_indexes:
+            english_word = ''
+            if index + 2 not in blank_space_indexes:
+                # 'post malone', 'taylor swift' 直接處理
+                for i in range(index - 1, index + 2):
+                    english_word = english_word + words[i]
+                    processed_indexes.append(i)
+            else:
+                # 'austin richard post', 'show me the money'
+                start_index = index
+                while index + 2 in blank_space_indexes:
+                    index = index + 2
+                end_index = index
+                for i in range(start_index - 1, end_index + 2):
+                    english_word = english_word + words[i]
+                    processed_indexes.append(i)
+            # print(english_word)
+            english_words.append(english_word)
+            # print(list(set(processed_indexes)))
+            # print('---')
+
+    words = [words[i] for i in range(len(words)) if i not in processed_indexes]
+    for english_word in english_words:
+        words.append(english_word)
+
+    return words
+
 
 # 使用jieba進行中文分詞
 def chinese_tokenizer(text):
-    return jieba.lcut(text)
+    return jieba_english_tokenize(jieba.lcut(text))
+
 
 # 你的演唱會資料
-with open('../0_useless/concert_data.json', 'r', encoding='utf-8') as file:
+with open('concert_data_old_zh.json', 'r', encoding='utf-8') as file:
     concert_data = json.load(file)
 
-# 使用'tit'和'int'欄位，並為'tit'增加權重
-documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in concert_data]
+documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in concert_data]  # ori
+for i, document in enumerate(documents):
+    for j, element in enumerate(document):
+        document[j] = document[j].lower()
+
+# documents = [chinese_tokenizer(concert["tit"] + " " + concert['cit'] + " " + concert["int"]) for concert in concert_data] # test
+# documents = [chinese_tokenizer(concert['tit'] + " " + concert['cit']) for concert in concert_data] # test
 
 # 創建BM25模型
 bm25 = BM25Okapi(documents)
 
+# # 測試
+# k1 = 1.5
+# b = 0.5
+# bm25 = BM25Okapi(documents, k1=k1, b=b)
+
 # 處理輸入
 user_tokens = chinese_tokenizer(user_input)
+user_tokens = [token.lower() for token in user_tokens]
 
 # 計算BM25分數
 scores = bm25.get_scores(user_tokens)
@@ -46,3 +99,6 @@ if top_concerts:
                 print(concert_data[i]['url'])
 else:
     print("沒有找到匹配的演唱會。")
+
+zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
+             "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
