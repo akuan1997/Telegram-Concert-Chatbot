@@ -7,6 +7,7 @@ import re
 import sys
 from datetime import datetime, time
 from googletrans import Translator
+
 from get_data_from_text import *
 from fuzzywuzzy import process
 
@@ -4375,19 +4376,32 @@ def zh_en():
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
+def json_in_order():
+    json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    sorted_data = sorted(data, key=lambda x: x['pdt'])
+
+    with open(json_file, 'w', encoding='utf-8') as f:
+        json.dump(sorted_data, f, ensure_ascii=False, indent=4)
+
+
 def get_latest_concert_info():
     reset_failure_log()
     threads_start()
     threads_join()
     print('--- All Scraping Threads Finished! ---')
     merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
-    print('--- Merge okay! ---')
+    print('--- Merge Okay! ---')
     move_concert_files(concert_json_filenames)
-    print('--- Move okay! ---')
+    print('--- Move Okay! ---')
     delete_files()
-    print('--- Delete okay! ---')
+    print('--- Delete Okay! ---')
     get_city_from_stadium()
-    print('--- Get City okay! ---')
+    print('--- Get City Okay! ---')
+    json_in_order()
+    print('--- Json In Order! ---')
     print(f'\n------------------\nzh okay!\n------------------\n')
     new_concerts()
     zh_en()  # 把中文的內文翻譯成英文並寫入en.json

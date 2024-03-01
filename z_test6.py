@@ -1,660 +1,210 @@
-# # type-selling
-# type_selling = page.query_selector_all('li.type-selling')
-# if last_finished_selling_index != len(type_selling) - 1:
-#     print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
-#     for i in range(last_finished_selling_index + 1, len(type_selling)):
-#         print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
-#         # print(f'selling {page_index}-{i}')
-#         # 演唱會頁面
-#         type_selling[i].click()
-#         print('concert page', page.url)
-#         page.wait_for_timeout(500)
-#
-#         ''''''
-#
-#         hk = False
-#         title = ''
-#         sell_datetimes_str_list = []
-#         prices = []
-#         performance_datetimes_str_list = []
-#         location = ''
-#         if page.locator("table > thead > tr > th.name").is_visible():
-#             # 確認此頁面是否為香港活動
-#             # 1. 迴圈 票種、販售時間、售價 物件個數
-#             for j in range(
-#                     len(page.query_selector_all(
-#                         ".table-wrapper > table > tbody > tr"))):
-#                 # 貨幣符號
-#                 # 如果有找到貨幣符號
-#                 if page.locator(".table-wrapper > table > tbody > tr").nth(
-#                         j).locator(".price .price > span").nth(0).is_visible():
-#                     # 取得貨幣符號
-#                     currency = page.locator(".table-wrapper > table > tbody > tr").nth(j).locator(".price .price > span").nth(0).inner_text()
-#                     # 檢查是否為港幣
-#                     if 'hk' in currency.lower():
-#                         hk = True
-#                         break
-#                 # 找不到貨幣符號
-#                 else:
-#                     currency = ''
-#
-#                 ''''''
-#
-#                 # 售票時間 list
-#                 sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                         sell_datetimes_str_list)
-#
-#                 ''''''
-#
-#                 # 票價 list
-#                 prices = kktix_get_prices_list(page, j, prices)
-#
-#                 ''''''
-#
-#                 # 內文
-#                 inner_text = page.locator(".description").inner_text()
-#
-#                 ''''''
-#
-#             if not hk:
-#                 # 進入購票頁面，獲得地點以及表演時間
-#                 page.locator(".outer-wrapper .tickets .btn-point").click()
-#                 print('buy ticket page', page.url)
-#                 page.wait_for_timeout(1500)
-#                 page.wait_for_load_state('load')
-#
-#                 ''''''
-#
-#                 # 標題 str
-#                 title = kktix_get_title_str(page, title)
-#
-#                 ''''''
-#
-#                 # 表演時間 list
-#                 performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                             performance_datetimes_str_list)
-#
-#                 ''''''
-#
-#                 # 地點 str
-#                 location = kktix_get_location_str(page, location)
-#
-#                 ''''''
-#
-#                 page.go_back()
-#
-#                 if title or performance_datetimes_str_list or location:
-#                     print('title', title)  # str
-#                     print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                     print('prices', prices)  # list
-#                     print('performance_datetimes_str_list', performance_datetimes_str_list)  # list
-#                     print('location', location)  # str
-#
-#                     ''''''
-#
-#                     # 新的一筆資料
-#                     new_data = {
-#                         'tit': title,
-#                         'sdt': sell_datetimes_str_list,
-#                         'prc': prices,
-#                         'pdt': performance_datetimes_str_list,
-#                         'loc': [location],
-#                         'cit': "",
-#                         'int': inner_text,
-#                         'web': f'{website}',
-#                         'url': page.url
-#                     }
-#
-#                     ''''''
-#
-#                     print('\n--- write new data ---\n')
-#
-#                     write_data_json(json_filename, new_data)
-#
-#                     last_finished_selling_index = i
-#                     print(f'finished {page_index}-{last_finished_selling_index+1}')
-#                     print('\n----------------------\n')
-#                 else:
-#                     last_finished_selling_index = i
-#                     print(f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
-#             else:
-#                 print('hk activity, skip')
-#                 last_finished_selling_index = i
-#                 print(f'finished {page_index}-{last_finished_selling_index+1}')
-#                 print('\n----------------------\n')
-#
-#         else:
-#             print('integrate webpage, skip')
-#             last_finished_selling_index = i
-#             print(f'finished {page_index}-{last_finished_selling_index+1}')
-#             print('\n----------------------\n')
-#             # integrate_webs.append(page.url)
-#
-#         ''''''
-#
-#         page.go_back()  # main page
-#         type_selling = page.query_selector_all('li.type-selling')
-# else:
-#     print('CSS: "type-selling" of this page is already finished!')
-def get_kktix_first1(website, json_filename, txt_filename):
-    # global integrate_webs
-    with sync_playwright() as p:
-
-        with open(json_filename, 'w', encoding='utf-8') as f:
-            f.write('')
-
-        # 待會會從 last_finished_index + 1開始
-        last_finished_selling_index = -1
-        last_finished_view_index = -1
-        last_finished_counter_index = -1
-        # 完成的演唱會頁面
-        completed_pages = []
-        # 發生錯誤的演唱會活動
-        current_page_index = -1
-        fail_indices = []
-        # 統整的網站
-
-        while True:
-            try:
-                browser = p.chromium.launch(headless=False)
-                context = browser.new_context()
-                page = context.new_page()
-                # page.set_default_timeout(60000)
-
-                ''''''
-
-                page.goto("https://kktix.com/events?end_at=&"
-                          "event_tag_ids_in=1&max_price=&"
-                          "min_price=&page=1"
-                          "&search=&start_at=")
-
-                print(f'{website} start!')
-
-                ''''''
-
-                page_index = 1
-                current_page_index = page_index
-
-                while True:
-                    if page_index in completed_pages:
-                        print(f'Error occurred, but page {page_index} is already finished!')
-
-                    else:
-                        # type-selling
-                        type_selling = page.query_selector_all('li.type-selling')
-                        if last_finished_selling_index != len(type_selling) - 1:
-                            print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
-                            for i in range(last_finished_selling_index + 1, len(type_selling)):
-                                print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
-                                # print(f'selling {page_index}-{i}')
-                                # 演唱會頁面
-                                type_selling[i].click()
-                                print('concert page', page.url)
-                                page.wait_for_timeout(500)
-
-                                ''''''
-
-                                hk = False
-                                title = ''
-                                sell_datetimes_str_list = []
-                                prices = []
-                                performance_datetimes_str_list = []
-                                location = ''
-                                if page.locator("table > thead > tr > th.name").is_visible():
-                                    # 確認此頁面是否為香港活動
-                                    # 1. 迴圈 票種、販售時間、售價 物件個數
-                                    for j in range(
-                                            len(page.query_selector_all(
-                                                ".table-wrapper > table > tbody > tr"))):
-                                        # 貨幣符號
-                                        # 如果有找到貨幣符號
-                                        if page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).is_visible():
-                                            # 取得貨幣符號
-                                            currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).inner_text()
-                                            # 檢查是否為港幣
-                                            if 'hk' in currency.lower():
-                                                hk = True
-                                                break
-                                        # 找不到貨幣符號
-                                        else:
-                                            currency = ''
-
-                                        ''''''
-
-                                        # 售票時間 list
-                                        sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-                                                                                                sell_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 票價 list
-                                        prices = kktix_get_prices_list(page, j, prices)
-
-                                        ''''''
-
-                                        # 內文
-                                        inner_text = page.locator(".description").inner_text()
-
-                                        ''''''
-
-                                    if not hk:
-                                        # 進入購票頁面，獲得地點以及表演時間
-                                        page.locator(".outer-wrapper .tickets .btn-point").click()
-                                        print('buy ticket page', page.url)
-                                        page.wait_for_timeout(1500)
-                                        page.wait_for_load_state('load')
-
-                                        ''''''
-
-                                        # 標題 str
-                                        title = kktix_get_title_str(page, title)
-
-                                        ''''''
-
-                                        # 表演時間 list
-                                        performance_datetimes_str_list = kktix_get_performance_list(page,
-                                                                                                    performance_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 地點 str
-                                        location = kktix_get_location_str(page, location)
-
-                                        ''''''
-
-                                        page.go_back()
-
-                                        if title or performance_datetimes_str_list or location:
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url
-                                            }
-
-                                            ''''''
-
-                                            print('\n--- write new data ---\n')
-
-                                            write_data_json(json_filename, new_data)
-
-                                            last_finished_selling_index = i
-                                            print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            last_finished_selling_index = i
-                                            print(f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
-                                    else:
-                                        print('hk activity, skip')
-                                        last_finished_selling_index = i
-                                        print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                        print('\n----------------------\n')
-
-                                else:
-                                    print('integrate webpage, skip')
-                                    last_finished_selling_index = i
-                                    print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                    print('\n----------------------\n')
-                                    # integrate_webs.append(page.url)
-
-                                ''''''
-
-                                page.go_back()  # main page
-                                type_selling = page.query_selector_all('li.type-selling')
-                        else:
-                            print('CSS: "type-selling" of this page is already finished!')
-
-                        # type-view
-                        type_view = page.query_selector_all('li.type-view')
-                        if last_finished_view_index != len(type_view) - 1:
-                            print(f'\n\nview start from {page_index}-{last_finished_view_index + 2}\n\n')
-                            for i in range(last_finished_view_index + 1, len(type_view)):
-                                print(f'{website} view progress - page {page_index}, {i + 1}/{len(type_view)}')
-                                # print(f'view {page_index}-{i}')
-                                # 演唱會頁面
-                                type_view[i].click()
-                                print('concert page', page.url)
-                                page.wait_for_timeout(500)
-
-                                ''''''
-
-                                hk = False
-                                title = ''
-                                sell_datetimes_str_list = []
-                                prices = []
-                                performance_datetimes_str_list = []
-                                location = ''
-                                if page.locator("table > thead > tr > th.name").is_visible():
-                                    # 確認此頁面是否為香港活動
-                                    # 1. 迴圈 票種、販售時間、售價 物件個數
-                                    for j in range(
-                                            len(page.query_selector_all(
-                                                ".table-wrapper > table > tbody > tr"))):
-                                        # 貨幣符號
-                                        # 如果有找到貨幣符號
-                                        if page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).is_visible():
-                                            # 取得貨幣符號
-                                            currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).inner_text()
-                                            # 檢查是否為港幣
-                                            if 'hk' in currency.lower():
-                                                hk = True
-                                                break
-                                        # 找不到貨幣符號
-                                        else:
-                                            currency = ''
-
-                                        ''''''
-
-                                        # 售票時間 list
-                                        sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-                                                                                                sell_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 票價 list
-                                        prices = kktix_get_prices_list(page, j, prices)
-
-                                        ''''''
-
-                                        # 內文
-                                        inner_text = page.locator(".description").inner_text()
-
-                                        ''''''
-
-                                    if not hk:
-                                        # 進入購票頁面，獲得地點以及表演時間
-                                        page.locator(".outer-wrapper .tickets .btn-point").click()
-                                        print('buy ticket page', page.url)
-                                        page.wait_for_timeout(1500)
-                                        page.wait_for_load_state('load')
-
-                                        ''''''
-
-                                        # 標題 str
-                                        title = kktix_get_title_str(page, title)
-
-                                        ''''''
-
-                                        # 表演時間 list
-                                        performance_datetimes_str_list = kktix_get_performance_list(page,
-                                                                                                    performance_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 地點 str
-                                        location = kktix_get_location_str(page, location)
-
-                                        ''''''
-
-                                        page.go_back()
-
-                                        if title or performance_datetimes_str_list or location:
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url
-                                            }
-
-                                            ''''''
-
-                                            print('\n--- write new data ---\n')
-
-                                            write_data_json(json_filename, new_data)
-
-                                            last_finished_view_index = i
-                                            print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                            print('\n----------------------\n')
-                                        else:
-                                            last_finished_view_index = i
-                                            print(f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
-                                    else:
-                                        print('hk activity, skip')
-                                        last_finished_view_index = i
-                                        print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                        print('\n----------------------\n')
-
-                                else:
-                                    print('integrate webpage, skip')
-                                    last_finished_view_index = i
-                                    print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                    print('\n----------------------\n')
-                                    # integrate_webs.append(page.url)
-
-                                ''''''
-
-                                page.go_back()  # main page
-                                type_view = page.query_selector_all('li.type-view')
-                        else:
-                            print('CSS: "type-view" of this page is already finished!')
-
-                        # type-counter
-                        type_counter = page.query_selector_all('li.type-counter')
-                        if last_finished_counter_index != len(type_counter) - 1:
-                            print(f'\n\ncounter start from {page_index}-{last_finished_counter_index + 2}\n\n')
-                            for i in range(last_finished_counter_index + 1, len(type_counter)):
-                                print(f'{website} counter progress - page {page_index}, {i + 1}/{len(type_counter)}')
-                                # print(f'counter {page_index}-{i}')
-                                # 演唱會頁面
-                                type_counter[i].click()
-                                print('concert page', page.url)
-                                page.wait_for_timeout(500)
-
-                                ''''''
-
-                                hk = False
-                                title = ''
-                                sell_datetimes_str_list = []
-                                prices = []
-                                performance_datetimes_str_list = []
-                                location = ''
-                                if page.locator("table > thead > tr > th.name").is_visible():
-                                    # 確認此頁面是否為香港活動
-                                    # 1. 迴圈 票種、販售時間、售價 物件個數
-                                    for j in range(
-                                            len(page.query_selector_all(
-                                                ".table-wrapper > table > tbody > tr"))):
-                                        # 貨幣符號
-                                        # 如果有找到貨幣符號
-                                        if page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).is_visible():
-                                            # 取得貨幣符號
-                                            currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-                                                j).locator(".price .price > span").nth(0).inner_text()
-                                            # 檢查是否為港幣
-                                            if 'hk' in currency.lower():
-                                                hk = True
-                                                break
-                                        # 找不到貨幣符號
-                                        else:
-                                            currency = ''
-
-                                        ''''''
-
-                                        # 售票時間 list
-                                        sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-                                                                                                sell_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 票價 list
-                                        prices = kktix_get_prices_list(page, j, prices)
-
-                                        ''''''
-
-                                        # 內文
-                                        inner_text = page.locator(".description").inner_text()
-
-                                        ''''''
-
-                                    if not hk:
-                                        # 進入購票頁面，獲得地點以及表演時間
-                                        page.locator(".outer-wrapper .tickets .btn-point").click()
-                                        print('buy ticket page', page.url)
-                                        page.wait_for_timeout(1500)
-                                        page.wait_for_load_state('load')
-
-                                        ''''''
-
-                                        # 標題 str
-                                        title = kktix_get_title_str(page, title)
-
-                                        ''''''
-
-                                        # 表演時間 list
-                                        performance_datetimes_str_list = kktix_get_performance_list(page,
-                                                                                                    performance_datetimes_str_list)
-
-                                        ''''''
-
-                                        # 地點 str
-                                        location = kktix_get_location_str(page, location)
-
-                                        ''''''
-
-                                        page.go_back()
-
-                                        if title or performance_datetimes_str_list or location:
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url
-                                            }
-
-                                            ''''''
-
-                                            print('\n--- write new data ---\n')
-
-                                            write_data_json(json_filename, new_data)
-
-                                            last_finished_counter_index = i
-                                            print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            last_finished_counter_index = i
-                                            print(f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
-                                    else:
-                                        print('hk activity, skip')
-                                        last_finished_counter_index = i
-                                        print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                        print('\n----------------------\n')
-
-                                else:
-                                    print('integrate webpage, skip')
-                                    last_finished_counter_index = i
-                                    print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                    print('\n----------------------\n')
-                                    # integrate_webs.append(page.url)
-
-                                ''''''
-
-                                page.go_back()  # main page
-                                type_counter = page.query_selector_all('li.type-counter')
-                        else:
-                            print('CSS: "type-counter" of this page is already finished!')
-
-                        ''''''
-
-                        # 完成此頁
-                        pagination_div = page.query_selector(".pagination.pull-right")
-                        text = pagination_div.inner_text()
-                        print(f'\nFinished page {page_index}')
-                        completed_pages.append(page_index)
-                        last_finished_selling_index = -1
-                        last_finished_view_index = -1
-
-                    # 有下一頁
-                    if '›' in text:
-                        if int(page.locator(
-                                "body > div.wrapper > div.page-content > section.explore-container.container > div > div.pagination.pull-right > ul > li.active > a").inner_text()) > 3:
-                            break
-                        page.locator("div.pagination.pull-right li:last-child").click()
-                        page_index += 1
-                        current_page_index = page_index
-                        print(f'\nGo to page {page_index}\n')
-
-                    # 最後一頁
-                    else:
-                        print(f'{website} finished')
-
-                        # 程式確認沒有最後一頁後跳出while True的break
-                        break
-
-                # 確認全部執行完成，沒有發生錯誤的break
-                break
-
-            except Exception as e:
-                # 錯誤
-                page.close()
-                print(e, f'{website} restart')
-
-                if [current_page_index, last_finished_selling_index, last_finished_view_index] not in fail_indices:
-                    fail_indices.append([current_page_index, last_finished_selling_index, last_finished_view_index])
-                    print('第一次失敗')
+import asyncio
+import logging
+from typing import Text
+
+from rasa.core.agent import Agent
+from rasa.shared.utils.cli import print_info, print_success
+from rasa.shared.utils.io import json_to_string
+
+from fuzzywuzzy import fuzz
+import yaml
+import re
+
+
+def find_singer_name(user_input):
+    # print(user_input)
+    with open('data/singer.yml', 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+
+    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+    names_without_space = [name.replace(' ', '') for name in names]
+
+    # 匹配英文单词
+    english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+    # 将匹配到的英文单词拼接起来
+    english_part = ' '.join(english_words)
+
+    ''''''
+
+    # Post Malone
+    # print('round 1')
+    for name in names:
+        if name in english_part:
+            return user_input, True
+
+    ''''''
+
+    # post malone
+    # print('round 2')
+    for name in names:
+        if name.lower() in user_input.lower():
+            start_index = user_input.lower().find(name.lower())
+            end_index = start_index + len(name.lower()) - 1
+            user_input = user_input.replace(user_input[start_index:end_index + 1], name)
+            return user_input, True
+
+    ''''''
+
+    english_split = english_part.split(' ')
+
+    for i, name in enumerate(names_without_space):
+        for e_split in english_split:
+            score = fuzz.partial_ratio(e_split.lower(), name.lower())
+            if score >= 80:
+                # print('abc', score)
+                # print(e_split.lower(), name.lower())
+                if len(name) - 1 < len(e_split) < len(name) + 1:
+                    user_input = user_input.replace(e_split, names[i])
                 else:
-                    print('第二次失敗')
-                    print('跳過')
+                    pass
 
-                    if last_finished_view_index == -1:
-                        last_finished_selling_index += 1
-                    else:
-                        last_finished_view_index += 1
+    ''''''
 
-                    write_error(website, page.url, e)
+    max_score = -1
+    singer_name = None
 
-                # 重新啟動
-                continue
+    for name in names:
+        score = fuzz.partial_ratio(user_input.lower(), name.lower())
+        if score > max_score:
+            max_score = score
+            singer_name = name
 
-        # 完成
-        page.close()
+    if max_score > 60:
+        # 匹配英文单词
+        english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+        # 将匹配到的英文单词拼接起来
+        english_part = ' '.join(english_words)
+        # # print('English Part', english_part)
+        english_split = english_part.split(' ')
+        # # print('Singer', singer_name)
+        singer_split = singer_name.split(' ')
+        # # print(singer_split)
+        for s_split in singer_split:
+            for e_split in english_split:
+                score = fuzz.partial_ratio(s_split.lower(), e_split.lower())
+                if score > 80:
+                    # # print(s_split, e_split, score)
+                    user_input = user_input.replace(e_split, s_split)
+        return user_input, True
+    else:
+        return user_input, False
 
+#
+# def run_cmdline(model_path: Text) -> None:
+#     """Loops over CLI input, passing each message to a loaded NLU model."""
+#     agent = Agent.load(model_path)
+#
+#     print_success("NLU model loaded. Type a message and press enter to parse it.")
+#     while True:
+#         # print_success("Next message:")
+#         try:
+#             message = input().strip()
+#         except (EOFError, KeyboardInterrupt):
+#             print_info("Wrapping up command line chat...")
+#             break
+#
+#         result = asyncio.run(agent.parse_message(message))
+#
+#         '''
+#         輸入句子: 你好
+#         print(result['intent'])
+#         >> {'name': 'greet', 'confidence': 0.9999651908874512}
+#
+#         print(result['intent']['name'])
+#         >> greet
+#         '''
+#         # print(result['intent'])
+#         # print(json_to_string(result))
+#         print('---')
+#         print(f'message: {message}')
+#         print(f"intent: {result['intent']['name']}")
+#         print(f"score: {result['intent']['confidence']}")
+#         print('--')
+#         # print(result['entities'])
+#         if len(result['entities']) == 0:
+#             print('No Entities')
+#         else:
+#             for i in range(len(result['entities'])):
+#                 print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+#         print('--')
+#         # print(json_to_string(result))
+
+
+def run_cmdline1(model_path: Text, words) -> None:
+    """Loops over CLI input, passing each message to a loaded NLU model."""
+    agent = Agent.load(model_path)
+
+    print_success("NLU model loaded. Type a message and press enter to parse it.")
+    for word in words:
+        message, find_singer = find_singer_name(word)
+        print(f'ori msg: {message}')
+
+        result = asyncio.run(agent.parse_message(message))
+
+        '''
+        輸入句子: 你好
+        print(result['intent'])
+        >> {'name': 'greet', 'confidence': 0.9999651908874512}
+
+        print(result['intent']['name'])
+        >> greet 
+        '''
+
+        print(f'message: {message}')
+        print(f'find singer?', find_singer)
+        print(f"intent: {result['intent']['name']}")
+        print(f"score: {result['intent']['confidence']}")
+        if result['intent']['confidence'] > 0.6:
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print('--')
+        if len(result['entities']) == 0:
+            print('No Entities')
+        else:
+            for i in range(len(result['entities'])):
+                print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+        print('-----------------------------------------------')
+
+
+logger = logging.getLogger(__name__)
+
+words1 = [
+    'Post Malone',
+    'Post Malone 演唱會',
+    '演唱會 post malone',
+    'ive 演唱會',
+    '演唱會 IVE',
+    'newjeans',
+    'NewJeans 演唱會',
+    '演唱會 NewJeans',
+    'Le Sserafim',
+    'LE SSERAFIM 演唱會',
+    '台北 演唱會',
+    '桃園 下周',
+    '下個月 新北',
+    '請告訴我有關IVE演唱會的資訊',
+    '爵士音樂',
+    '爵士樂',
+    '請問這位歌手的演唱會將在哪個城市舉行？',
+    'IVE',
+    'stayc',
+    'aespa',
+    'wheein',
+    '如果我想知道這個週末在台北以外的城市有哪些饒舌演唱會，該怎麼查詢？',
+    '明天在台北的饒舌演唱會之外，後天在其他城市有類似活動嗎？',
+    'ziont',
+    '那麼後天呢？在台北或其他城市有類似的饒舌演唱會嗎？',
+    '鄧福如',
+    'postmalone',
+    'taylorswift'
+]
+words2 = [
+    '那麼下周呢',
+    '那台北呢',
+    '那下個月呢',
+    '如果是後天呢',
+]
+
+model_path = r'models\nlu-20240216-234555-uniform-calico.tar.gz'
+
+run_cmdline1(model_path, words1)
+# run_cmdline1(model_path, words2)

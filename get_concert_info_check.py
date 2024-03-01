@@ -1,7 +1,9 @@
 from datetime import datetime
 from example_read_json import read_json
 
-all = read_json('concert_data_old_zh.json')
+new_all = read_json('concert_data_new_zh.json')
+old_all = read_json('concert_data_old_zh.json')
+
 era = read_json('concert_json_files/era.json')
 indievox = read_json('concert_json_files/indievox.json')
 kktix = read_json('concert_json_files/kktix.json')
@@ -61,10 +63,12 @@ def check_all_prc():
     check_prc(ticketplus)
 
 
+def check_all_cit(data):
+    for i in range(len(data)):
+        print(data[i]['cit'], data[i]['loc'])
+
 # check_all_sdt()
-# check_all_pdt()
+check_all_pdt()
 # check_all_loc()
 # check_all_prc()
-print(len(kktix))
-for i in range(len(kktix)):
-    print(kktix[i]['tit'])
+# check_all_cit(old_all)

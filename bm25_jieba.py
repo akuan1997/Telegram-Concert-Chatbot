@@ -6,7 +6,7 @@ import re
 
 jieba.load_userdict('user_dict.txt')
 
-user_input = "zepp new taipei"
+user_input = "eric nam"
 
 
 def jieba_english_tokenize(words):
