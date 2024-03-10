@@ -3,7 +3,8 @@
 搖滾音樂
 嘻哈音樂
 古典音樂
-
+說唱
+饒舌
 爵士音樂
 金屬音樂
 拉丁音樂
@@ -15,3 +16,4 @@ R&B
 Eric Nam
 tarlor swift
 (G)I-DLE
+LUCY

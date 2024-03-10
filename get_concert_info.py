@@ -310,8 +310,14 @@ def get_livenation(website, json_filename, txt_filename):
                     events[i].click()
 
                     # 下載內文
-                    inner_text = page.locator(
-                        "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div").inner_text()
+                    # inner_text = page.locator(
+                    #     "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div").inner_text()
+                    inner_text = ''
+                    inner_texts = page.query_selector_all(
+                        "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div > p")
+                    for j in range(len(inner_texts)):
+                        inner_text += inner_texts[j].inner_text()
+
                     with open(txt_filename, 'w', encoding='utf-8') as f:
                         f.write(inner_text)
 
@@ -2101,6 +2107,7 @@ def kktix_get_performance_list(page, performance_datetimes_str_list):
 #         page.close()
 def get_kktix_first(website, json_filename, txt_filename):
     # global integrate_webs
+    # page 1, 2, 3, 4
     with sync_playwright() as p:
 
         with open(json_filename, 'w', encoding='utf-8') as f:
@@ -2628,6 +2635,7 @@ def get_kktix_first(website, json_filename, txt_filename):
 
 def get_kktix_second(website, json_filename, txt_filename):
     # global integrate_webs
+    # page 5, 6, 7, 8
     with sync_playwright() as p:
 
         with open(json_filename, 'w', encoding='utf-8') as f:
@@ -3154,6 +3162,7 @@ def get_kktix_second(website, json_filename, txt_filename):
 
 def get_kktix_third(website, json_filename, txt_filename):
     # global integrate_webs
+    # page 9, 10, 11 ...
     with sync_playwright() as p:
 
         with open(json_filename, 'w', encoding='utf-8') as f:
@@ -3710,6 +3719,8 @@ def get_kktix(website, json_filename, txt_filename):
 
     for json_filename in kktix_json_files:
         os.remove(json_filename)
+
+    ''''''
 
     # with sync_playwright() as p:
     #     print('integrated_webs =', integrate_webs)

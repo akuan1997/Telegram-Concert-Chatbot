@@ -6,8 +6,6 @@ import re
 
 jieba.load_userdict('user_dict.txt')
 
-user_input = "eric nam"
-
 
 def jieba_english_tokenize(words):
     pattern = r'^[a-zA-Z0-9]+$'
@@ -53,52 +51,126 @@ def chinese_tokenizer(text):
     return jieba_english_tokenize(jieba.lcut(text))
 
 
-# 你的演唱會資料
-with open('concert_data_old_zh.json', 'r', encoding='utf-8') as file:
-    concert_data = json.load(file)
+# # 你的演唱會資料
+# with open('concert_data_old_zh.json', 'r', encoding='utf-8') as file:
+#     concert_data = json.load(file)
+#
+# documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in concert_data]  # ori
+# for i, document in enumerate(documents):
+#     for j, element in enumerate(document):
+#         document[j] = document[j].lower()
+#
+# # documents = [chinese_tokenizer(concert["tit"] + " " + concert['cit'] + " " + concert["int"]) for concert in concert_data] # test
+# # documents = [chinese_tokenizer(concert['tit'] + " " + concert['cit']) for concert in concert_data] # test
+#
+# # 創建BM25模型
+# bm25 = BM25Okapi(documents)
+#
+# # # 測試
+# # k1 = 1.5
+# # b = 0.5
+# # bm25 = BM25Okapi(documents, k1=k1, b=b)
+#
+# # 處理輸入
+# user_tokens = chinese_tokenizer(user_input)
+# user_tokens = [token.lower() for token in user_tokens]
+#
+# # 計算BM25分數
+# scores = bm25.get_scores(user_tokens)
+#
+# # 找到最相似的幾個演唱會
+# sorted_indices = np.argsort(scores)[::-1]  # 從高到低排序
+# how_many_results = 200
+# top_concerts = []
+# for i in sorted_indices:
+#     if scores[i] > 0:
+#         top_concerts.append((concert_data[i]['tit'], scores[i]))
+#     if len(top_concerts) == how_many_results:
+#         break
+#
+# matched_indexes = []
+# for i in range(len(concert_data)):
+#     for j, (title, score) in enumerate(top_concerts):
+#         if concert_data[i]['tit'] == title:
+#             print(concert_data[i]['tit'])
+#             if i not in matched_indexes:
+#                 matched_indexes.append(i)
+# print('--- 結束 ---')
+# print(matched_indexes)
 
-documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in concert_data]  # ori
-for i, document in enumerate(documents):
-    for j, element in enumerate(document):
-        document[j] = document[j].lower()
 
-# documents = [chinese_tokenizer(concert["tit"] + " " + concert['cit'] + " " + concert["int"]) for concert in concert_data] # test
-# documents = [chinese_tokenizer(concert['tit'] + " " + concert['cit']) for concert in concert_data] # test
+#             if i not in matched_indexes:
+#                 matched_indexes.append(i)
+#             # print(f'index = {i}')
+#             # print(f'{concert_data[i]["tit"]}')
 
-# 創建BM25模型
-bm25 = BM25Okapi(documents)
+# print(matched_indexes)
+# for i in range(len(matched_indexes)):
+#     print(concert_data[i]['tit'])
 
-# # 測試
-# k1 = 1.5
-# b = 0.5
-# bm25 = BM25Okapi(documents, k1=k1, b=b)
+# # 打印最相似的演唱會
+# if top_concerts:
+#     print('abc', top_concerts)
+#     for idx, (title, score) in enumerate(top_concerts):
+#         print(f"{idx + 1}. {title} (相似度: {score:.2f})")
+#         for i in range(len(concert_data)):
+#             if concert_data[i]['tit'] == title:
+#                 print(concert_data[i]['url'])
+# else:
+#     print("沒有找到匹配的演唱會。")
 
-# 處理輸入
-user_tokens = chinese_tokenizer(user_input)
-user_tokens = [token.lower() for token in user_tokens]
+# zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
+#              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
 
-# 計算BM25分數
-scores = bm25.get_scores(user_tokens)
+def get_keyword_indexes(text, json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
 
-# 找到最相似的幾個演唱會
-sorted_indices = np.argsort(scores)[::-1]  # 從高到低排序
-how_many_results = 200
-top_concerts = []
-for i in sorted_indices:
-    if scores[i] > 0:
-        top_concerts.append((concert_data[i]['tit'], scores[i]))
-    if len(top_concerts) == how_many_results:
-        break
+    documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in data]  # ori
+    for i, document in enumerate(documents):
+        for j, element in enumerate(document):
+            document[j] = document[j].lower()
 
-# 打印最相似的演唱會
-if top_concerts:
-    for idx, (title, score) in enumerate(top_concerts):
-        print(f"{idx + 1}. {title} (相似度: {score:.2f})")
-        for i in range(len(concert_data)):
-            if concert_data[i]['tit'] == title:
-                print(concert_data[i]['url'])
+    bm25 = BM25Okapi(documents)
+
+    # 處理輸入
+    user_tokens = chinese_tokenizer(text)
+    user_tokens = [token.lower() for token in user_tokens]
+
+    # 計算BM25分數
+    scores = bm25.get_scores(user_tokens)
+
+    # 找到最相似的幾個演唱會
+    sorted_indices = np.argsort(scores)[::-1]  # 從高到低排序
+    how_many_results = 15
+    top_concerts = []
+    for i in sorted_indices:
+        if scores[i] > 0:
+            top_concerts.append((data[i]['tit'], scores[i]))
+        if len(top_concerts) == how_many_results:
+            break
+    if top_concerts:
+        matched_indexes = []
+        for i in range(len(data)):
+            for j, (title, score) in enumerate(top_concerts):
+                if data[i]['tit'] == title:
+                    # print(data[i]['tit'])
+                    if i not in matched_indexes:
+                        matched_indexes.append(i)
+        # print('--- 結束 ---')
+        print(matched_indexes)
+
+        return matched_indexes
+    else:
+        return None
+
+search_word = 'jp saxe'
+matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
+if matched_indexes is not None:
+    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    for index in matched_indexes:
+        print(data[index]['tit'])
+        print(data[index]['url'])
 else:
-    print("沒有找到匹配的演唱會。")
-
-zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
-             "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
+    print('沒有找到')
