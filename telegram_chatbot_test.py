@@ -64,7 +64,12 @@ while True:
                 keyword_indexes = []
                 for i in range(len(result['entities'])):  # 先獲得keyword的全部位置
                     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
-                    keyword_indexes.extend(get_keyword_indexes(result['entities'][i]['value'], zh_json))
+                    if result['entities'][i]['entity'] == 'keyword':
+                        print('c', result['entities'][i]['value'])
+                        print('z', get_keyword_indexes(result['entities'][i]['value'], zh_json))
+                        keyword_indexes.extend(get_keyword_indexes(result['entities'][i]['value'], zh_json))
+                    else:
+                        print('不是keyword 跳過')
 
                 if keyword_indexes and dates_cities:  # 有keyword位置 也有dc的位置 取集合
                     print('keyword有找到資料，日期或城市也有找到資料')
