@@ -11,7 +11,7 @@ import yaml
 import re
 
 
-def find_singer_name(user_input):
+def keyword_adjustment(user_input):
     # print(user_input)
     with open('data/singer.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
@@ -136,7 +136,7 @@ def run_cmdline1(model_path: Text, words) -> None:
 
     print_success("NLU model loaded. Type a message and press enter to parse it.")
     for word in words:
-        message, find_singer = find_singer_name(word)
+        message, find_singer = keyword_adjustment(word)
         print(f'ori msg: {message}')
 
         result = asyncio.run(agent.parse_message(message))

@@ -10,8 +10,16 @@ from rasa.shared.utils.io import json_to_string
 import asyncio
 import re
 
-zh_model = ''  # 把訓練好的中文模型放這裡
-en_model = ''  # 把訓練好的英文模型放這裡
+from get_city_date_indexes import en_dates_cities, zh_dates_cities
+
+zh_model = 'model_zh.tar.gz'  # 把訓練好的中文模型放這裡
+en_model = 'model_en.tar.gz'  # 把訓練好的英文模型放這裡
+
+agent_zh = Agent.load(zh_model)  # 載入中文模型
+agent_en = Agent.load(en_model)  # 載入英文模型
+
+zh_json = 'concert_data_old_zh.json'  # 中文演唱會資料
+en_json = 'concert_data_old_en.json'  # 英文演唱會資料
 
 TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
 BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
@@ -34,15 +42,28 @@ async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def handle_response(text: str) -> str:
     processed: str = text.lower()
 
-    agent_zh = Agent.load(zh_model)
-    agent_en = Agent.load(en_model)
+
     print('--- 開始 ---')
+
     chinese_pattern = re.compile(r'[\u4e00-\u9fa5]')
     if bool(chinese_pattern.search(text)):
+        # 中文
         result = asyncio.run(agent_zh.parse_message(text))
+        # 取得result當中的keyword
+        dates_cities_indexes = zh_dates_cities(text, zh_json)
+        # 然後跟dates_cities_indexes找集合
+        # keyword_indexes = []
     else:
+        # 英文
         result = asyncio.run(agent_en.parse_message(text))
+        # 取得result當中的keyword
+        dates_cities_indexes = en_dates_cities(text, en_json)
+        # 然後跟dates_cities_indexes找集合
+        # keyword_indexes = []
     print(result)
+    print('city & date', dates_cities_indexes)
+    # print('keyword', keyword_indexes)
+
     print('--- 結束 ---')
 
     if 'hello' in text:

@@ -1,13 +1,107 @@
 from rank_bm25 import BM25Okapi
+
 import jieba
 import numpy as np
 import json
+
+from fuzzywuzzy import fuzz
+import yaml
 import re
 
 jieba.load_userdict('user_dict.txt')
 
 
+# use bm25 & jieba
+
+def keyword_adjustment(user_input):
+    '''
+    修正字串當中含有類似keyword.yml的關鍵字
+    '''
+    # print(user_input)
+    with open('keyword.yml', 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+
+    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+    names_without_space = [name.replace(' ', '') for name in names]
+
+    # 匹配英文单词
+    english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+    # 将匹配到的英文单词拼接起来
+    english_part = ' '.join(english_words)
+
+    ''''''
+
+    # Post Malone
+    # print('round 1')
+    for name in names:
+        if name in english_part:
+            return user_input, True
+
+    ''''''
+
+    # post malone
+    # print('round 2')
+    for name in names:
+        if name.lower() in user_input.lower():
+            start_index = user_input.lower().find(name.lower())
+            end_index = start_index + len(name.lower()) - 1
+            user_input = user_input.replace(user_input[start_index:end_index + 1], name)
+            return user_input, True
+
+    ''''''
+
+    english_split = english_part.split(' ')
+
+    for i, name in enumerate(names_without_space):
+        for e_split in english_split:
+            score = fuzz.partial_ratio(e_split.lower(), name.lower())
+            if score >= 80:
+                # print('abc', score)
+                # print(e_split.lower(), name.lower())
+                if len(name) - 1 < len(e_split) < len(name) + 1:
+                    user_input = user_input.replace(e_split, names[i])
+                else:
+                    pass
+
+    ''''''
+
+    max_score = -1
+    singer_name = None
+
+    for name in names:
+        score = fuzz.partial_ratio(user_input.lower(), name.lower())
+        if score > max_score:
+            max_score = score
+            singer_name = name
+
+    if max_score > 60:
+        # 匹配英文单词
+        english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+        # 将匹配到的英文单词拼接起来
+        english_part = ' '.join(english_words)
+        # # print('English Part', english_part)
+        english_split = english_part.split(' ')
+        # # print('Singer', singer_name)
+        singer_split = singer_name.split(' ')
+        # # print(singer_split)
+        for s_split in singer_split:
+            for e_split in english_split:
+                score = fuzz.partial_ratio(s_split.lower(), e_split.lower())
+                if score > 80:
+                    # # print(s_split, e_split, score)
+                    user_input = user_input.replace(e_split, s_split)
+        return user_input, True
+    else:
+        return user_input, False
+
+
 def jieba_english_tokenize(words):
+    '''
+    1. "post", " ", "malone"
+    >> "post malone"
+    2. "austin", " ", "richard", " ", "post"
+    >> "austin richard post"
+    '''
     pattern = r'^[a-zA-Z0-9]+$'
     blank_space_indexes = []
     for i in range(len(words) - 1):
@@ -158,19 +252,38 @@ def get_keyword_indexes(text, json_file):
                     if i not in matched_indexes:
                         matched_indexes.append(i)
         # print('--- 結束 ---')
-        print(matched_indexes)
+        # print(matched_indexes)
 
         return matched_indexes
     else:
-        return None
+        # print('沒有找到匹配的資料')
+        # return None
+        return []
 
-search_word = 'jp saxe'
-matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
-if matched_indexes is not None:
-    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    for index in matched_indexes:
-        print(data[index]['tit'])
-        print(data[index]['url'])
-else:
-    print('沒有找到')
+def get_language(user_input):
+    chinese_pattern = re.compile(r'[\u4e00-\u9fa5]')
+    if bool(chinese_pattern.search(user_input)):
+        language = 'zh'
+    else:
+        language = 'en'
+    return language
+
+
+def get_key_indexes_test():  # 測試用 可刪除
+    text, find_singer = keyword_adjustment('miss ko 三月')
+    print(text, find_singer)
+    keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
+
+# get_key_indexes_test()
+# search_word = '韓國'
+# search_word = search_word.replace('歌手', '').replace('台灣', '')
+# # search_word = '美國'
+# matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
+# if matched_indexes is not None:
+#     with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+#         data = json.load(f)
+#     for index in matched_indexes:
+#         print(data[index]['tit'])
+#         print(data[index]['url'])
+# else:
+#     print('沒有找到')
