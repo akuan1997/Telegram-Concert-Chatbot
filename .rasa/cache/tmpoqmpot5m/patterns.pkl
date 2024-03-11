@@ -1,0 +1,18 @@
+[
+  {
+    "name": "city",
+    "pattern": "(\\b台北\\b|\\b新北\\b|\\b桃園\\b|\\b台中\\b|\\b台南\\b|\\b高雄\\b|\\b基隆\\b|\\b新竹\\b|\\b苗栗\\b|\\b彰化\\b|\\b南投\\b|\\b雲林\\b|\\b嘉義\\b|\\b屏東\\b|\\b宜蘭\\b|\\b花蓮\\b|\\b台東\\b|\\b金門\\b|\\b澎湖\\b|\\b連江\\b|\\b北部\\b|\\b中部\\b|\\b南部\\b|\\b東部\\b)"
+  },
+  {
+    "name": "datetime",
+    "pattern": "(\\b一月\\b|\\b二月\\b|\\b三月\\b|\\b四月\\b|\\b五月\\b|\\b六月\\b|\\b七月\\b|\\b八月\\b|\\b九月\\b|\\b十月\\b|\\b十一月\\b|\\b十二月\\b|\\b星期一\\b|\\b星期二\\b|\\b星期三\\b|\\b星期四\\b|\\b星期五\\b|\\b星期六\\b|\\b星期日\\b|\\b星期天\\b|\\b禮拜一\\b|\\b禮拜二\\b|\\b禮拜三\\b|\\b禮拜四\\b|\\b禮拜五\\b|\\b禮拜六\\b|\\b禮拜日\\b|\\b禮拜天\\b|\\b周一\\b|\\b周二\\b|\\b周三\\b|\\b周四\\b|\\b周五\\b|\\b周六\\b|\\b周日\\b|\\b週一\\b|\\b週二\\b|\\b週三\\b|\\b週四\\b|\\b週五\\b|\\b週六\\b|\\b週日\\b|\\b前天\\b|\\b昨天\\b|\\b今天\\b|\\b明天\\b|\\b後天\\b|\\b周末\\b|\\b工作日\\b|\\b平日\\b|\\b早上\\b|\\b中午\\b|\\b下午\\b|\\b晚上\\b|\\b今年\\b|\\b明年\\b|\\b春天\\b|\\b夏天\\b|\\b秋天\\b|\\b冬天\\b|\\b春季\\b|\\b夏季\\b|\\b秋季\\b|\\b冬季\\b|\\b下周\\b|\\b下下周\\b|\\b上周\\b|\\b上上周\\b|\\b這個月\\b|\\b下個月\\b|\\b下下個月\\b)"
+  },
+  {
+    "name": "keyword",
+    "pattern": "(\\b饒舌\\b|\\b嘻哈\\b|\\b爵士\\b|\\b爵士樂\\b|\\b民歌\\b|\\b古典\\b|\\b搖滾\\b|\\b搖滾樂\\b|\\b流行\\b|\\b鄉村\\b|\\b電子\\b|\\b金屬\\b|\\b重金屬\\b|\\b拉丁\\b|\\bR\\&B\\b|\\b音樂祭\\b|\\b音樂節\\b|\\bEDM\\b|\\bhouse\\b|\\btrap\\b|\\bboombap\\b|\\bjersey\\b|\\b光療\\b|\\b藍調\\b|\\b電音\\b|\\b獨立\\b|\\b歌德\\b|\\b靈魂\\b|\\b治療\\b|\\b迷幻\\b|\\b實驗\\b|\\b動漫\\b|\\b動畫\\b|\\b古風\\b|\\b傳統\\b|\\b雷鬼\\b|\\b斯卡\\b|\\b龐克\\b|\\b福音\\b|\\b藍草\\b|\\b民謠\\b|\\b新世紀\\b|\\b電子舞曲\\b|\\b紀實\\b|\\b爵士融合\\b|\\b放克\\b|\\b後搖\\b|\\b蔡依林\\b|\\bIVE\\b|\\b羅志祥\\b|\\b王力宏\\b|\\b蕭亞軒\\b|\\baespa\\b|\\bNewJeans\\b|\\b李玖哲\\b|\\bGummy\\ B\\b|\\bLE\\ SSERAFIM\\b|\\b50\\ cent\\b|\\b周杰倫\\b|\\b183club\\b|\\b5566\\b|\\b鄧福如\\b|\\bWheein\\b|\\bZion\\.T\\b|\\bWonstein\\b|\\bAriana\\ Grande\\b|\\bTaylor\\ Swift\\b|\\bSTAYC\\b|\\bAimer\\b|\\bPost\\ Malone\\b|\\bJustin\\ Bieber\\b)"
+  },
+  {
+    "name": "singer",
+    "pattern": "(\\bPost\\ Malone\\b|\\bAriana\\ Grande\\b|\\bJustin\\ Bieber\\b|\\bTaylor\\ Swift\\b|\\bLE\\ SSERAFIM\\b|\\bIVE\\b|\\bSTAYC\\b|\\bNewJeans\\b|\\bEric\\ Nam\\b|\\b王力宏\\b|\\b羅志祥\\b|\\bAimer\\b|\\bChance\\ the\\ Rapper\\b)"
+  }
+]

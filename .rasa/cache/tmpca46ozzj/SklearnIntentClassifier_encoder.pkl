@@ -1,0 +1,1 @@
+{"py/object": "numpy.ndarray", "dtype": "<U18", "values": ["goodbye", "greet", "query_further_time", "query_keyword"]}

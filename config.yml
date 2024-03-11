@@ -1,0 +1,38 @@
+recipe: default.v1
+
+language: zh
+
+pipeline:
+
+- name: JiebaTokenizer
+
+- name: RegexFeaturizer # idk
+
+- name: LanguageModelFeaturizer
+  model_name: "bert"
+  model_weights: "bert-base-chinese"
+
+#- name: RegexFeaturizer # idk
+
+- name: SklearnIntentClassifier
+  epochs: 100
+  tensorboard_log_directory: ./log
+  learning_rate: 0.001
+
+- name: RegexEntityExtractor
+  case_sensitive: False
+  use_word_boundaries: False  # for Chinese, use False here
+  use_lookup_tables: True
+  use_regexes: True
+
+- name: EntitySynonymMapper
+
+policies:
+
+- name: MemoizationPolicy
+- name: TEDPolicy
+  max_history: 5
+  epochs: 100
+- name: RulePolicy
+
+assistant_id: 20240214-221509-rigid-narrows

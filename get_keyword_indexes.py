@@ -18,7 +18,7 @@ def keyword_adjustment(user_input):
     修正字串當中含有類似keyword.yml的關鍵字
     '''
     # print(user_input)
-    with open('keyword.yml', 'r', encoding='utf-8') as f:
+    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
