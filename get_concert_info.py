@@ -3717,8 +3717,8 @@ def get_kktix(website, json_filename, txt_filename):
     delete_blank_sdt(website, json_filename)
     delete_past_ticketing_time(website, json_filename)
 
-    for json_filename in kktix_json_files:
-        os.remove(json_filename)
+    # for json_filename in kktix_json_files:
+    #     os.remove(json_filename)
 
     ''''''
 
@@ -4405,9 +4405,9 @@ def get_latest_concert_info():
     print('--- All Scraping Threads Finished! ---')
     merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
     print('--- Merge Okay! ---')
-    move_concert_files(concert_json_filenames)
+    move_concert_files(concert_json_filenames)  # each concert move to folder
     print('--- Move Okay! ---')
-    delete_files()
+    delete_files()  # remove 3 useless data in KKTIX, can add more
     print('--- Delete Okay! ---')
     get_city_from_stadium()
     print('--- Get City Okay! ---')
@@ -4427,8 +4427,9 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
-get_latest_concert_info()
+# get_latest_concert_info()
 
+thread_kktix.start()
 # 沒有地址
 # era
 # indievox
