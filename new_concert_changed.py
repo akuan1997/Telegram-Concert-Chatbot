@@ -61,4 +61,3 @@ for concert in new_concert_list:
 print("\n发生变化的演唱会信息:")
 for concert, changes in changed_concert_list:
     print(f"{concert} - 变化的部分: {changes}")
-

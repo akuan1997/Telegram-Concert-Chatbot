@@ -11,12 +11,30 @@ from googletrans import Translator
 from get_data_from_text import *
 from fuzzywuzzy import process
 
-zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "新竹", "苗栗", "彰化", "南投", "雲林",
-             "嘉義", "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
+zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
+             "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
 en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Miaoli",
              "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
              "Lienchiang"]
 concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
+
+with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+    new_data = json.load(f)
+
+with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+    old_data = json.load(f)
+
+with open('concert_zh.json', 'r', encoding='utf-8') as f:
+    all_data = json.load(f)
+
+month = datetime.now().month
+day = datetime.now().day
+hour = datetime.now().hour
+
+concert_today = f'concert_{month}_{day}_{hour}.json'
+print(concert_today)
+with open(concert_today, 'w', encoding='utf-8') as f:
+    json.dump([], f, indent=4, ensure_ascii=False)
 
 
 def write_data_json(json_name, new_data):
@@ -121,7 +139,8 @@ def get_era(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # era
+                # browser = p.chromium.launch(headless=False)  # era
                 context = browser.new_context()
                 page = context.new_page()
                 page.set_default_timeout(10000)
@@ -210,7 +229,10 @@ def get_era(website, json_filename, txt_filename):
                         if '尚未開賣' in sell_button:
                             sell_d = re.findall(r"\d{4}/\d{1,2}/\d{1,2}", sell_button)
                             sell_t = re.findall(r"\d{1,2}:\d{2}", sell_button)
-                            sell_datetime = sell_d[0] + ' ' + sell_t[0]
+                            if sell_d and sell_t:
+                                sell_datetime = sell_d[0] + ' ' + sell_t[0]
+                            else:
+                                sell_datetime = ''
                             print('尚未開賣', sell_datetime)
                         else:
                             sell_datetime = ''
@@ -233,7 +255,9 @@ def get_era(website, json_filename, txt_filename):
                             'cit': "",
                             'int': inner_text,
                             'web': f'{website}',
-                            'url': page.url
+                            'url': page.url,
+                            'pin': page.url + str(j),
+                            'tim': str(datetime.now())
                         }
 
                         print('\n--- write new data ---\n')
@@ -284,6 +308,163 @@ def get_era(website, json_filename, txt_filename):
                 continue
 
 
+def get_era_without_error_mechanism(website, json_filename, txt_filename):
+    with sync_playwright() as p:
+
+        with open(json_filename, 'w', encoding='utf-8') as f:
+            f.write('')
+
+        # 待會會從 last_finished_index + 1開始
+        last_finished_index = -1
+        # 錯誤的網址
+        fail_urls = []
+
+        browser = p.chromium.launch(headless=True)  # era
+        # browser = p.chromium.launch(headless=False)  # era
+        context = browser.new_context()
+        page = context.new_page()
+        page.set_default_timeout(10000)
+
+        page.goto("https://ticket.com.tw/application/UTK01/UTK0101_06.aspx?TYPE=1&CATEGORY=205")
+
+        # 獲得events物件以及數量 (有幾個活動)
+        events = page.query_selector_all(".column.col-xs-12.col-md-3.moreBox")
+
+        for i in range(last_finished_index + 1, len(events)):
+            print(f'{website} progress - {i + 1}/{len(events)}')
+            # 資訊頁面
+            events[i].click()
+
+            ''''''
+
+            # 內文
+            inner_text = page.locator("#ctl00_ContentPlaceHolder1_lbProgramInfo_Content").inner_text()
+
+            ''''''
+
+            page.locator("#ctl00_ContentPlaceHolder1_btnBuyNow").click()  # 進入售票頁面
+            page.wait_for_timeout(1500)
+
+            # 標題
+            title = page.locator("#ctl00_ContentPlaceHolder1_NAME").inner_text()
+
+            for j in range(len(page.query_selector_all(
+                    "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr"))):  # 資訊方塊
+                # 表演日期
+                # 日期格式1
+                if page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                    j).locator("td > div > span > time").is_visible():
+                    year_month = page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                        j).locator("td > div > span > time > strong").inner_text().replace(' - ',
+                                                                                           '/')
+                    day = page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                        j).locator("td > div > span > time > span").nth(
+                        0).inner_text()
+                    t = page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                        j).locator(
+                        "td > div > span > time > span").nth(1).inner_text()
+                    performance_datetime = year_month + '/' + day + ' ' + t
+                    print()
+                # 日期格式2
+                else:
+                    # 1. 獲得日期 格式為 YYYY/MM/DD HH:MM
+                    performance_datetime = page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                        j).locator(
+                        "td > div > span").nth(0).inner_text() + ' ~ ' + page.locator(
+                        "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                        j).locator(
+                        "td > div > span").nth(1).inner_text().replace('|', '').replace('\n', '')
+                    print()
+
+                ''''''
+
+                # 地點
+                location = page.locator(
+                    "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                    j).locator(
+                    "td").nth(1).locator("span").inner_text()
+
+                ''''''
+
+                # 票價
+                prices = []
+                prcs = page.locator(
+                    "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                    j).locator(
+                    "td").nth(2).locator("span").inner_text().split('、')
+                for prc in prcs:
+                    prices.append(int(prc))  # 票價列表
+
+                ''''''
+
+                # 售票時間 (如果沒有售票時間，列表為空)
+                sell_button = page.locator(
+                    "#portfolio > div.container > div:nth-child(4) > div > div > table > tbody > tr").nth(
+                    j).locator("td").nth(3).inner_text()
+                if '尚未開賣' in sell_button:
+                    sell_d = re.findall(r"\d{4}/\d{1,2}/\d{1,2}", sell_button)
+                    sell_t = re.findall(r"\d{1,2}:\d{2}", sell_button)
+                    if sell_d and sell_t:
+                        sell_datetime = sell_d[0] + ' ' + sell_t[0]
+                    else:
+                        sell_datetime = ''
+                    print('尚未開賣', sell_datetime)
+                else:
+                    sell_datetime = ''
+
+                ''''''
+
+                print('tit', title)
+                print('sdt', sell_datetime)  # str
+                print('prc', prices)  # list
+                print('pdt', performance_datetime)  # str
+                print('loc', location)  # str
+
+                # 新的一筆資料
+                new_data = {
+                    'tit': title,
+                    'sdt': [sell_datetime],
+                    'prc': prices,
+                    'pdt': [performance_datetime],
+                    'loc': [location],
+                    'cit': "",
+                    'int': inner_text,
+                    'web': f'{website}',
+                    'url': page.url,
+                    'pin': page.url + str(j),
+                    'tim': str(datetime.now())
+                }
+
+                print('\n--- write new data ---\n')
+
+                write_data_json(json_filename, new_data)
+
+                last_finished_index = i
+                if page.url in fail_urls:
+                    del fail_urls[fail_urls.index(page.url)]
+
+            # 資訊頁面
+            page.go_back()
+
+            # 主頁面
+            page.go_back()
+
+            # 重新獲取events屬性
+            events = page.query_selector_all(".column.col-xs-12.col-md-3.moreBox")
+
+        # 完成
+        page.close()
+
+        delete_blank_sdt(website, json_filename)
+
+        print(f'\n\n\n\n\n\n\n\n{website} done\n\n\n\n\n\n\n\n')
+
+
 def get_livenation(website, json_filename, txt_filename):
     with sync_playwright() as p:
 
@@ -297,7 +478,8 @@ def get_livenation(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # live nation
+                # browser = p.chromium.launch(headless=False)  # live nation
                 context = browser.new_context()
                 page = context.new_page()
 
@@ -342,6 +524,7 @@ def get_livenation(website, json_filename, txt_filename):
                     # locations = [location]
 
                     # 表演時間
+                    performance_time = '00:00'
                     day = page.locator(
                         "#top > main > div > div.layout__container > div.eventblurb__container > div > div > div:nth-child(1) > "
                         "div > span.date__day").inner_text()
@@ -384,7 +567,9 @@ def get_livenation(website, json_filename, txt_filename):
                         'cit': "",
                         'int': inner_text,
                         'web': f'{website}',
-                        'url': page.url
+                        'url': page.url,
+                        'pin': page.url + str(i),
+                        'tim': str(datetime.now())
                     }
 
                     print('\n--- write new data ---\n')
@@ -406,7 +591,7 @@ def get_livenation(website, json_filename, txt_filename):
                 os.remove(txt_filename)
 
                 delete_blank_sdt(website, json_filename)
-                delete_past_ticketing_time(website, json_filename)
+                # delete_past_ticketing_time(website, json_filename)
 
                 print(f'\n\n\n\n\n\n\n\n{website} done\n\n\n\n\n\n\n\n')
                 break
@@ -450,7 +635,8 @@ def get_indievox(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # indievox
+                # browser = p.chromium.launch(headless=False)  # indievox
                 context = browser.new_context()
                 page = context.new_page()
                 page.set_default_timeout(5000)
@@ -592,7 +778,9 @@ def get_indievox(website, json_filename, txt_filename):
                                 'cit': "",
                                 'int': inner_text,
                                 'web': f'{website}',
-                                'url': page.url
+                                'url': page.url,
+                                'pin': page.url + str(j),
+                                'tim': str(datetime.now())
                             }
 
                             print('\n--- write new data ---\n')
@@ -629,7 +817,9 @@ def get_indievox(website, json_filename, txt_filename):
                             'cit': "",
                             'int': inner_text,
                             'web': f'{website}',
-                            'url': page.url
+                            'url': page.url,
+                            'pin': page.url + str(0),
+                            'tim': str(datetime.now())
                         }
 
                         print('\n--- write new data ---\n')
@@ -652,7 +842,7 @@ def get_indievox(website, json_filename, txt_filename):
                 os.remove(txt_filename)
 
                 delete_blank_sdt(website, json_filename)
-                delete_past_ticketing_time(website, json_filename)
+                # delete_past_ticketing_time(website, json_filename)
 
                 print(f'\n\n\n\n\n\n\n\n{website} done\n\n\n\n\n\n\n\n')
                 break
@@ -693,7 +883,7 @@ def get_ticketplus(website, json_filename, txt_filename):
         fail_urls = []
         while True:
             try:
-                browser = p.chromium.launch(headless=False, slow_mo=1000)
+                browser = p.chromium.launch(headless=True, slow_mo=1000)  # ticketplus
                 context = browser.new_context()
                 page = context.new_page()
                 page.set_default_timeout(10000)
@@ -812,7 +1002,9 @@ def get_ticketplus(website, json_filename, txt_filename):
                                 'cit': "",
                                 'int': inner_text,
                                 'web': f'{website}',
-                                'url': page.url
+                                'url': page.url,
+                                'pin': page.url + str(j),
+                                'tim': str(datetime.now())
                             }
 
                             print('\n--- write new data ---\n')
@@ -834,7 +1026,7 @@ def get_ticketplus(website, json_filename, txt_filename):
                 os.remove(txt_filename)
 
                 delete_blank_sdt(website, json_filename)
-                delete_past_ticketing_time(website, json_filename)
+                # delete_past_ticketing_time(website, json_filename)
 
                 print(f'\n\n\n\n\n\n\n\n{website} done\n\n\n\n\n\n\n\n')
                 break
@@ -973,1138 +1165,6 @@ def kktix_get_performance_list(page, performance_datetimes_str_list):
     return performance_datetimes_str_list
 
 
-# def get_kktix_first(website, json_filename, txt_filename):
-#     # global integrate_webs
-#     with sync_playwright() as p:
-#
-#         with open(json_filename, 'w', encoding='utf-8') as f:
-#             f.write('')
-#
-#         # 待會會從 last_finished_index + 1開始
-#         last_finished_selling_index = -1
-#         last_finished_view_index = -1
-#         # 完成的演唱會頁面
-#         completed_pages = []
-#         # 發生錯誤的演唱會活動
-#         current_page_index = -1
-#         fail_indices = []
-#         # 統整的網站
-#
-#         while True:
-#             try:
-#                 browser = p.chromium.launch(headless=False)
-#                 context = browser.new_context()
-#                 page = context.new_page()
-#                 # page.set_default_timeout(60000)
-#
-#                 ''''''
-#
-#                 page.goto("https://kktix.com/events?end_at=&"
-#                           "event_tag_ids_in=1&max_price=&"
-#                           "min_price=&page=1"
-#                           "&search=&start_at=")
-#
-#                 print(f'{website} start!')
-#
-#                 ''''''
-#
-#                 page_index = 1
-#                 current_page_index = page_index
-#
-#                 while True:
-#                     if page_index in completed_pages:
-#                         print(f'Error occurred, but page {page_index} is already finished!')
-#
-#                     else:
-#                         # type-selling
-#                         type_selling = page.query_selector_all('li.type-selling')
-#                         if last_finished_selling_index != len(type_selling) - 1:
-#                             print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
-#                             for i in range(last_finished_selling_index + 1, len(type_selling)):
-#                                 print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
-#                                 # print(f'selling {page_index}-{i}')
-#                                 # 演唱會頁面
-#                                 type_selling[i].click()
-#                                 print('concert page', page.url)
-#                                 page.wait_for_timeout(500)
-#
-#                                 ''''''
-#
-#                                 hk = False
-#                                 title = ''
-#                                 sell_datetimes_str_list = []
-#                                 prices = []
-#                                 performance_datetimes_str_list = []
-#                                 location = ''
-#                                 if page.locator("table > thead > tr > th.name").is_visible():
-#                                     # 確認此頁面是否為香港活動
-#                                     # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                     for j in range(
-#                                             len(page.query_selector_all(
-#                                                 ".table-wrapper > table > tbody > tr"))):
-#                                         # 貨幣符號
-#                                         # 如果有找到貨幣符號
-#                                         if page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                             # 取得貨幣符號
-#                                             currency = page.locator(
-#                                                 ".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                                 ".price .price > span").nth(0).inner_text()
-#                                             # 檢查是否為港幣
-#                                             if 'hk' in currency.lower():
-#                                                 hk = True
-#                                                 break
-#                                         # 找不到貨幣符號
-#                                         else:
-#                                             currency = ''
-#
-#                                         ''''''
-#
-#                                         # 售票時間 list
-#                                         sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                                 sell_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 票價 list
-#                                         prices = kktix_get_prices_list(page, j, prices)
-#
-#                                         ''''''
-#
-#                                         # 內文
-#                                         inner_text = page.locator(".description").inner_text()
-#
-#                                         ''''''
-#
-#                                     if not hk:
-#                                         # 進入購票頁面，獲得地點以及表演時間
-#                                         page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                         print('buy ticket page', page.url)
-#                                         page.wait_for_timeout(1500)
-#                                         page.wait_for_load_state('load')
-#
-#                                         ''''''
-#
-#                                         # 標題 str
-#                                         title = kktix_get_title_str(page, title)
-#
-#                                         ''''''
-#
-#                                         # 表演時間 list
-#                                         performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                     performance_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 地點 str
-#                                         location = kktix_get_location_str(page, location)
-#
-#                                         ''''''
-#
-#                                         page.go_back()
-#
-#                                         if title or performance_datetimes_str_list or location:
-#                                             print('title', title)  # str
-#                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                             print('prices', prices)  # list
-#                                             print('performance_datetimes_str_list',
-#                                                   performance_datetimes_str_list)  # list
-#                                             print('location', location)  # str
-#
-#                                             ''''''
-#
-#                                             # 新的一筆資料
-#                                             new_data = {
-#                                                 'tit': title,
-#                                                 'sdt': sell_datetimes_str_list,
-#                                                 'prc': prices,
-#                                                 'pdt': performance_datetimes_str_list,
-#                                                 'loc': [location],
-#                                                 'cit': "",
-#                                                 'int': inner_text,
-#                                                 'web': f'{website}',
-#                                                 'url': page.url
-#                                             }
-#
-#                                             ''''''
-#
-#                                             print('\n--- write new data ---\n')
-#
-#                                             write_data_json(json_filename, new_data)
-#
-#                                             last_finished_selling_index = i
-#                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                             print('\n----------------------\n')
-#                                         else:
-#                                             last_finished_selling_index = i
-#                                             print(
-#                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
-#                                     else:
-#                                         print('hk activity, skip')
-#                                         last_finished_selling_index = i
-#                                         print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                         print('\n----------------------\n')
-#
-#                                 else:
-#                                     print('integrate webpage, skip')
-#                                     last_finished_selling_index = i
-#                                     print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                     print('\n----------------------\n')
-#                                     # integrate_webs.append(page.url)
-#
-#                                 ''''''
-#
-#                                 page.go_back()  # main page
-#                                 type_selling = page.query_selector_all('li.type-selling')
-#                         else:
-#                             print('CSS: "type-selling" of this page is already finished!')
-#
-#                         ''''''
-#
-#                         # type-view
-#                         type_view = page.query_selector_all('li.type-view')
-#                         print(f'\n\nview start from {page_index}-{last_finished_view_index + 2}\n\n')
-#                         for i in range(last_finished_view_index + 1, len(type_view)):
-#                             print(f'{website} view progress - page {page_index}, {i + 1}/{len(type_view)}')
-#                             # print(f'view {page_index}-{i}')
-#                             # 演唱會頁面
-#                             type_view[i].click()
-#                             print('concert page', page.url)
-#                             page.wait_for_timeout(500)
-#
-#                             ''''''
-#
-#                             hk = False
-#                             title = ''
-#                             sell_datetimes_str_list = []
-#                             prices = []
-#                             performance_datetimes_str_list = []
-#                             location = ''
-#                             if page.locator("table > thead > tr > th.name").is_visible():
-#                                 # 確認此頁面是否為香港活動
-#                                 # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                 for j in range(
-#                                         len(page.query_selector_all(
-#                                             ".table-wrapper > table > tbody > tr"))):
-#                                     # 貨幣符號
-#                                     # 如果有找到貨幣符號
-#                                     if page.locator(".table-wrapper > table > tbody > tr").nth(j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                         # 取得貨幣符號
-#                                         currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                             j).locator(
-#                                             ".price .price > span").nth(0).inner_text()
-#                                         # 檢查是否為港幣
-#                                         if 'hk' in currency.lower():
-#                                             hk = True
-#                                             break
-#                                     # 找不到貨幣符號
-#                                     else:
-#                                         currency = ''
-#
-#                                     ''''''
-#
-#                                     # 售票時間 list
-#                                     sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                             sell_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 票價 list
-#                                     prices = kktix_get_prices_list(page, j, prices)
-#
-#                                     ''''''
-#
-#                                     # 內文
-#                                     inner_text = page.locator(".description").inner_text()
-#
-#                                     ''''''
-#
-#                                 if not hk:
-#                                     # 進入購票頁面，獲得地點以及表演時間
-#                                     page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                     print('buy ticket page', page.url)
-#                                     page.wait_for_timeout(1500)
-#                                     page.wait_for_load_state('load')
-#
-#                                     ''''''
-#
-#                                     # 標題 str
-#                                     title = kktix_get_title_str(page, title)
-#
-#                                     ''''''
-#
-#                                     # 表演時間 list
-#                                     performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                 performance_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 地點 str
-#                                     location = kktix_get_location_str(page, location)
-#
-#                                     ''''''
-#
-#                                     page.go_back()
-#
-#                                     if title or performance_datetimes_str_list or location:
-#                                         print('title', title)  # str
-#                                         print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                         print('prices', prices)  # list
-#                                         print('performance_datetimes_str_list', performance_datetimes_str_list)  # list
-#                                         print('location', location)  # str
-#
-#                                         # 新的一筆資料
-#                                         new_data = {
-#                                             'tit': title,
-#                                             'sdt': sell_datetimes_str_list,
-#                                             'prc': prices,
-#                                             'pdt': performance_datetimes_str_list,
-#                                             'loc': [location],
-#                                             'cit': "",
-#                                             'int': inner_text,
-#                                             'web': f'{website}',
-#                                             'url': page.url
-#                                         }
-#
-#                                         print('\n--- write new data ---\n')
-#
-#                                         write_data_json(json_filename, new_data)
-#
-#                                         last_finished_view_index = i
-#                                         print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                         print('\n----------------------\n')
-#                                     else:
-#                                         last_finished_view_index = i
-#                                         print(
-#                                             f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
-#                                 else:
-#                                     print('hk activity, skip')
-#                                     last_finished_view_index = i
-#                                     print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                     print('\n----------------------\n')
-#
-#                             else:
-#                                 print('integrate webpage, skip')
-#                                 last_finished_view_index = i
-#                                 print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                 print('\n----------------------\n')
-#                                 # integrate_webs.append(page.url)
-#
-#                             ''''''
-#
-#                             page.go_back()  # main page
-#                             type_view = page.query_selector_all('li.type-view')
-#
-#                         ''''''
-#
-#                         # 完成此頁
-#                         pagination_div = page.query_selector(".pagination.pull-right")
-#                         text = pagination_div.inner_text()
-#                         print(f'\nFinished page {page_index}')
-#                         completed_pages.append(page_index)
-#                         last_finished_selling_index = -1
-#                         last_finished_view_index = -1
-#
-#                     # 有下一頁
-#                     if '›' in text:
-#                         if int(page.locator(
-#                                 "body > div.wrapper > div.page-content > section.explore-container.container > div > div.pagination.pull-right > ul > li.active > a").inner_text()) > 3:
-#                             break
-#                         page.locator("div.pagination.pull-right li:last-child").click()
-#                         page_index += 1
-#                         current_page_index = page_index
-#                         print(f'\nGo to page {page_index}\n')
-#
-#                     # 最後一頁
-#                     else:
-#                         print(f'{website} finished')
-#
-#                         # 程式確認沒有最後一頁後跳出while True的break
-#                         break
-#
-#                 # 確認全部執行完成，沒有發生錯誤的break
-#                 break
-#
-#             except Exception as e:
-#                 # 錯誤
-#                 page.close()
-#                 print(e, f'{website} restart')
-#
-#                 if [current_page_index, last_finished_selling_index, last_finished_view_index] not in fail_indices:
-#                     fail_indices.append([current_page_index, last_finished_selling_index, last_finished_view_index])
-#                     print('第一次失敗')
-#                 else:
-#                     print('第二次失敗')
-#                     print('跳過')
-#
-#                     if last_finished_view_index == -1:
-#                         last_finished_selling_index += 1
-#                     else:
-#                         last_finished_view_index += 1
-#
-#                     write_error(website, page.url, e)
-#
-#                 # 重新啟動
-#                 continue
-#
-#         # 完成
-#         page.close()
-#
-#
-# def get_kktix_second(website, json_filename, txt_filename):
-#     # global integrate_webs
-#     with sync_playwright() as p:
-#
-#         with open(json_filename, 'w', encoding='utf-8') as f:
-#             f.write('')
-#
-#         # 待會會從 last_finished_index + 1開始
-#         last_finished_selling_index = -1
-#         last_finished_view_index = -1
-#         # 完成的演唱會頁面
-#         completed_pages = []
-#         # 發生錯誤的演唱會活動
-#         current_page_index = -1
-#         fail_indices = []
-#         # 統整的網站
-#
-#         while True:
-#             try:
-#                 browser = p.chromium.launch(headless=False)
-#                 context = browser.new_context()
-#                 page = context.new_page()
-#                 # page.set_default_timeout(60000)
-#
-#                 ''''''
-#
-#                 page.goto("https://kktix.com/events?end_at=&"
-#                           "event_tag_ids_in=1&max_price=&"
-#                           "min_price=&page=5"
-#                           "&search=&start_at=")
-#
-#                 print(f'{website} start!')
-#
-#                 ''''''
-#
-#                 page_index = 5
-#                 current_page_index = page_index
-#
-#                 while True:
-#                     if page_index in completed_pages:
-#                         print(f'Error occurred, but page {page_index} is already finished!')
-#
-#                     else:
-#                         # type-selling
-#                         type_selling = page.query_selector_all('li.type-selling')
-#                         if last_finished_selling_index != len(type_selling) - 1:
-#                             print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
-#                             for i in range(last_finished_selling_index + 1, len(type_selling)):
-#                                 print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
-#                                 # print(f'selling {page_index}-{i}')
-#                                 # 演唱會頁面
-#                                 type_selling[i].click()
-#                                 print('concert page', page.url)
-#                                 page.wait_for_timeout(500)
-#
-#                                 ''''''
-#
-#                                 hk = False
-#                                 title = ''
-#                                 sell_datetimes_str_list = []
-#                                 prices = []
-#                                 performance_datetimes_str_list = []
-#                                 location = ''
-#                                 if page.locator("table > thead > tr > th.name").is_visible():
-#                                     # 確認此頁面是否為香港活動
-#                                     # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                     for j in range(
-#                                             len(page.query_selector_all(
-#                                                 ".table-wrapper > table > tbody > tr"))):
-#                                         # 貨幣符號
-#                                         # 如果有找到貨幣符號
-#                                         if page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                             # 取得貨幣符號
-#                                             currency = page.locator(
-#                                                 ".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                                 ".price .price > span").nth(0).inner_text()
-#                                             # 檢查是否為港幣
-#                                             if 'hk' in currency.lower():
-#                                                 hk = True
-#                                                 break
-#                                         # 找不到貨幣符號
-#                                         else:
-#                                             currency = ''
-#
-#                                         ''''''
-#
-#                                         # 售票時間 list
-#                                         sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                                 sell_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 票價 list
-#                                         prices = kktix_get_prices_list(page, j, prices)
-#
-#                                         ''''''
-#
-#                                         # 內文
-#                                         inner_text = page.locator(".description").inner_text()
-#
-#                                         ''''''
-#
-#                                     if not hk:
-#                                         # 進入購票頁面，獲得地點以及表演時間
-#                                         page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                         print('buy ticket page', page.url)
-#                                         page.wait_for_timeout(1500)
-#                                         page.wait_for_load_state('load')
-#
-#                                         ''''''
-#
-#                                         # 標題 str
-#                                         title = kktix_get_title_str(page, title)
-#
-#                                         ''''''
-#
-#                                         # 表演時間 list
-#                                         performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                     performance_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 地點 str
-#                                         location = kktix_get_location_str(page, location)
-#
-#                                         ''''''
-#
-#                                         page.go_back()
-#                                         if title or performance_datetimes_str_list or location:
-#                                             print('title', title)  # str
-#                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                             print('prices', prices)  # list
-#                                             print('performance_datetimes_str_list',
-#                                                   performance_datetimes_str_list)  # list
-#                                             print('location', location)  # str
-#
-#                                             ''''''
-#
-#                                             # 新的一筆資料
-#                                             new_data = {
-#                                                 'tit': title,
-#                                                 'sdt': sell_datetimes_str_list,
-#                                                 'prc': prices,
-#                                                 'pdt': performance_datetimes_str_list,
-#                                                 'loc': [location],
-#                                                 'cit': "",
-#                                                 'int': inner_text,
-#                                                 'web': f'{website}',
-#                                                 'url': page.url
-#                                             }
-#
-#                                             ''''''
-#
-#                                             print('\n--- write new data ---\n')
-#
-#                                             write_data_json(json_filename, new_data)
-#
-#                                             last_finished_selling_index = i
-#                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                             print('\n----------------------\n')
-#                                         else:
-#                                             last_finished_selling_index = i
-#                                             print(
-#                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
-#                                     else:
-#                                         print('hk activity, skip')
-#                                         last_finished_selling_index = i
-#                                         print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                         print('\n----------------------\n')
-#
-#                                 else:
-#                                     print('integrate webpage, skip')
-#                                     last_finished_selling_index = i
-#                                     print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                     print('\n----------------------\n')
-#                                     # integrate_webs.append(page.url)
-#
-#                                 ''''''
-#
-#                                 page.go_back()  # main page
-#                                 type_selling = page.query_selector_all('li.type-selling')
-#                         else:
-#                             print('CSS: "type-selling" of this page is already finished!')
-#
-#                         ''''''
-#
-#                         # type-view
-#                         type_view = page.query_selector_all('li.type-view')
-#                         print(f'\n\nview start from {page_index}-{last_finished_view_index + 2}\n\n')
-#                         for i in range(last_finished_view_index + 1, len(type_view)):
-#                             print(f'{website} view progress - page {page_index}, {i + 1}/{len(type_view)}')
-#                             # print(f'view {page_index}-{i}')
-#                             # 演唱會頁面
-#                             type_view[i].click()
-#                             print('concert page', page.url)
-#                             page.wait_for_timeout(500)
-#
-#                             ''''''
-#
-#                             hk = False
-#                             title = ''
-#                             sell_datetimes_str_list = []
-#                             prices = []
-#                             performance_datetimes_str_list = []
-#                             location = ''
-#                             if page.locator("table > thead > tr > th.name").is_visible():
-#                                 # 確認此頁面是否為香港活動
-#                                 # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                 for j in range(
-#                                         len(page.query_selector_all(
-#                                             ".table-wrapper > table > tbody > tr"))):
-#                                     # 貨幣符號
-#                                     # 如果有找到貨幣符號
-#                                     if page.locator(".table-wrapper > table > tbody > tr").nth(j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                         # 取得貨幣符號
-#                                         currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                             j).locator(
-#                                             ".price .price > span").nth(0).inner_text()
-#                                         # 檢查是否為港幣
-#                                         if 'hk' in currency.lower():
-#                                             hk = True
-#                                             break
-#                                     # 找不到貨幣符號
-#                                     else:
-#                                         currency = ''
-#
-#                                     ''''''
-#
-#                                     # 售票時間 list
-#                                     sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                             sell_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 票價 list
-#                                     prices = kktix_get_prices_list(page, j, prices)
-#
-#                                     ''''''
-#
-#                                     # 內文
-#                                     inner_text = page.locator(".description").inner_text()
-#
-#                                     ''''''
-#
-#                                 if not hk:
-#                                     # 進入購票頁面，獲得地點以及表演時間
-#                                     page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                     print('buy ticket page', page.url)
-#                                     page.wait_for_timeout(1500)
-#                                     page.wait_for_load_state('load')
-#
-#                                     ''''''
-#
-#                                     # 標題 str
-#                                     title = kktix_get_title_str(page, title)
-#
-#                                     ''''''
-#
-#                                     # 表演時間 list
-#                                     performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                 performance_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 地點 str
-#                                     location = kktix_get_location_str(page, location)
-#
-#                                     ''''''
-#
-#                                     page.go_back()
-#                                     if title or performance_datetimes_str_list or location:
-#                                         print('title', title)  # str
-#                                         print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                         print('prices', prices)  # list
-#                                         print('performance_datetimes_str_list', performance_datetimes_str_list)  # list
-#                                         print('location', location)  # str
-#
-#                                         # 新的一筆資料
-#                                         new_data = {
-#                                             'tit': title,
-#                                             'sdt': sell_datetimes_str_list,
-#                                             'prc': prices,
-#                                             'pdt': performance_datetimes_str_list,
-#                                             'loc': [location],
-#                                             'cit': "",
-#                                             'int': inner_text,
-#                                             'web': f'{website}',
-#                                             'url': page.url
-#                                         }
-#
-#                                         print('\n--- write new data ---\n')
-#
-#                                         write_data_json(json_filename, new_data)
-#
-#                                         last_finished_view_index = i
-#                                         print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                         print('\n----------------------\n')
-#                                     else:
-#                                         last_finished_view_index = i
-#                                         print(
-#                                             f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
-#                                 else:
-#                                     print('hk activity, skip')
-#                                     last_finished_view_index = i
-#                                     print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                     print('\n----------------------\n')
-#
-#                             else:
-#                                 print('integrate webpage, skip')
-#                                 last_finished_view_index = i
-#                                 print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                 print('\n----------------------\n')
-#                                 # integrate_webs.append(page.url)
-#
-#                             ''''''
-#
-#                             page.go_back()  # main page
-#                             type_view = page.query_selector_all('li.type-view')
-#
-#                         ''''''
-#
-#                         # 完成此頁
-#                         pagination_div = page.query_selector(".pagination.pull-right")
-#                         text = pagination_div.inner_text()
-#                         print(f'\nFinished page {page_index}')
-#                         completed_pages.append(page_index)
-#                         last_finished_selling_index = -1
-#                         last_finished_view_index = -1
-#
-#                     # 有下一頁
-#                     if '›' in text:
-#                         if int(page.locator(
-#                                 "body > div.wrapper > div.page-content > section.explore-container.container > div > div.pagination.pull-right > ul > li.active > a").inner_text()) > 7:
-#                             break
-#                         page.locator("div.pagination.pull-right li:last-child").click()
-#                         page_index += 1
-#                         current_page_index = page_index
-#                         print(f'\nGo to page {page_index}\n')
-#
-#                     # 最後一頁
-#                     else:
-#                         print(f'{website} finished')
-#
-#                         # 程式確認沒有最後一頁後跳出while True的break
-#                         break
-#
-#                 # 確認全部執行完成，沒有發生錯誤的break
-#                 break
-#
-#             except Exception as e:
-#                 # 錯誤
-#                 page.close()
-#                 print(e, f'{website} restart')
-#                 if [current_page_index, last_finished_selling_index, last_finished_view_index] not in fail_indices:
-#                     fail_indices.append([current_page_index, last_finished_selling_index, last_finished_view_index])
-#                     print('第一次失敗')
-#                 else:
-#                     print('第二次失敗')
-#                     print('跳過')
-#
-#                     if last_finished_view_index == -1:
-#                         last_finished_selling_index += 1
-#                     else:
-#                         last_finished_view_index += 1
-#
-#                     write_error(website, page.url, e)
-#
-#                 # 重新啟動
-#                 continue
-#
-#         # 完成
-#         page.close()
-#
-#
-# def get_kktix_third(website, json_filename, txt_filename):
-#     # global integrate_webs
-#     with sync_playwright() as p:
-#
-#         with open(json_filename, 'w', encoding='utf-8') as f:
-#             f.write('')
-#
-#         # 待會會從 last_finished_index + 1開始
-#         last_finished_selling_index = -1
-#         last_finished_view_index = -1
-#         # 完成的演唱會頁面
-#         completed_pages = []
-#         # 發生錯誤的演唱會活動
-#         current_page_index = -1
-#         fail_indices = []
-#         # 統整的網站
-#
-#         while True:
-#             try:
-#                 browser = p.chromium.launch(headless=False)
-#                 context = browser.new_context()
-#                 page = context.new_page()
-#                 # page.set_default_timeout(60000)
-#
-#                 ''''''
-#
-#                 page.goto("https://kktix.com/events?end_at=&"
-#                           "event_tag_ids_in=1&max_price=&"
-#                           "min_price=&page=9"
-#                           "&search=&start_at=")
-#
-#                 print(f'{website} start!')
-#
-#                 ''''''
-#
-#                 page_index = 9
-#                 current_page_index = page_index
-#
-#                 while True:
-#                     if page_index in completed_pages:
-#                         print(f'Error occurred, but page {page_index} is already finished!')
-#
-#                     else:
-#                         # type-selling
-#                         type_selling = page.query_selector_all('li.type-selling')
-#                         if last_finished_selling_index != len(type_selling) - 1:
-#                             print(f'\n\nselling start from {page_index}-{last_finished_selling_index + 2}\n\n')
-#                             for i in range(last_finished_selling_index + 1, len(type_selling)):
-#                                 print(f'{website} selling progress - page {page_index}, {i + 1}/{len(type_selling)}')
-#                                 # print(f'selling {page_index}-{i}')
-#                                 # 演唱會頁面
-#                                 type_selling[i].click()
-#                                 print('concert page', page.url)
-#                                 page.wait_for_timeout(500)
-#
-#                                 ''''''
-#
-#                                 hk = False
-#                                 title = ''
-#                                 sell_datetimes_str_list = []
-#                                 prices = []
-#                                 performance_datetimes_str_list = []
-#                                 location = ''
-#                                 if page.locator("table > thead > tr > th.name").is_visible():
-#                                     # 確認此頁面是否為香港活動
-#                                     # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                     for j in range(
-#                                             len(page.query_selector_all(
-#                                                 ".table-wrapper > table > tbody > tr"))):
-#                                         # 貨幣符號
-#                                         # 如果有找到貨幣符號
-#                                         if page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                             # 取得貨幣符號
-#                                             currency = page.locator(
-#                                                 ".table-wrapper > table > tbody > tr").nth(
-#                                                 j).locator(
-#                                                 ".price .price > span").nth(0).inner_text()
-#                                             # 檢查是否為港幣
-#                                             if 'hk' in currency.lower():
-#                                                 hk = True
-#                                                 break
-#                                         # 找不到貨幣符號
-#                                         else:
-#                                             currency = ''
-#
-#                                         ''''''
-#
-#                                         # 售票時間 list
-#                                         sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                                 sell_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 票價 list
-#                                         prices = kktix_get_prices_list(page, j, prices)
-#
-#                                         ''''''
-#
-#                                         # 內文
-#                                         inner_text = page.locator(".description").inner_text()
-#
-#                                         ''''''
-#
-#                                     if not hk:
-#                                         # 進入購票頁面，獲得地點以及表演時間
-#                                         page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                         print('buy ticket page', page.url)
-#                                         page.wait_for_timeout(1500)
-#                                         page.wait_for_load_state('load')
-#
-#                                         ''''''
-#
-#                                         # 標題 str
-#                                         title = kktix_get_title_str(page, title)
-#
-#                                         ''''''
-#
-#                                         # 表演時間 list
-#                                         performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                     performance_datetimes_str_list)
-#
-#                                         ''''''
-#
-#                                         # 地點 str
-#                                         location = kktix_get_location_str(page, location)
-#
-#                                         ''''''
-#
-#                                         page.go_back()
-#                                         if title or performance_datetimes_str_list or location:
-#                                             print('title', title)  # str
-#                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                             print('prices', prices)  # list
-#                                             print('performance_datetimes_str_list',
-#                                                   performance_datetimes_str_list)  # list
-#                                             print('location', location)  # str
-#
-#                                             ''''''
-#
-#                                             # 新的一筆資料
-#                                             new_data = {
-#                                                 'tit': title,
-#                                                 'sdt': sell_datetimes_str_list,
-#                                                 'prc': prices,
-#                                                 'pdt': performance_datetimes_str_list,
-#                                                 'loc': [location],
-#                                                 'cit': "",
-#                                                 'int': inner_text,
-#                                                 'web': f'{website}',
-#                                                 'url': page.url
-#                                             }
-#
-#                                             ''''''
-#
-#                                             print('\n--- write new data ---\n')
-#
-#                                             write_data_json(json_filename, new_data)
-#
-#                                             last_finished_selling_index = i
-#                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                             print('\n----------------------\n')
-#                                         else:
-#                                             last_finished_selling_index = i
-#                                             print(
-#                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
-#                                     else:
-#                                         print('hk activity, skip')
-#                                         last_finished_selling_index = i
-#                                         print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                         print('\n----------------------\n')
-#
-#                                 else:
-#                                     print('integrate webpage, skip')
-#                                     last_finished_selling_index = i
-#                                     print(f'finished {page_index}-{last_finished_selling_index + 1}')
-#                                     print('\n----------------------\n')
-#                                     # integrate_webs.append(page.url)
-#
-#                                 ''''''
-#
-#                                 page.go_back()  # main page
-#                                 type_selling = page.query_selector_all('li.type-selling')
-#                         else:
-#                             print('CSS: "type-selling" of this page is already finished!')
-#
-#                         ''''''
-#
-#                         # type-view
-#                         type_view = page.query_selector_all('li.type-view')
-#                         print(f'\n\nview start from {page_index}-{last_finished_view_index + 2}\n\n')
-#                         for i in range(last_finished_view_index + 1, len(type_view)):
-#                             print(f'{website} view progress - page {page_index}, {i + 1}/{len(type_view)}')
-#                             # print(f'view {page_index}-{i}')
-#                             # 演唱會頁面
-#                             type_view[i].click()
-#                             print('concert page', page.url)
-#                             page.wait_for_timeout(500)
-#
-#                             ''''''
-#
-#                             hk = False
-#                             title = ''
-#                             sell_datetimes_str_list = []
-#                             prices = []
-#                             performance_datetimes_str_list = []
-#                             location = ''
-#                             if page.locator("table > thead > tr > th.name").is_visible():
-#                                 # 確認此頁面是否為香港活動
-#                                 # 1. 迴圈 票種、販售時間、售價 物件個數
-#                                 for j in range(
-#                                         len(page.query_selector_all(
-#                                             ".table-wrapper > table > tbody > tr"))):
-#                                     # 貨幣符號
-#                                     # 如果有找到貨幣符號
-#                                     if page.locator(".table-wrapper > table > tbody > tr").nth(j).locator(
-#                                             ".price .price > span").nth(0).is_visible():
-#                                         # 取得貨幣符號
-#                                         currency = page.locator(".table-wrapper > table > tbody > tr").nth(
-#                                             j).locator(
-#                                             ".price .price > span").nth(0).inner_text()
-#                                         # 檢查是否為港幣
-#                                         if 'hk' in currency.lower():
-#                                             hk = True
-#                                             break
-#                                     # 找不到貨幣符號
-#                                     else:
-#                                         currency = ''
-#
-#                                     ''''''
-#
-#                                     # 售票時間 list
-#                                     sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-#                                                                                             sell_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 票價 list
-#                                     prices = kktix_get_prices_list(page, j, prices)
-#
-#                                     ''''''
-#
-#                                     # 內文
-#                                     inner_text = page.locator(".description").inner_text()
-#
-#                                     ''''''
-#
-#                                 if not hk:
-#                                     # 進入購票頁面，獲得地點以及表演時間
-#                                     page.locator(".outer-wrapper .tickets .btn-point").click()
-#                                     print('buy ticket page', page.url)
-#                                     page.wait_for_timeout(1500)
-#                                     page.wait_for_load_state('load')
-#
-#                                     ''''''
-#
-#                                     # 標題 str
-#                                     title = kktix_get_title_str(page, title)
-#
-#                                     ''''''
-#
-#                                     # 表演時間 list
-#                                     performance_datetimes_str_list = kktix_get_performance_list(page,
-#                                                                                                 performance_datetimes_str_list)
-#
-#                                     ''''''
-#
-#                                     # 地點 str
-#                                     location = kktix_get_location_str(page, location)
-#
-#                                     ''''''
-#
-#                                     page.go_back()
-#                                     if title or performance_datetimes_str_list or location:
-#                                         print('title', title)  # str
-#                                         print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-#                                         print('prices', prices)  # list
-#                                         print('performance_datetimes_str_list', performance_datetimes_str_list)  # list
-#                                         print('location', location)  # str
-#
-#                                         # 新的一筆資料
-#                                         new_data = {
-#                                             'tit': title,
-#                                             'sdt': sell_datetimes_str_list,
-#                                             'prc': prices,
-#                                             'pdt': performance_datetimes_str_list,
-#                                             'loc': [location],
-#                                             'cit': "",
-#                                             'int': inner_text,
-#                                             'web': f'{website}',
-#                                             'url': page.url
-#                                         }
-#
-#                                         print('\n--- write new data ---\n')
-#
-#                                         write_data_json(json_filename, new_data)
-#
-#                                         last_finished_view_index = i
-#                                         print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                         print('\n----------------------\n')
-#                                     else:
-#                                         last_finished_view_index = i
-#                                         print(
-#                                             f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
-#                                 else:
-#                                     print('hk activity, skip')
-#                                     last_finished_view_index = i
-#                                     print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                     print('\n----------------------\n')
-#
-#                             else:
-#                                 print('integrate webpage, skip')
-#                                 last_finished_view_index = i
-#                                 print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-#                                 print('\n----------------------\n')
-#                                 # integrate_webs.append(page.url)
-#
-#                             ''''''
-#
-#                             page.go_back()  # main page
-#                             type_view = page.query_selector_all('li.type-view')
-#
-#                         ''''''
-#
-#                         # 完成此頁
-#                         pagination_div = page.query_selector(".pagination.pull-right")
-#                         text = pagination_div.inner_text()
-#                         print(f'\nFinished page {page_index}')
-#                         completed_pages.append(page_index)
-#                         last_finished_selling_index = -1
-#                         last_finished_view_index = -1
-#
-#                     # 有下一頁
-#                     if '›' in text:
-#                         page.locator("div.pagination.pull-right li:last-child").click()
-#                         page_index += 1
-#                         current_page_index = page_index
-#                         print(f'\nGo to page {page_index}\n')
-#
-#                     # 最後一頁
-#                     else:
-#                         print(f'{website} finished')
-#
-#                         # 程式確認沒有最後一頁後跳出while True的break
-#                         break
-#
-#                 # 確認全部執行完成，沒有發生錯誤的break
-#                 break
-#
-#             except Exception as e:
-#                 # 錯誤
-#                 page.close()
-#                 print(e, f'{website} restart')
-#                 if [current_page_index, last_finished_selling_index, last_finished_view_index] not in fail_indices:
-#                     fail_indices.append([current_page_index, last_finished_selling_index, last_finished_view_index])
-#                     print('第一次失敗')
-#                 else:
-#                     print('第二次失敗')
-#                     print('跳過')
-#
-#                     if last_finished_view_index == -1:
-#                         last_finished_selling_index += 1
-#                     else:
-#                         last_finished_view_index += 1
-#
-#                     write_error(website, page.url, e)
-#
-#                 # 重新啟動
-#                 continue
-#
-#         # 完成
-#         page.close()
 def get_kktix_first(website, json_filename, txt_filename):
     # global integrate_webs
     # page 1, 2, 3, 4
@@ -2126,7 +1186,8 @@ def get_kktix_first(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # kktix first
+                # browser = p.chromium.launch(headless=False)  # kktix first
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -2256,7 +1317,9 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -2269,6 +1332,39 @@ def get_kktix_first(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_selling_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
@@ -2398,7 +1494,9 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -2411,6 +1509,39 @@ def get_kktix_first(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_view_index + 1}\n')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_view_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
@@ -2541,7 +1672,9 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -2554,6 +1687,39 @@ def get_kktix_first(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_counter_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_counter_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
@@ -2654,7 +1820,8 @@ def get_kktix_second(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # kktix second
+                # browser = p.chromium.launch(headless=False)  # kktix second
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -2784,7 +1951,9 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -2797,6 +1966,39 @@ def get_kktix_second(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_selling_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
@@ -2926,7 +2128,9 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -2939,6 +2143,39 @@ def get_kktix_second(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_view_index + 1}\n')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_view_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
@@ -3068,7 +2305,9 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -3081,6 +2320,39 @@ def get_kktix_second(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_counter_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_counter_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
@@ -3181,7 +2453,8 @@ def get_kktix_third(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=False)
+                browser = p.chromium.launch(headless=True)  # kktix thrid
+                # browser = p.chromium.launch(headless=False)  # kktix thrid
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -3311,7 +2584,9 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -3324,6 +2599,39 @@ def get_kktix_third(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_selling_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_selling_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
@@ -3453,7 +2761,9 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -3466,6 +2776,39 @@ def get_kktix_third(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_view_index + 1}\n')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_view_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
@@ -3595,7 +2938,9 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'cit': "",
                                                 'int': inner_text,
                                                 'web': f'{website}',
-                                                'url': page.url
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
                                             }
 
                                             ''''''
@@ -3608,6 +2953,39 @@ def get_kktix_third(website, json_filename, txt_filename):
                                             print(f'finished {page_index}-{last_finished_counter_index + 1}')
                                             print('\n----------------------\n')
                                         else:
+                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
+                                            #     f.write(page.url + '\n')
+
+                                            print('title', title)  # str
+                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
+                                            print('prices', prices)  # list
+                                            print('performance_datetimes_str_list',
+                                                  performance_datetimes_str_list)  # list
+                                            print('location', location)  # str
+
+                                            ''''''
+
+                                            # 新的一筆資料
+                                            new_data = {
+                                                'tit': title,
+                                                'sdt': sell_datetimes_str_list,
+                                                'prc': prices,
+                                                'pdt': performance_datetimes_str_list,
+                                                'loc': [location],
+                                                'cit': "",
+                                                'int': inner_text,
+                                                'web': f'{website}',
+                                                'url': page.url,
+                                                'pin': page.url + str(0),
+                                                'tim': str(datetime.now())
+                                            }
+
+                                            ''''''
+
+                                            print('\n--- write new data ---\n')
+
+                                            write_data_json(json_filename, new_data)
+
                                             last_finished_counter_index = i
                                             print(
                                                 f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
@@ -3715,230 +3093,22 @@ def get_kktix(website, json_filename, txt_filename):
     merge_json_data(kktix_json_files, json_filename)
 
     delete_blank_sdt(website, json_filename)
-    delete_past_ticketing_time(website, json_filename)
+
+    with open(json_filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
+                     "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
+                     "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+
+    new_data = [item for item in data if item['tit'] not in delete_titles]
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        json.dump(new_data, f, indent=4, ensure_ascii=False)
+
+    # delete_past_ticketing_time(website, json_filename)
 
     # for json_filename in kktix_json_files:
     #     os.remove(json_filename)
-
-    ''''''
-
-    # with sync_playwright() as p:
-    #     print('integrated_webs =', integrate_webs)
-    #     print('\n開始統整資料!\n')
-    #
-    #     # 完成的web就加進這個list，發生錯誤之後，直接跳過這些完成的web
-    #     completed_webs = []
-    #     # 全部執行之後，仍然失敗的網站
-    #     fail_webs = []
-    #     # 上一個完成的index
-    #     last_finished_index = -1
-    #     current_web = ''
-    #     current_web_index = ''
-    #
-    #     # 執行完一般資料後，來確認統整資料
-    #     while True:
-    #         try:
-    #
-    #             browser = p.chromium.launch(headless=False)
-    #             context = browser.new_context()
-    #             page = context.new_page()
-    #             page.set_default_timeout(60000)
-    #
-    #             ''''''
-    #
-    #             with open(json_filename, 'r', encoding='utf-8') as f:
-    #                 data = json.load(f)
-    #
-    #             ''''''
-    #
-    #             for k, web in enumerate(integrate_webs):
-    #                 if web not in completed_webs:
-    #                     current_web = web
-    #                     page.goto(web)
-    #
-    #                     events = page.query_selector_all(".clearfix > li")
-    #
-    #                     # 統整頁面，下方有幾個演唱會物件
-    #                     print(f'\n進入迴圈 {k}-{last_finished_index + 1}\n')
-    #                     for i in range(last_finished_index + 1, len(events)):
-    #                         current_web_index = i
-    #                         if page.locator(".clearfix > li").nth(i).locator(
-    #                                 "div > div > h2 > a").is_visible():
-    #                             # 演唱會頁面
-    #                             page.locator(".clearfix > li").nth(i).locator("div > div > h2 > a").click()
-    #
-    #                             # 已經瀏覽過
-    #                             duplicate = False
-    #                             for j in range(len(data)):
-    #                                 if page.url == data[j]['url']:
-    #                                     print('這個重複了')
-    #                                     last_finished_index = i
-    #                                     print('\n----------------------')
-    #                                     print(f'finished {k}-{current_web_index}')
-    #                                     print('----------------------\n')
-    #                                     duplicate = True
-    #
-    #                             if not duplicate:
-    #                                 hk = False
-    #                                 title = ''
-    #                                 sell_datetimes_str_list = []
-    #                                 prices = []
-    #                                 performance_datetimes_str_list = []
-    #                                 location = ''
-    #                                 # 確認此頁面是否為香港活動
-    #                                 # 1. 迴圈 票種、販售時間、售價 物件個數
-    #                                 for j in range(len(page.query_selector_all(
-    #                                         ".table-wrapper > table > tbody > tr"))):
-    #                                     # 貨幣符號
-    #                                     # 如果有找到貨幣符號
-    #                                     if page.locator(".table-wrapper > table > tbody > tr").nth(j).locator(
-    #                                             ".price .price > span").nth(0).is_visible():
-    #                                         # 取得貨幣符號
-    #                                         currency = page.locator(
-    #                                             ".table-wrapper > table > tbody > tr").nth(j).locator(
-    #                                             ".price .price > span").nth(0).inner_text()
-    #                                         # 檢查是否為港幣
-    #                                         if 'hk' in currency.lower():
-    #                                             hk = True
-    #                                             break
-    #                                     # 找不到貨幣符號
-    #                                     else:
-    #                                         currency = ''
-    #
-    #                                     ''''''
-    #
-    #                                     # 售票時間 list
-    #                                     sell_datetimes_str_list = kktix_get_ticketing_time_list(page, j,
-    #                                                                                       sell_datetimes_str_list)
-    #
-    #                                     ''''''
-    #
-    #                                     # 票價 list
-    #                                     prices = kktix_get_prices_list(page, j, prices)
-    #
-    #                                     ''''''
-    #
-    #                                     # 內文
-    #                                     inner_text = page.locator(".description").inner_text()
-    #
-    #                                     ''''''
-    #
-    #                                 # 如果不是香港活動
-    #                                 if not hk:
-    #                                     # 進入購票頁面，獲得地點以及表演時間
-    #                                     page.locator(".outer-wrapper .tickets .btn-point").click()
-    #                                     print('購票頁面', page.url)
-    #                                     page.wait_for_timeout(1500)
-    #                                     page.wait_for_load_state('load')
-    #
-    #                                     ''''''
-    #
-    #                                     # 標題 str
-    #                                     title = kktix_get_title_str(page, title)
-    #
-    #                                     ''''''
-    #
-    #                                     # 表演時間 list
-    #                                     performance_datetimes_str_list = kktix_get_performance_list(page,
-    #                                                                                           performance_datetimes_str_list)
-    #
-    #                                     ''''''
-    #
-    #                                     # 地點 str
-    #                                     location = kktix_get_location_str(page, location)
-    #
-    #                                     ''''''
-    #
-    #                                     page.go_back()
-    #
-    #                                     if title or performance_datetimes_str_list or location:
-    #                                         print('title', title)  # str
-    #                                         print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-    #                                         print('prices', prices)  # list
-    #                                         print('performance_datetimes_str_list',
-    #                                               performance_datetimes_str_list)  # list
-    #                                         print('location', location)  # str
-    #
-    #                                         ''''''
-    #
-    #                                         # 新的一筆資料
-    #                                         new_data = {
-    #                                             'tit': title,
-    #                                             'sdt': sell_datetimes_str_list,
-    #                                             'prc': prices,
-    #                                             'pdt': performance_datetimes_str_list,
-    #                                             'loc': [location],
-    #                                             'int': inner_text,
-    #                                             'web': 'kktix',
-    #                                             'url': page.url
-    #                                         }
-    #
-    #                                         print('\n--- write new data ---\n')
-    #
-    #                                         write_data_json(json_filename, new_data)
-    #
-    #                                         last_finished_index = i
-    #                                         print('\n----------------------')
-    #                                         print(f'finished {k}-{current_web_index}')
-    #                                         print('----------------------\n')
-    #                                         if [current_web, last_finished_index] in fail_webs:
-    #                                             del fail_webs[fail_webs.index([current_web, last_finished_index])]
-    #
-    #                                     else:
-    #                                         print('什麼都沒有 不寫')
-    #                                         last_finished_index = i
-    #                                         print('\n----------------------')
-    #                                         print(f'finished {k}-{current_web_index}')
-    #                                         print('----------------------\n')
-    #
-    #                                 # 是香港活動，跳過
-    #                                 else:
-    #                                     print('香港活動，跳過')
-    #                                     last_finished_index = i
-    #                                     print('\n----------------------')
-    #                                     print(f'finished {k}-{current_web_index}')
-    #                                     print('----------------------\n')
-    #
-    #                             # 返回統整頁面
-    #                             page.go_back()
-    #                             # 重置完成座標
-    #                             last_finished_index = -1
-    #
-    #                     # 這個web完成
-    #                     completed_webs.append(web)
-    #                     print(f'已經完成第{k}頁')
-    #
-    #                 else:
-    #                     # 這個統整頁面都點擊完了，換下一個統整頁面
-    #                     print(f'第{k}頁發生錯誤之前已經確認過了!\n')
-    #
-    #             delete_blank_sdt(website, json_filename)
-    #             delete_past_ticketing_time(website, json_filename)
-    #
-    #             print('kktix done')
-    #             break
-    #
-    #         except Exception as e:
-    #             page.close()
-    #             print(e, 'kktix restart')
-    #             print('發生錯誤了!', [current_web, current_web_index])
-    #             if [current_web, current_web_index] not in fail_webs:
-    #                 fail_webs.append([current_web, current_web_index])
-    #                 print('\n是第一次失敗\n')
-    #             else:
-    #                 print('\n已經是第二次失敗了')
-    #                 print('跳過\n')
-    #                 last_finished_index += 1
-    #
-    #             # 重新啟動
-    #             continue
-
-
-# get_era('era', 'era.json', _)
-# get_livenation('Live Nation', 'livenation.json', 'livenation_temp.txt')
-# get_indievox('Indievox', 'indievox.json', 'indievox_temp.txt')
-# get_ticketplus('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt')
-# get_kktix('KKTIX', 'kktix_new.json', 'kktix_temp.txt')
 
 
 def threads_start():
@@ -4234,7 +3404,8 @@ def get_city_from_stadium():
     json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)  # city from search
+        # browser = p.chromium.launch(headless=False)  # city from search
         context = browser.new_context()
         page = context.new_page()
 
@@ -4403,7 +3574,7 @@ def get_latest_concert_info():
     threads_start()
     threads_join()
     print('--- All Scraping Threads Finished! ---')
-    merge_json_data(concert_json_filenames, 'concert_data_new_zh.json')
+    merge_json_data(concert_json_filenames, concert_today)
     print('--- Merge Okay! ---')
     move_concert_files(concert_json_filenames)  # each concert move to folder
     print('--- Move Okay! ---')
@@ -4414,9 +3585,9 @@ def get_latest_concert_info():
     json_in_order()
     print('--- Json In Order! ---')
     print(f'\n------------------\nzh okay!\n------------------\n')
-    new_concerts()
-    zh_en()  # 把中文的內文翻譯成英文並寫入en.json
-    json_new_to_old()
+    # new_concerts()
+    # zh_en()  # 把中文的內文翻譯成英文並寫入en.json
+    # json_new_to_old()
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -4427,9 +3598,19 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
-# get_latest_concert_info()
 
-thread_kktix.start()
+get_latest_concert_info()
+
+# get_era('era', 'era.json', 'era_temp.txt')
+# get_era_without_error_mechanism('era', 'era.json', 'era_temp.txt')
+# get_livenation('Live Nation', 'livenation.json', 'livenation_temp.txt')
+# get_indievox('Indievox', 'indievox.json', 'indievox_temp.txt')
+# get_ticketplus('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt')
+# get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
+
+''''''
+
+# thread_kktix.start()
 # 沒有地址
 # era
 # indievox
@@ -4442,7 +3623,7 @@ thread_kktix.start()
 # def get_kktix_first1(website, json_filename, txt_filename):
 #     # global integrate_webs
 #     with sync_playwright() as p:
-#         browser = p.chromium.launch(headless=False)
+#         # browser = p.chromium.launch(headless=False)
 #         context = browser.new_context()
 #         page = context.new_page()
 #
