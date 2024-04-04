@@ -7,7 +7,7 @@
 #     f.write('hello\n')
 from y_example_read_json import *
 import json
-from get_concert_info import *
+# from get_concert_info import *
 
 json_list = ["concert_3_14_23.json",
              "concert_3_17_16.json",
@@ -26,14 +26,23 @@ json_list = ["concert_3_14_23.json",
              "concert_3_30_20.json",
              "concert_3_31_14.json",
              "concert_3_31_18.json",
-             "concert_4_2_0.json",
-             "concert_4_3_10.json",
-             "concert_4_3_22.json"]
+             # "concert_4_2_0.json",
+             # "concert_4_3_10.json",
+             # "concert_4_3_22.json"]
+             ]
 
 for i in range(len(json_list)):
-    # json_in_order(json_list[i])
-    get_city_from_stadium(json_list[i])
-    # data = read_json(json_list[i])
-    # for j in range(len(data)):
-    #     print(data[j]['pdt'])
-    # print('----------------------------')
+    print(f"{json_list[i]}")
+    data = read_json(json_list[i])
+    delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
+                     "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
+                     "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+    new_data = [item for item in data if item['tit'] not in delete_titles]
+    with open(json_list[i], 'w', encoding='utf-8') as f:
+        json.dump(new_data, f, indent=4, ensure_ascii=False)
+#     # json_in_order(json_list[i])
+#     get_city_from_stadium(json_list[i])
+#     # data = read_json(json_list[i])
+#     # for j in range(len(data)):
+#     #     print(data[j]['pdt'])
+#     # print('----------------------------')
