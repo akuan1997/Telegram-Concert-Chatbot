@@ -36,6 +36,7 @@ json_list = ["concert_3_14_23.json",
 
 
 for i in range(len(json_list)):
+    pass
     # ''' 刪除不必要的kktix資訊 '''
     # data = read_json(json_list[i])
     # delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
@@ -48,5 +49,5 @@ for i in range(len(json_list)):
     # ''' 根據地址填上城市 '''
     # get_city_from_stadium(json_list[i])
 
-    ''' 根據日期排序 '''
-    json_in_order(json_list[i])
+    # ''' 根據日期排序 '''
+    # json_in_order(json_list[i])
