@@ -28,8 +28,8 @@ def find_changes(new_concert, old_concert):
 
 
 # 加载数据
-old_concerts = load_data('concert_data_old_zh.json')
-new_concerts = load_data('concert_data_new_zh.json')
+old_concerts = load_data('../concert_data_old_zh.json')
+new_concerts = load_data('../concert_data_new_zh.json')
 
 new_concert_list = []
 changed_concert_list = []

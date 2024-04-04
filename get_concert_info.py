@@ -7,7 +7,7 @@ import re
 import sys
 from datetime import datetime, time
 from googletrans import Translator
-
+from get_concert_new_old import *
 from get_data_from_text import *
 from fuzzywuzzy import process
 
@@ -3107,8 +3107,8 @@ def get_kktix(website, json_filename, txt_filename):
 
     # delete_past_ticketing_time(website, json_filename)
 
-    # for json_filename in kktix_json_files:
-    #     os.remove(json_filename)
+    for json_filename in kktix_json_files:
+        os.remove(json_filename)
 
 
 def threads_start():
@@ -3287,18 +3287,17 @@ def new_concerts():
         print()
 
 
-def delete_files():
-    # 1. 刪除kktix那三個不需要的資料
-    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+def delete_files(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
-                     "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
-                     "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+    # 1. 刪除kktix那三個不需要的資料
+    # delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
+    #                  "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
+    #                  "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+    # new_data = [item for item in data if item['tit'] not in delete_titles]
 
-    new_data = [item for item in data if item['tit'] not in delete_titles]
-
-    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
+    with open(json_file, 'w', encoding='utf-8') as f:
         json.dump(new_data, f, indent=4, ensure_ascii=False)
 
 
@@ -3400,8 +3399,115 @@ def stadium_city(stadium, lang, table):
             return ''
 
 
-def get_city_from_stadium():
-    json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
+# def get_city_from_stadium():
+#     json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
+#     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
+#     with sync_playwright() as p:
+#         browser = p.chromium.launch(headless=True)  # city from search
+#         # browser = p.chromium.launch(headless=False)  # city from search
+#         context = browser.new_context()
+#         page = context.new_page()
+#
+#         with open(json_file, 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#
+#         for i in range(len(data)):
+#             if data[i]['loc'] == [] or data[i]['loc'] == ['']:
+#                 print('是空白的就直接跳過')
+#             else:
+#                 print(i)
+#                 city = ''
+#                 location = data[i]['loc'][0]
+#                 print('location', location)
+#                 # string (從名稱裡面找到城市名稱)
+#                 for j in range(len(zh_cities)):
+#                     # 臺 -> 台
+#                     location = location.replace('臺', '台')
+#                     # 如果字串裡面就包含了城市的名稱
+#                     if zh_cities[j] in location:
+#                         # 就可以直接找到城市
+#                         print('從名稱就找到城市')
+#                         city = zh_cities[j]
+#                         break
+#
+#                 # table (如果名稱裡面沒有城市名稱，就去table裡面尋找)
+#                 if city == '':
+#                     print('table!')
+#                     # 使用table對照表尋找看看
+#                     city = stadium_city(location, 'zh', load_table_from_txt(zh_table))
+#
+#                 # playwright (如果連table裡面也沒有找到)
+#                 if city == '':
+#                     print('playwright!')
+#                     # 那就靠網路爬蟲來尋找並加入table
+#                     page.goto("https://www.google.com/")
+#                     # fill完成之後會顯示搜尋結果
+#                     page.locator("#APjFqb").fill(location)
+#
+#                     page.wait_for_timeout(1500)
+#
+#                     # 迴圈 全部的搜尋結果 只要出現城市名稱就跳出迴圈
+#                     contents = page.query_selector_all(".G43f7e .lnnVSe .ClJ9Yb > span")
+#                     # 搜尋結果有沒有顯示城市名稱
+#                     for k in range(len(contents)):
+#                         for zh_city in zh_cities:
+#                             if zh_city in contents[k].inner_text():
+#                                 city = zh_city
+#                                 print(f'搜尋結果頁面就有城市了! {city}')
+#                                 break
+#
+#                     # 如果搜尋結果裡面沒有出現城市名稱，那就要進一步去下一個頁面尋找
+#                     if city == '':
+#                         print('搜尋結果沒有出現城市 必須往下一頁面繼續尋找')
+#                         # do something
+#                         page.keyboard.press('Enter')
+#                         page.wait_for_timeout(1500)
+#
+#                         address_phone = page.query_selector_all(".zloOqf.PZPZlf .LrzXr")
+#                         for k in range(len(address_phone)):
+#                             for zh_city in zh_cities:
+#                                 if zh_city in address_phone[k].inner_text():
+#                                     city = zh_city
+#                                     print(f'右側面板找到城市了! {city}')
+#                                     break
+#
+#                         if city == '':
+#                             print('還是沒有找到 看一下第一個搜尋結果 看看有沒有東西')
+#                             search_results = page.query_selector_all(".MjjYud")
+#                             for zh_city in zh_cities:
+#                                 if zh_city in search_results[0].inner_text():
+#                                     city = zh_city
+#                                     break
+#                             if city == '':
+#                                 print('真的找不到')
+#                             else:
+#                                 with open(zh_table, 'a', encoding='utf-8') as f:
+#                                     f.write(f"{location.lower().replace(' ', '')}:{city}\n")
+#
+#                         # 有找到 把配對寫進table裡面
+#                         else:
+#                             if page.locator(".DoxwDb .PZPZlf").is_visible():
+#                                 print(page.locator(".DoxwDb .PZPZlf").inner_text())
+#                                 with open(zh_table, 'a', encoding='utf-8') as f:
+#                                     f.write(f"{page.locator('.DoxwDb .PZPZlf').inner_text()}:{city}\n")
+#                             with open(zh_table, 'a', encoding='utf-8') as f:
+#                                 f.write(f"{location.lower().replace(' ', '')}:{city}\n")
+#
+#                     # 搜尋結果有找到城市 把這個配對寫進table裡面
+#                     else:
+#                         # 把這次網路爬蟲找到的stadium & city寫進table裡面
+#                         print(f"寫入新資料! {location} & {city}")
+#                         location = location.lower()
+#                         location = location.replace(' ', '')
+#                         with open(zh_table, 'a', encoding='utf-8') as f:
+#                             f.write(f"{location}:{city}\n")
+#
+#                 print(city)
+#                 data[i]['cit'] = city
+#                 with open(json_file, 'w', encoding='utf-8') as f:
+#                     json.dump(data, f, indent=4, ensure_ascii=False)
+#                 print('---')
+def get_city_from_stadium(json_file):
     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)  # city from search
@@ -3558,36 +3664,58 @@ def zh_en():
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
-def json_in_order():
-    json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
+def extract_earliest_date(date_list):
+    """
+    Extract the earliest date from a list of date strings,
+    handling both single dates and date ranges.
+    """
+    # Set a far future date as the initial minimum
+    min_date = datetime(9999, 12, 31, 23, 59)
+    for date_str in date_list:
+        # Split the date range into start and end dates, if applicable
+        dates = date_str.split(' ~ ')
+        for date in dates:
+            # Strip time if present and convert to datetime for comparison
+            date_only = date.split(' ')[0]
+            date_obj = datetime.strptime(date_only, '%Y/%m/%d')
+            if date_obj < min_date:
+                min_date = date_obj
+    return min_date
+
+
+def json_in_order(json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    sorted_data = sorted(data, key=lambda x: x['pdt'])
+    # Sort the data by the earliest date found in the 'pdt' field
+    sorted_data = sorted(data, key=lambda x: extract_earliest_date(x['pdt']))
 
     with open(json_file, 'w', encoding='utf-8') as f:
         json.dump(sorted_data, f, ensure_ascii=False, indent=4)
 
 
-def get_latest_concert_info():
+def get_latest_concert_info(json_filename):
     reset_failure_log()
-    threads_start()
-    threads_join()
+    threads_start()  # start the threads
+    threads_join()  # wait for all the threads finish
     print('--- All Scraping Threads Finished! ---')
-    merge_json_data(concert_json_filenames, concert_today)
+    merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
     print('--- Merge Okay! ---')
-    move_concert_files(concert_json_filenames)  # each concert move to folder
+    move_concert_files(concert_json_filenames)  # move each website json file to folder "concert_json_files"
     print('--- Move Okay! ---')
-    delete_files()  # remove 3 useless data in KKTIX, can add more
-    print('--- Delete Okay! ---')
-    get_city_from_stadium()
+    # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
+    # print('--- Delete Okay! ---')
+    get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
     print('--- Get City Okay! ---')
-    json_in_order()
+    json_in_order(json_filename)  # sort the json file according performance time
     print('--- Json In Order! ---')
     print(f'\n------------------\nzh okay!\n------------------\n')
-    # new_concerts()
-    # zh_en()  # 把中文的內文翻譯成英文並寫入en.json
-    # json_new_to_old()
+    ''' new, old, changed concert '''
+    # to do
+    ''' zh to en '''
+    # to do with zh_en() function
+    ''' delete old json file and move new json file as old json file '''
+    # to do with json_new_to_old()
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -3598,8 +3726,9 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
+get_latest_concert_info(concert_today)
 
-get_latest_concert_info()
+''''''
 
 # get_era('era', 'era.json', 'era_temp.txt')
 # get_era_without_error_mechanism('era', 'era.json', 'era_temp.txt')

@@ -265,43 +265,43 @@ def check_concerts():
     # show_all_but_old(all_but_old)
 
 
-# 1. 獲得新演唱會資料以及那些資料是可以刪除的
-new_pins, delete_pins = get_new_pins_delete_pins(new_data, old_data)
-print(f'new_pins = {new_pins}')
-print(f'delete_pins = {delete_pins}')
-# 2. 在all_data中刪除那些裡面沒用的data
-old_concert_delete(all_data, delete_pins)
-# 3. 開始比對new_data & old_data
-compare_new_old(new_data, old_data, all_data)
-# last. 新的pin 不對 這個可以最後處理
-new_concerts(new_pins, new_data, all_data)
-
-
-print(len(new_data))
-print(len(old_data))
-check_concerts()
-# with open('era.json', 'r', encoding='utf-8') as f:
-#     test_data = json.load(f)
+# # 1. 獲得新演唱會資料以及那些資料是可以刪除的
+# new_pins, delete_pins = get_new_pins_delete_pins(new_data, old_data)
+# print(f'new_pins = {new_pins}')
+# print(f'delete_pins = {delete_pins}')
+# # 2. 在all_data中刪除那些裡面沒用的data
+# old_concert_delete(all_data, delete_pins)
+# # 3. 開始比對new_data & old_data
+# compare_new_old(new_data, old_data, all_data)
+# # last. 新的pin 不對 這個可以最後處理
+# new_concerts(new_pins, new_data, all_data)
 #
-# for i in range(len(test_data)):
-#     print(test_data[i]['tit'])
-#     print(test_data[i]['int'])
-#     print('-------------------------')
-
-# for i in range(len(new_data)):
-#     if new_data[i]['pin'] == 'https://chillin.kktix.cc/events/wheeinconcert04210':
-#         # if '加場' in new_data[i]['int'] or '加開' in new_data[i]['int']:
-#         #     print('yes')
-#         print(new_data[i]['int'])
-# print('-------------------------')
-# for i in range(len(old_data)):
-#     if old_data[i]['pin'] == 'https://chillin.kktix.cc/events/wheeinconcert04210':
-#         # if '加場' in old_data[i]['int'] or '加開' in old_data[i]['int']:
-#             # print('yes')
-#         print(old_data[i]['int'])
-
-# a = "加開 abc"
-# b = "加開 abcdf"
-# if a != b:
-#     print('yes')
-#     if '加場' in a or '加開' in a and '加場' not in b and '加開' not in b:
+#
+# print(len(new_data))
+# print(len(old_data))
+# check_concerts()
+# # with open('era.json', 'r', encoding='utf-8') as f:
+# #     test_data = json.load(f)
+# #
+# # for i in range(len(test_data)):
+# #     print(test_data[i]['tit'])
+# #     print(test_data[i]['int'])
+# #     print('-------------------------')
+#
+# # for i in range(len(new_data)):
+# #     if new_data[i]['pin'] == 'https://chillin.kktix.cc/events/wheeinconcert04210':
+# #         # if '加場' in new_data[i]['int'] or '加開' in new_data[i]['int']:
+# #         #     print('yes')
+# #         print(new_data[i]['int'])
+# # print('-------------------------')
+# # for i in range(len(old_data)):
+# #     if old_data[i]['pin'] == 'https://chillin.kktix.cc/events/wheeinconcert04210':
+# #         # if '加場' in old_data[i]['int'] or '加開' in old_data[i]['int']:
+# #             # print('yes')
+# #         print(old_data[i]['int'])
+#
+# # a = "加開 abc"
+# # b = "加開 abcdf"
+# # if a != b:
+# #     print('yes')
+# #     if '加場' in a or '加開' in a and '加場' not in b and '加開' not in b:

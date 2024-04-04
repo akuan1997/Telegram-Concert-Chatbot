@@ -207,7 +207,7 @@ def delete_files():
 
     delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
                      "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
-                     "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+                     "【city_code】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
 
     new_data = [item for item in data if item['tit'] not in delete_titles]
 

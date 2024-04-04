@@ -88,7 +88,7 @@ def check_all_cit(data):
         print(data[i]['cit'], data[i]['loc'])
 
 # check_all_sdt()
-# check_all_pdt()
+check_all_pdt()
 # check_all_loc()
 # check_all_prc()
 # check_all_cit(old_all)
