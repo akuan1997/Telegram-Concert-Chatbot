@@ -3726,7 +3726,7 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
-get_latest_concert_info(concert_today)
+# get_latest_concert_info(concert_today)
 
 ''''''
 
