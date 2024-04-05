@@ -23,13 +23,25 @@ json_list = ["concert_3_14_23.json",
              "concert_4_4_3.json",
              "concert_4_4_14.json"]
 
-for i in range(len(json_list)):
-    data = read_json(json_list[i])
-    for j in range(len(data)):
-        data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
-        print(data[j]['prc'])
-        with open(json_list[i], 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+
+def price_in_order(json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+        for i in range(len(data)):
+            data[i]['prc'] = sorted(data[i]['prc'], reverse=True)
+            with open(json_filename, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+
+# for i in range(len(json_list)):
+#     data = read_json(json_list[i])
+#     for j in range(len(data)):
+#         data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
+#         print(data[j]['prc'])
+#         print(data[j]['pin'])
+#         with open(json_list[i], 'w', encoding='utf-8') as f:
+#             json.dump(data, f, indent=4, ensure_ascii=False)
+#     print('---------------------------------------')
 
 # for i in range(len(json_list)):
 #     data = read_json(json_list[i])
@@ -39,14 +51,14 @@ for i in range(len(json_list)):
 #         # with open(json_list[i], 'w', encoding='utf-8') as f:
 #         #     json.dump(data, f, indent=4, ensure_ascii=False)
 
-    # for j in range(len(data)):
-    #     data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
-    #     print(data[j]['prc'])
-    # # print(sorted_data)
-    #
-    # for j in range(len(data)):
-    #     data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
-    #     print(data[j]['prc'])
-    # print('----------------------------------------------------')
-    # with open(json_list[i], 'w', encoding='utf-8') as f:
-    #     json.dump(data, f, indent=4, ensure_ascii=False)
+# for j in range(len(data)):
+#     data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
+#     print(data[j]['prc'])
+# # print(sorted_data)
+#
+# for j in range(len(data)):
+#     data[j]['prc'] = sorted(data[j]['prc'], reverse=True)
+#     print(data[j]['prc'])
+# print('----------------------------------------------------')
+# with open(json_list[i], 'w', encoding='utf-8') as f:
+#     json.dump(data, f, indent=4, ensure_ascii=False)
