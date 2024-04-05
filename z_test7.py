@@ -34,6 +34,7 @@ json_list = ["concert_3_14_23.json",
              "concert_4_4_14.json"
              ]
 
+
 # a = ['350', '123']
 # print(a)
 # for index, price in enumerate(a):
@@ -43,6 +44,34 @@ json_list = ["concert_3_14_23.json",
 #         except:
 #             pass
 # print(a)
+
+def price_str_to_int(json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    for i in range(len(data)):
+        for index, price in enumerate(data[i]['prc']):
+            if isinstance(price, str):
+                # print(data[i]['prc'])
+                try:
+                    data[i]['prc'][index] = int(price)
+                    with open(json_list[i], 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=4, ensure_ascii=False)
+                except:
+                    pass
+                # print(data[i]['prc'])
+
+    # for i in range(len(data)):
+    #     for index, price in enumerate(data[i]['prc']):
+    #         if isinstance(price, str):
+    #             print(data[i]['prc'])
+    #             try:
+    #                 data[i]['prc'][index] = int(price)
+    #                 with open(json_filename, 'w', encoding='utf-8') as f:
+    #                     json.dump(data, f, indent=4, ensure_ascii=False)
+    #             except:
+    #                 pass
+
 
 for i in range(len(json_list)):
     data = read_json(json_list[i])
@@ -57,9 +86,6 @@ for i in range(len(json_list)):
                 except:
                     pass
                 print(data[j]['prc'])
-
-
-
 
 # ''' 刪除不必要的kktix資訊 '''
 # data = read_json(json_list[i])
