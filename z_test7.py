@@ -34,15 +34,15 @@ json_list = ["concert_3_14_23.json",
              "concert_4_4_14.json"
              ]
 
-a = ['350', '123']
-print(a)
-for index, price in enumerate(a):
-    if isinstance(price, str):
-        try:
-            a[index] = int(price)
-        except:
-            pass
-print(a)
+# a = ['350', '123']
+# print(a)
+# for index, price in enumerate(a):
+#     if isinstance(price, str):
+#         try:
+#             a[index] = int(price)
+#         except:
+#             pass
+# print(a)
 
 for i in range(len(json_list)):
     data = read_json(json_list[i])
@@ -52,6 +52,8 @@ for i in range(len(json_list)):
                 print(data[j]['prc'])
                 try:
                     data[j]['prc'][index] = int(price)
+                    with open(json_list[i], 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=4, ensure_ascii=False)
                 except:
                     pass
                 print(data[j]['prc'])
