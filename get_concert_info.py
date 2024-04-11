@@ -95,16 +95,12 @@ def delete_blank_sdt(website, json_name):
     print(f'{website}當中空白的sdt清空完成!')
 
 
-def delete_past_ticketing_time(website, json_filename):
-    # live nation, indievox, ticketplus
-    # era, kktix 補上
-    print(f'準備刪除{website}中sdt為過去的時間')
+def delete_past_ticketing_time(json_filename):
     # 刪除時間已經過去的售票時間
     with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     for i in range(len(data)):
-        # print('i =', i)
         # 如果含有售票時間
         if data[i]['sdt']:
             # 就把所有的售票時間都轉換成datetime object
@@ -119,11 +115,10 @@ def delete_past_ticketing_time(website, json_filename):
                     future_datetimes.append(str(sdt_obj)[:-3].replace('-', '/'))
             # print('future_datetimes', future_datetimes)
             # 更改售票時間
-            data[i]['sdt'] = future_datetimes
+            data[i]['sdt'] = future_datetimes  # str, not obj
             # 寫入檔案
             with open(json_filename, 'w', encoding='utf-8') as file:
                 json.dump(data, file, indent=4, ensure_ascii=False)
-    print(f'{website}中sdt為過去的時間都刪除了!')
 
 
 def get_era(website, json_filename, txt_filename):
@@ -3722,21 +3717,23 @@ def get_latest_concert_info(json_filename):
     reset_failure_log()
     threads_start()  # start the threads
     threads_join()  # wait for all the threads finish
-    print('--- All Scraping Threads Finished! ---')
+    print('--- Playwright finished ---')
     merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
-    print('--- Merge Okay! ---')
+    print('--- Json merged ---')
     move_concert_files(concert_json_filenames)  # move each website json file to folder "concert_json_files"
-    print('--- Move Okay! ---')
+    print('--- Json moved ---')
     # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
-    # print('--- Delete Okay! ---')
+    # print('--- Files deleted ---')
     get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
-    print('--- Get City Okay! ---')
+    print('--- Get all city ---')
     json_in_order(json_filename)  # sort the json file according performance time
-    print('--- Json In Order! ---')
+    print('--- Json in order ---')
     price_str_to_int(json_filename)  # price, if str -> int
     print('--- Replaced str with int for all str! ---')
     price_in_order(json_filename)  # price in order, start from the most highest price
-    print('--- Price In Order! ---')
+    print('--- Price in order ---')
+    # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
+    # print('--- Delete all past ticketing time ---')
     print(f'\n------------------\nzh okay!\n------------------\n')
     ''' new, old, changed concert '''
     # to do
@@ -3756,39 +3753,11 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-# get_latest_concert_info(concert_today)
+get_latest_concert_info(concert_today)
 
 ''''''
 
-def delete_past_ticketing_time1(website, json_filename):
-    # live nation, indievox, ticketplus
-    # era, kktix 補上
-    print(f'準備刪除{website}中sdt為過去的時間')
-    # 刪除時間已經過去的售票時間
-    with open(json_filename, 'r', encoding='utf-8') as f:
-        data = json.load(f)
 
-    for i in range(len(data)):
-        # print('i =', i)
-        # 如果含有售票時間
-        if data[i]['sdt']:
-            # 就把所有的售票時間都轉換成datetime object
-            sdt_objs = [datetime.strptime(sdt, '%Y/%m/%d %H:%M') for sdt in data[i]['sdt']]
-            # 只儲存尚未售票的時間
-            future_datetimes = []
-            for sdt_obj in sdt_objs:
-                # 如果是未來
-                if sdt_obj > datetime.now():
-                    # print('future', str(sdt_obj)[:-3].replace('-', '/'))
-                    # 就加入list裡面
-                    future_datetimes.append(str(sdt_obj)[:-3].replace('-', '/'))
-            # print('future_datetimes', future_datetimes)
-            # 更改售票時間
-            data[i]['sdt'] = future_datetimes
-            # 寫入檔案
-            with open(json_filename, 'w', encoding='utf-8') as file:
-                json.dump(data, file, indent=4, ensure_ascii=False)
-    print(f'{website}中sdt為過去的時間都刪除了!')
 
 # get_era('era', 'era.json', 'era_temp.txt')
 # get_era_without_error_mechanism('era', 'era.json', 'era_temp.txt')

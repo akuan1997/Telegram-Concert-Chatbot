@@ -84,7 +84,6 @@ def check_availability():
 
 
 def post_article(title, content, city, category, pin):
-
     # categories [(中文68 or 英文67) + 城市code]
     categories = []
     if category == 0:
@@ -332,14 +331,97 @@ def get_city_code(text):
 # """
 # post_article('20240404', content, "台北", 0, "12345")
 
+def print_list_str(lst):
+    lst_str = ''
+    if len(lst) == 1 and lst[0] != '':
+        lst_str = lst[0]
+    elif len(lst) > 1:
+        for i in range(len(lst)):
+            lst_str += str(lst[i]) + ' / '
+        lst_str = lst_str[:-3]
+    else:
+        lst_str = '-'
+
+    return lst_str
+
+
+def test_po():
+    for i in range(10):
+        # sdt = ''
+        # prc = ''
+        # pdt = ''
+        # loc = ''
+
+        sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
+        prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
+        pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
+        loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
+        web_str = f"售票網站  :  {data[index]['web']}"
+        url_txt = f"售票網址  :  "
+        url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
+
+        content = f"""
+                <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
+                <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
+                <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
+                <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
+                <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
+                <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
+                """
+
+        post_article(data[i]['tit'], content, data[i]['cit'], 0, data[i]['pin'])
+
+
 data = read_json("concert_3_14_23.json")
-for i in range(5):
-    content = f"""
-    <p class="has-palette-color-4-color has-text-color has-link-color">售票: {data[i]['sdt']}</p>
-    <p class="has-palette-color-4-color has-text-color has-link-color">票價: {data[i]['prc']}</p>
-    <p class="has-palette-color-4-color has-text-color has-link-color">表演時間： {data[i]['pdt']}</p>
-    <p class="has-palette-color-4-color has-text-color has-link-color">地點: {data[i]['loc']}</p>
-    <p class="has-palette-color-4-color has-text-color has-link-color">系統: {data[i]['web']}</p>
-    <p class="has-palette-color-4-color has-text-color has-link-color">網址: {data[i]['url']}</p>
-    """
-    post_article(data[i]['tit'], content, data[i]['cit'], 0, data[i]['pin'])
+
+index = 88
+sdt = ''
+prc = ''
+pdt = ''
+loc = ''
+
+sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
+prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
+pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
+loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
+web_str = f"售票網站  :  {data[index]['web']}"
+url_txt = f"售票網址  :  "
+url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
+
+# content = f"""
+#     <div style="white-space: pre-wrap;>
+#     <p class="has-palette-color-4-color has-text-color has-link-color"></p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
+#     <p class="has-palette-color-4-color has-text-color has-link-color">{url_str}</p>
+#     </div>
+#     """
+''' '''
+# content = f"""
+#     <div style="white-space: pre-wrap;>
+#     <span class="has-palette-color-4-color has-text-color has-link-color"></span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{web_str}</span>
+#     <span class="has-palette-color-4-color has-text-color has-link-color">{url_str}</span>
+#     </div>
+#     """
+''' 目前最佳 '''
+content = f"""
+        <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
+        <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
+        <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
+        <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
+        <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
+        <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
+        """
+''' 目前最佳 '''
+# post_article(data[index]['tit'], content, data[index]['cit'], 0, data[index]['pin'])
+test_po()
+# <span class="has-palette-color-4-color has-text-color has-link-color"></span>
+# <p class="has-palette-color-4-color has-text-color has-link-color">{url_str}</p>
