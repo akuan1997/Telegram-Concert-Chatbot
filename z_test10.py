@@ -1,9 +1,5 @@
 from playwright.sync_api import sync_playwright, Playwright
 from playwright.sync_api import expect, Page
-import os
-import re
-import json
-import threading
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
@@ -23,7 +19,8 @@ with sync_playwright() as p:
         if keyword in first_search_result:
             print("that's what I want")
             page.locator("#cdx-menu-item-1").click()
-            page.wait_for_timeout(50000)
     else:
         print('ni hao')
     # page.locator("#p-search > a > span.vector-icon.mw-ui-icon-search.mw-ui-icon-wikimedia-search").click()
+    #
+    page.wait_for_timeout(30000)

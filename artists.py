@@ -123,6 +123,7 @@ def click_actions(page, finished_urls, json_filename):
     # 重複的就不要再執行了
     with open(finished_urls, 'r', encoding='utf-8') as f:
         processed_urls = f.readlines()
+
     processed_urls = [processed_url.replace('\n', '') for processed_url in processed_urls]
 
     name_codes = [processed_url.split('/')[-1] for processed_url in processed_urls]

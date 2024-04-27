@@ -4,58 +4,60 @@ import json
 import requests
 from pprint import pprint
 from y_example_read_json import *
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-# location_dict = {
-#     '新北': 3,
-#     '高雄': 4,
-#     '台北': 14,
-#     '桃園': 15,
-#     '台中': 16,
-#     '台南': 17,
-#     '基隆': 18,
-#     '新竹': 19,
-#     '苗栗': 20,
-#     '彰化': 21,
-#     '南投': 22,
-#     '雲林': 23,
-#     '嘉義': 24,
-#     '屏東': 25,
-#     '宜蘭': 26,
-#     '花蓮': 27,
-#     '台東': 28,
-#     '金門': 29,
-#     '澎湖': 30,
-#     '連江': 31,
-#     'Taipei': 1,
-#     'New Taipei': 32,
-#     'Taoyuan': 33,
-#     'Taichung': 34,
-#     'Hsinchu': 35,
-#     'Miaoli': 36,
-#     'Changhua': 37,
-#     'Nantou': 38,
-#     'Yunlin': 39,
-#     'Chiayi': 40,
-#     'Pingtung': 41,
-#     'Yilan': 42,
-#     'Hualien': 43,
-#     'Taitung': 44,
-#     'Kinmen': 45,
-#     'Penghu': 46,
-#     'Lienchiang': 47,
-#     'Keelung': 48,
-#     'Kaohsiung': 49,
-#     'Tainan': 50,
-#     '歌手': 51,
-#     'singer': 52
-# }
-
-# Init
 url = "https://concertinfo.site/wp-json/wp/v2/posts"
 username = "user"
 password = "EzMf fRIF 7gwd 2O2F 38G0 QheE"
 credentials = "{}:{}".format(username, password)
 token = base64.b64encode(credentials.encode())
+
+city_code = {
+    "新北": 70,
+    "台北": 14,
+    "桃園": 15,
+    "台中": 16,
+    "台南": 17,
+    "基隆": 18,
+    "新竹": 19,
+    "苗栗": 20,
+    "彰化": 21,
+    "南投": 22,
+    "雲林": 23,
+    "嘉義": 24,
+    "屏東": 25,
+    "宜蘭": 26,
+    "花蓮": 27,
+    "台東": 28,
+    "金門": 29,
+    "澎湖": 30,
+    "連江": 31,
+    "高雄": 69,
+    "Taipei": 1,
+    "New Taipei": 32,
+    "Taoyuan": 33,
+    "Taichung": 34,
+    "Hsinchu": 35,
+    "Miaoli": 36,
+    "Changhua": 37,
+    "Nantou": 38,
+    "Yunlin": 39,
+    "Chiayi": 40,
+    "Pingtung": 41,
+    "Yilan": 42,
+    "Hualien": 43,
+    "Taitung": 44,
+    "Kinmen": 45,
+    "Penghu": 46,
+    "Lienchiang": 47,
+    "Keelung": 48,
+    "Kaohsiung": 49,
+    "Tainan": 50,
+    "歌手": 51,
+    "singer": 52,
+    "concert": 67,
+    "演唱會": 68
+}
 
 # Header
 headers = {
@@ -72,7 +74,12 @@ def get_post_data(id):
 
     return post_data
 
+# '<!-- wp:html -->
+# '<!-- /wp:html -->
+post_data = get_post_data(2019)
+print(post_data['content']['rendered'])
 
+'''
 def check_availability():
     # Check
     r = requests.get(
@@ -81,6 +88,7 @@ def check_availability():
     )
 
     print(r)  # 200
+'''
 
 
 def post_article(title, content, city, category, pin):
@@ -133,7 +141,7 @@ def post_article(title, content, city, category, pin):
 
 def update_article(post_id):
     post = {
-        "content": f"{get_post_data(post_id)['content']['rendered']}<button id='followButton'>Follow!</button>",
+        "content": f"Yes, you can update this post.",
     }
 
     # Post
@@ -230,6 +238,8 @@ def singer_remove_link(singer_id, concert_id):
 #     json=post,
 # )
 ''''''
+
+
 # singer_add_link(15, 104, 'hello I am Kuan')
 # singer_remove_link(15, 104)
 # post_article("hello, kuan", "just a test", 0, [3, 4])
@@ -256,53 +266,6 @@ def singer_remove_link(singer_id, concert_id):
 #     headers=headers,
 #     json=post,
 # )
-
-city_code = {
-    "新北": 70,
-    "台北": 14,
-    "桃園": 15,
-    "台中": 16,
-    "台南": 17,
-    "基隆": 18,
-    "新竹": 19,
-    "苗栗": 20,
-    "彰化": 21,
-    "南投": 22,
-    "雲林": 23,
-    "嘉義": 24,
-    "屏東": 25,
-    "宜蘭": 26,
-    "花蓮": 27,
-    "台東": 28,
-    "金門": 29,
-    "澎湖": 30,
-    "連江": 31,
-    "高雄": 69,
-    "Taipei": 1,
-    "New Taipei": 32,
-    "Taoyuan": 33,
-    "Taichung": 34,
-    "Hsinchu": 35,
-    "Miaoli": 36,
-    "Changhua": 37,
-    "Nantou": 38,
-    "Yunlin": 39,
-    "Chiayi": 40,
-    "Pingtung": 41,
-    "Yilan": 42,
-    "Hualien": 43,
-    "Taitung": 44,
-    "Kinmen": 45,
-    "Penghu": 46,
-    "Lienchiang": 47,
-    "Keelung": 48,
-    "Kaohsiung": 49,
-    "Tainan": 50,
-    "歌手": 51,
-    "singer": 52,
-    "concert": 67,
-    "演唱會": 68
-}
 
 
 def get_city_code(text):
@@ -332,6 +295,7 @@ def get_city_code(text):
 # post_article('20240404', content, "台北", 0, "12345")
 
 def print_list_str(lst):
+    """ list 所有元素用str輸出 """
     lst_str = ''
     if len(lst) == 1 and lst[0] != '':
         lst_str = lst[0]
@@ -345,48 +309,48 @@ def print_list_str(lst):
     return lst_str
 
 
-def test_po():
-    for i in range(10):
-        # sdt = ''
-        # prc = ''
-        # pdt = ''
-        # loc = ''
+# def test_po():
+#     for i in range(10):
+#         # sdt = ''
+#         # prc = ''
+#         # pdt = ''
+#         # loc = ''
+#
+#         sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
+#         prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
+#         pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
+#         loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
+#         web_str = f"售票網站  :  {data[index]['web']}"
+#         url_txt = f"售票網址  :  "
+#         url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
+#
+#         content = f"""
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
+#                 <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
+#                 """
+#
+#         post_article(data[i]['tit'], content, data[i]['cit'], 0, data[i]['pin'])
 
-        sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
-        prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
-        pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
-        loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
-        web_str = f"售票網站  :  {data[index]['web']}"
-        url_txt = f"售票網址  :  "
-        url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
 
-        content = f"""
-                <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
-                <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
-                <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
-                <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
-                <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
-                <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
-                """
-
-        post_article(data[i]['tit'], content, data[i]['cit'], 0, data[i]['pin'])
-
-
-data = read_json("concert_3_14_23.json")
-
-index = 88
-sdt = ''
-prc = ''
-pdt = ''
-loc = ''
-
-sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
-prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
-pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
-loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
-web_str = f"售票網站  :  {data[index]['web']}"
-url_txt = f"售票網址  :  "
-url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
+# data = read_json("concert_3_14_23.json")
+#
+# index = 88
+# sdt = ''
+# prc = ''
+# pdt = ''
+# loc = ''
+#
+# sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
+# prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
+# pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
+# loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
+# web_str = f"售票網站  :  {data[index]['web']}"
+# url_txt = f"售票網址  :  "
+# url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
 
 # content = f"""
 #     <div style="white-space: pre-wrap;>
@@ -412,16 +376,270 @@ url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}<
 #     </div>
 #     """
 ''' 目前最佳 '''
-content = f"""
-        <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
-        <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
-        <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
-        <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
-        <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
-        <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
-        """
+# content = f"""
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
+#         <p class="has-palette-color-4-color has-text-color has-link-color">{url_txt}{url_str}</p>
+#         """
 ''' 目前最佳 '''
 # post_article(data[index]['tit'], content, data[index]['cit'], 0, data[index]['pin'])
-test_po()
+# test_po()
 # <span class="has-palette-color-4-color has-text-color has-link-color"></span>
 # <p class="has-palette-color-4-color has-text-color has-link-color">{url_str}</p>
+
+''''''
+'''
+content = """
+<style>
+/* 针对图片卡片的样式 */
+.image-card {
+    border: 1px solid #ccc;
+    display: block; /* 使链接成为块级元素 */
+    max-width: 400px; /* 与邮件表单的最大宽度相同 */
+    margin: 20px auto; /* 居中显示，与邮件表单相同的外边距 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 相同的阴影效果 */
+    border-radius: 10px; /* 圆角边框 */
+    overflow: hidden; /* 超出边界的图片部分会被隐藏 */
+}
+
+.image-card img {
+    width: 100%; /* 让图片填满容器 */
+    display: block; /* 避免底部有空隙 */
+    height: auto; /* 保持图片的原始比例 */
+}
+</style>
+
+<a href="https://concertinfo.site" class="image-card">
+    <img src="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg" alt="Singer Name" />
+</a>
+
+"""
+'''
+
+# # Post info
+# post = {
+#     "title": "測試la",
+#     "content": content1,
+#     "status": "publish",
+#     "categories": 68,
+#     "fields": {  # 添加自定義字段部分
+#             "concert_date": "2024-04-20"
+#     }
+# }
+
+# # Post
+# r = requests.post(
+#     url,
+#     headers=headers,
+#     json=post,
+#     params={"raw": "true"}  # Adding raw parameter to the request
+# )
+
+# post_id = json.loads(r.text).get('id')
+# print(f'post_id = {post_id}')
+# link = json.loads(r.text).get('link')
+# print(f'link = {link}')
+# with open('concert_pin_postid.txt', 'a', encoding='utf-8') as f:
+#     f.write(f'{pin}|{post_id}\n')
+
+# # Print
+# pprint(r.text)
+
+''''''
+# content1 = '''
+# <div style="border: 1px solid black; padding: 10px;">
+#   <h2>这是一个HTML方块</h2>
+#   <p>这里是内容...</p>
+# </div>
+# '''
+# content2 = '''
+# '<!-- wp:html -->
+# <style>
+# /* 针对图片卡片的样式 */
+# .image-card {
+#     border: 1px solid #ccc;
+#     display: flex; /* 使用flex布局 */
+#     justify-content: space-between; /* 确保左侧内容和图片在右侧分开 */
+#     align-items: flex-start; /* 标题对齐到顶部 */
+#     max-width: 400px; /* 与邮件表单的最大宽度相同 */
+#     margin: 20px auto; /* 居中显示，与邮件表单相同的外边距 */
+#     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 相同的阴影效果 */
+#     border-radius: 10px; /* 圆角边框 */
+#     overflow: hidden; /* 超出边界的图片部分会被隐藏 */
+#     padding: 20px;
+# }
+# .image-card img {
+#     width: 300px; /* 图片宽度设置为300像素 */
+#     height: 300px; /* 图片高度设置为300像素 */
+#     display: block; /* 避免底部有空隙 */
+#     object-fit: cover; /* 调整图片大小以覆盖整个设定区域，可能会裁剪部分图片 */
+# }
+# .image-card .content {
+#     display: flex; /* 使用flex布局 */
+#     flex-direction: column; /* 元素垂直排列 */
+#     flex: 1; /* 允许内容区域成长填充可用空间 */
+#     justify-content: center; /* 中心对齐所有子元素 */
+#     margin-right: 20px; /* 右邊距，增加间隔 */
+#     text-align: center; /* 文本居中 */
+# }
+# .image-card h1 {
+#     margin: 0 0 10px 0; /* 移除默认的外边距并添加下方间隔 */
+#     font-size: 30px; /* 设置字体大小为30px */
+# }
+# .concert-box {
+#     border: 1px solid #ccc; /* 添加边框 */
+#     padding: 10px 50px 10px 10px; /* 右侧内边距增加 */
+#     width: 100%; /* 宽度调整为100%以填充父元素宽度 */
+#     text-align: center; /* 文本居中 */
+#     font-size: 20px; /* 字体大小 */
+#     margin-top: 10px; /* 上方外边距 */
+# }
+# .concert-link { /* 适用于链接的样式 */
+#     color: inherit; /* 继承文字颜色 */
+#     text-decoration: none; /* 去除下划线 */
+#     display: block; /* 让链接填满整个框框 */
+# }
+# </style>
+# <div class="image-card">
+#     <div class="content">
+#         <h1>即將來臨的演唱會</h1>
+#         <div class="concert-box">
+#             <a href="https://example.com/concert1" class="concert-link">CONCERT1</a>
+#         </div>
+#         <div class="concert-box">
+#             <a href="https://example.com/concert2" class="concert-link">CONCERT2</a>
+#         </div>
+#     </div>
+#     <img src="alarm2.jpg" alt="Singer Name" />
+# </div>
+#
+# <style>
+# /* 针对特定表单的卡片容器样式 */
+# .emailSignupForm {
+#     border: 1px solid #ccc;
+#     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+#     padding: 20px;
+#     background-color: #101010;
+#     max-width: 400px;
+#     margin: 20px auto;
+#     font-family: Arial, sans-serif;
+#     color: white;
+#     border-radius: 10px;
+#     display: flex; /* 使用 flex 布局 */
+#     flex-direction: column; /* 垂直方向排列 */
+# }
+#
+# .emailSignupForm h1, .emailSignupForm p {
+#     text-align: center;
+#     margin-bottom: 20px;
+# }
+#
+# .emailSignupForm label {
+#     display: block;
+#     margin-bottom: 10px;
+#     color: white;
+# }
+#
+# .emailSignupForm #emailContainer {
+#     display: flex; /* 使用 flex 布局 */
+#     align-items: center; /* 垂直居中对齐 */
+# }
+#
+# .emailSignupForm label {
+#     margin-right: 10px; /* 左侧文字与输入框之间的间隔 */
+# }
+#
+# .emailSignupForm input[type=email], .emailSignupForm input[type=button] {
+#     flex: 1; /* 使用 flex-grow 让输入框占据剩余空间 */
+#     padding: 10px;
+#     margin-bottom: 20px;
+#     border: 1px solid #ccc;
+#     border-radius: 10px;
+# }
+#
+# .emailSignupForm input[type=button] {
+#     background-color: #fe5532;
+#     color: white;
+#     border: none;
+#     cursor: pointer;
+# }
+#
+# .emailSignupForm input[type=button]:hover {
+#     background-color: #993333;
+# }
+#
+# .emailSignupForm #successMessage {
+#     background-color: #28a745;
+#     color: white;
+#     text-align: center;
+#     padding: 15px;
+#     border-radius: 10px;
+#     display: none;
+# }
+# </style>
+#
+# <form class="emailSignupForm">
+#     <h1>Ticket Alarm!</h1> <!-- 第一行文字 -->
+#     <p>輸入你的email，隨時接收這位藝人的最新消息!</p> <!-- 第二行描述文字 -->
+#     <div id="emailContainer">
+#         <label for="emailInput">Enter Email Address</label> <!-- 邮箱输入的标签 -->
+#         <input type="email" id="emailInput" name="email" autocomplete="email" multiple=""> <!-- 邮箱输入框，支持自动完成 -->
+#     </div>
+#     <input type="button" id="useremail" value="Submit" onclick="changeButtonText()"> <!-- 提交按钮，点击时触发JavaScript函数 -->
+#     <div id="successMessage" style="display:none;">已成功訂閱！感謝您的訂閱。</div> <!-- 成功消息容器，默认隐藏 -->
+#     <script src="/wp-content/themes/blocksy/static/js/email-script.js"></script> <!-- 引入外部JavaScript文件 -->
+#     <script>
+#         function changeButtonText() {
+#             var button = document.getElementById('useremail'); // 获取按钮元素
+#             button.style.display = 'none'; // 隐藏按钮
+#             var emailContainer = document.getElementById('emailContainer'); // 获取邮箱容器元素
+#             emailContainer.style.display = 'none'; // 隐藏邮箱容器
+#             var successMessage = document.getElementById('successMessage'); // 获取成功消息元素
+#             successMessage.style.display = 'block'; // 显示成功消息
+#         }
+#     </script>
+# </form>
+#
+# '<!-- /wp:html -->
+# '''
+# content3 = '''
+# '<!-- wp:html -->
+# <img src="alarm.png" alt="我的鬧鐘">
+# <!-- /wp:html -->'
+# '''
+# # Header
+# headers = {
+#     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
+#     "Authorization": "Basic {}".format(token.decode("utf-8")),
+#     "content-type": "application/json",
+# }
+# file_path = 'alarm.png'
+# # 創建一個多部分表單數據編碼器
+# multipart_data = MultipartEncoder(
+#     fields={
+#         # HTML內容部分
+#         'html_file': ('content.html', content3, 'text/html'),
+#         # 圖片文件部分
+#         'image_file': ('alarm.png', open(file_path, 'rb'), 'image/png')
+#     }
+# )
+#
+# post = {
+#     "content": content3,
+# }
+#
+# # Post
+# r = requests.post(
+#     "{}/{}".format(url, 2389),
+#     data=multipart_data,
+#     headers=headers,
+#     json=post,
+# )
+#
+# link = json.loads(r.text).get('link')
+# print(f'link = {link}')
+#
+# pprint(r.text)
