@@ -88,7 +88,6 @@ DAVICHI (다비치)
 Red Velvet
 RGP (레게 강 같은 평화)
 Min Chae (민채)
-『我鄰居是EXO』OST
 BTS防彈少年團
 K.Will
 Standing egg (스탠딩 에그)
@@ -114,7 +113,6 @@ HYUKOH
 厲旭 (RYEOWOOK)
 t Yoonmirae (t 尹美萊)
 Crush (크러쉬)
-率智哈妮 (EXID)
 允兒 (YOONA)
 XIA (준수)
 Block B (블락비)
@@ -131,7 +129,7 @@ GFRIEND (여자친구)
 BLACKPINK (블랙핑크)
 朴寶藍 (Park Boram)
 鄭俊英 (Jung Joon Young)
-Jeon Woo Sung (NOEL) (전우성 (노을))
+Jeon Woo Sung (NOEL)
 I.O.I (아이오아이)
 KCM
 Ahn Hyeon Jeong (안현정)
@@ -139,7 +137,7 @@ Taru (타루)
 Jessi
 MOBB
 NAVI (나비)
-JoHyunAh (Urban Zakapa) (조현아 (어반 자카파))
+JoHyunAh (Urban Zakapa)
 白娥娟 (Baek A Yeon)
 Coffee Boy (커피소년)
 Younha (윤하)
@@ -163,7 +161,6 @@ Sam Kim (샘김)
 Eddy Kim (에디킴)
 韶宥 (Soyou)
 鄭俊日 (Jung Joonil)
-KEN (VIXX)
 MAMAMOO (마마무)
 NCT 127
 徐玄 (SEOHYUN)
@@ -266,7 +263,7 @@ KLANG
 金希澈 (KIM HEECHUL)
 CHANYEOL (찬열)
 洪大光 (Hong Dae Kwang)
-Lee Hae Ri (DAVICHI) (이해리)
+Lee Hae Ri (DAVICHI)
 XIUMIN (시우민)
 Nokdu
 cott (콧)
@@ -470,7 +467,6 @@ SECRET NUMBER
 MOVNING (모브닝)
 Seol Hoseung (SURL)
 JIHYO
-NEW (THE BOYZ)
 wonstein
 溫流 (ONEW)
 HAN SEUNG YUN
@@ -508,7 +504,6 @@ So Soo Bin (소수빈)
 John Park (존박)
 Kuonechan (구원찬)
 SMTOWN
-LIA (ITZY)
 PAXCHILD
 Huh Yunjin
 孫盛希 (Shi Shi)

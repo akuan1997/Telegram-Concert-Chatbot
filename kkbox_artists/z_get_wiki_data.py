@@ -29,7 +29,7 @@ def write_data_json(json_name, new_data):
             json.dump(existing_data, f, indent=4, ensure_ascii=False)
 
 
-def get_wiki_data(current_url, singer_name):
+def get_wiki_data(current_url, singer_name, full_name):
     # 先判斷這個網頁有沒有造訪過
     with open('z_visited_urls.txt', 'r', encoding='utf-8') as f:
         visited_urls = f.readlines()
@@ -133,14 +133,14 @@ def get_wiki_data(current_url, singer_name):
                         with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
 
+                        with open(finished_artists, 'a', encoding='utf-8') as f:
+                            f.write(full_name + '\n')
+
                     # 有方塊，也有圖片，但是卻點不進去
                     else:
                         print('! step 4')
 
                         with open('z_image_but_problem.txt', 'a', encoding='utf-8') as f:
-                            f.write(singer_page_url + '\n')
-
-                        with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
                 # 有方塊，但是沒有圖片
                 else:
@@ -160,6 +160,10 @@ def get_wiki_data(current_url, singer_name):
 
                     with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
                         f.write(singer_page_url + '\n')
+
+                    with open(finished_artists, 'a', encoding='utf-8') as f:
+                        f.write(full_name + '\n')
+
             # 這個頁面右側沒有方塊
             else:
                 print('! step 2')
@@ -191,30 +195,38 @@ with sync_playwright() as p:
 
         if lines:
             full_name = lines.pop(0).replace('\n', '')
+            print('full_name = ', full_name)
             if '(' in full_name:
-                type_name = full_name.split('(')[0]
+                type_name = full_name.split('(')[0].strip()
             else:
-                type_name = full_name
+                type_name = full_name.strip()
+            print('type_name = ', type_name)
 
             # 搜尋欄位可見
-            page.wait_for_selector('.cdx-text-input__input:nth-child(1)')
+            page.wait_for_selector('.cdx-text-input__input:nth-child(1)', state="visible")
             # if page.locator(".cdx-text-input__input").nth(0).is_visible():
             page.locator(".cdx-text-input__input").nth(0).fill(type_name)  # 填入關鍵字
-            first_search_result = page.locator("#cdx-menu-item-1 > a > span:nth-child(2) > span > bdi > span").inner_text()
-            # 如果第一個搜尋結果就是我要的
-            if type_name in first_search_result:
-                print("that's what I want")
-                page.locator("#cdx-menu-item-1").click()  # 前往頁面
-                page.wait_for_load_state('load')
-                page.wait_for_timeout(1500)
+            page.wait_for_timeout(3000)
+            if page.locator("#cdx-menu-item-1 > a > span:nth-child(2) > span > bdi > span").is_visible():
+                first_search_result = page.locator(
+                    "#cdx-menu-item-1 > a > span:nth-child(2) > span > bdi > span").inner_text()
+                # 如果第一個搜尋結果就是我要的
+                if type_name in first_search_result:
+                    print("that's what I want")
+                    page.locator("#cdx-menu-item-1").click()  # 前往頁面
+                    page.wait_for_load_state('load')
+                    page.wait_for_timeout(1500)
 
-                get_wiki_data(page.url, full_name)
+                    get_wiki_data(page.url, type_name, full_name)
+
+                else:
+                    print('找不到這個人欸')
+                    with open('z_wiki_cannot_find.txt', 'a', encoding='utf-8') as f:
+                        f.write(full_name + '\n')
             else:
+                print('根本找不到結果欸')
                 with open('z_wiki_cannot_find.txt', 'a', encoding='utf-8') as f:
                     f.write(full_name + '\n')
-
-            with open(finished_artists, 'a', encoding='utf-8') as f:
-                f.write(full_name)
 
             with open(waiting_artists, 'w', encoding='utf-8') as f:
                 f.writelines(lines)
@@ -225,5 +237,3 @@ with sync_playwright() as p:
 
         else:
             break
-
-

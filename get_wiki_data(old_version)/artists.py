@@ -109,7 +109,7 @@ def image_page_actions(page, title_name):
     # page.screenshot(path=file_path)
     image_data = page.goto(image_url).body()
     image_name = f'{title_name.strip()}.png'
-    file_path = os.path.join('artists_images', image_name)
+    file_path = os.path.join('../artists_images', image_name)
     with open(file_path, 'wb') as f:
         f.write(image_data)
         print('image okay')
@@ -209,7 +209,7 @@ def click_actions(page, finished_urls, json_filename):
                 else:
                     print('這位歌手沒有圖片')
                     try:
-                        page.screenshot(path=os.path.join('screenshot_no_images', f"{title_name}.png"))
+                        page.screenshot(path=os.path.join('../screenshot_no_images', f"{title_name}.png"))
                     except Exception as e:
                         pass
                     names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
@@ -342,7 +342,7 @@ def click_actions_for_browsing(page, finished_urls, json_filename):
                 else:
                     print('這位歌手沒有圖片')
                     print('123')
-                    page.screenshot(path=os.path.join('screenshot_no_images', f"{title_name}.png"))
+                    page.screenshot(path=os.path.join('../screenshot_no_images', f"{title_name}.png"))
                     print('456')
                     names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
                     names = [name.replace('[編輯]', '') for name in names]
