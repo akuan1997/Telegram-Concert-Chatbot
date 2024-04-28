@@ -1094,3 +1094,447 @@ title name = 愛繆
 full name = ハルレオ
 https://zh.wikipedia.org/zh-tw/%E6%84%9B%E7%B9%86
 ---
+title name = 小小戀歌
+full name = 小情歌樂團
+https://zh.wikipedia.org/zh-tw/%E5%B0%8F%E5%B0%8F%E6%88%80%E6%AD%8C
+---
+title name = 西口杏里沙
+full name = 杏沙子
+https://zh.wikipedia.org/zh-tw/%E8%A5%BF%E5%8F%A3%E6%9D%8F%E9%87%8C%E6%B2%99
+---
+title name = 五十嵐隆
+full name = SIRUP
+https://zh.wikipedia.org/zh-tw/%E4%BA%94%E5%8D%81%E5%B5%90%E9%9A%86
+---
+title name = 松下電器
+full name = 松下美千代
+https://zh.wikipedia.org/zh-tw/%E6%9D%BE%E4%B8%8B%E9%9B%BB%E5%99%A8
+---
+title name = CULEN
+full name = 新地圖join音樂
+https://zh.wikipedia.org/zh-tw/CULEN
+---
+title name = ultra soul
+full name = Softsoul
+https://zh.wikipedia.org/zh-cn/Ultra_soul
+---
+title name = 桃乃木香奈
+full name = ヒーリング・ライフ
+https://zh.wikipedia.org/w/index.php?title=%E6%A1%83%E4%B9%83%E6%9C%A8%E9%A6%99%E5%A5%88&oldformat=true&variant=zh-tw
+---
+title name = Sayuri
+full name = SANARI
+https://zh.wikipedia.org/zh-tw/Sayuri
+---
+title name = 太郎
+full name = たろう。
+https://zh.wikipedia.org/zh-tw/%E5%A4%AA%E9%83%8E
+---
+title name = 後搖滾
+full name = toconoma
+https://zh.wikipedia.org/zh-tw/%E5%BE%8C%E6%90%96%E6%BB%BE
+---
+title name = 伊藤潤二驚選集
+full name = 澤田薰
+https://zh.wikipedia.org/zh/%E4%BC%8A%E8%97%A4%E6%BD%A4%E4%BA%8C%E9%A9%9A%E9%81%B8%E9%9B%86
+---
+title name = THE MONSTER ～Someday～
+full name = GOMES THE HITMAN
+https://zh.wikipedia.org/zh-tw/THE_MONSTER_%E3%80%9CSomeday%E3%80%9C?oldformat=true
+---
+title name = ≠ME
+full name = m@e
+https://zh.wikipedia.org/zh-tw/%E2%89%A0ME
+---
+title name = Mafumafu
+full name = まふまふ
+https://zh.wikipedia.org/zh-tw/Mafumafu
+---
+title name = Remioromen
+full name = レミオロメン
+https://zh.wikipedia.org/zh-tw/Remioromen
+---
+title name = Easy Come, Easy Go!
+full name = Easycome
+https://zh.wikipedia.org/zh-tw/Easy_Come,_Easy_Go!
+---
+title name = S1
+full name = 山崎ゆかり
+https://zh.wikipedia.org/zh-tw/S1_(%E6%88%90%E4%BA%BA%E5%BD%B1%E7%89%87%E8%A3%BD%E9%80%A0%E5%95%86)
+---
+title name = 石井萌萌果
+full name = Moe Ishii
+https://zh.wikipedia.org/zh-tw/%E7%9F%B3%E4%BA%95%E8%90%8C%E8%90%8C%E6%9E%9C
+---
+title name = HKT48
+full name = こだまたいち
+https://zh.wikipedia.org/zh-tw/HKT48
+---
+title name = Remioromen
+full name = 藤巻亮太 (Ryota Fujimaki)
+https://zh.wikipedia.org/zh-tw/Remioromen
+---
+title name = 角铜博之
+full name = 角銅真実
+https://zh.wikipedia.org/zh-cn/%E8%A7%92%E9%8A%85%E5%8D%9A%E4%B9%8B
+---
+title name = 空·之·音
+full name = 空音
+https://zh.wikipedia.org/zh-tw/%E7%A9%BA%C2%B7%E4%B9%8B%C2%B7%E9%9F%B3
+---
+title name = 紅辣椒
+full name = Foorin
+https://zh.wikipedia.org/wiki/%E7%B4%85%E8%BE%A3%E6%A4%92_(%E5%96%AE%E6%9B%B2)
+---
+title name = 堤亞穆帝國物語～從斷頭台開始，公主重生後的逆轉人生～
+full name = 鹿江羅奈
+https://zh.wikipedia.org/zh-tw/%E5%A0%A4%E4%BA%9E%E7%A9%86%E5%B8%9D%E5%9C%8B%E7%89%A9%E8%AA%9E%EF%BD%9E%E5%BE%9E%E6%96%B7%E9%A0%AD%E5%8F%B0%E9%96%8B%E5%A7%8B%EF%BC%8C%E5%85%AC%E4%B8%BB%E9%87%8D%E7%94%9F%E5%BE%8C%E7%9A%84%E9%80%86%E8%BD%89%E4%BA%BA%E7%94%9F%EF%BD%9E
+---
+title name = 總之就是很可愛
+full name = Yunomi
+https://zh.wikipedia.org/zh-tw/%E7%B8%BD%E4%B9%8B%E5%B0%B1%E6%98%AF%E5%BE%88%E5%8F%AF%E6%84%9B
+---
+title name = 七音阿卡莉
+full name = ナナヲアカリ
+https://zh.wikipedia.org/zh-tw/%E4%B8%83%E9%9F%B3%E9%98%BF%E5%8D%A1%E8%8E%89
+---
+title name = 吉澤瞳
+full name = 吉村瞳
+https://zh.wikipedia.org/zh-tw/%E5%90%89%E6%BE%A4%E7%9E%B3
+---
+title name = 日本傳統音樂
+full name = 八草楽団
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E6%9C%AC%E5%82%B3%E7%B5%B1%E9%9F%B3%E6%A8%82
+---
+title name = 東京放送
+full name = 東京浪漫放送局
+https://zh.wikipedia.org/zh-tw/%E6%9D%B1%E4%BA%AC%E6%94%BE%E9%80%81
+---
+title name = Roki
+full name = みきとP
+https://zh.wikipedia.org/zh-tw/Roki
+---
+title name = 小島梨里杏
+full name = りりあ。
+https://zh.wikipedia.org/zh-tw/%E5%B0%8F%E5%B3%B6%E6%A2%A8%E9%87%8C%E6%9D%8F
+---
+title name = BanG Dream!
+full name = RAISE A SUILEN
+https://zh.wikipedia.org/zh-tw/BanG_Dream!
+---
+title name = 格式塔少女
+full name = ゲシュタルト乙女
+https://zh.wikipedia.org/zh-tw/%E6%A0%BC%E5%BC%8F%E5%A1%94%E5%B0%91%E5%A5%B3
+---
+title name = 神聖放逐樂隊
+full name = 神聖注目樂團
+https://zh.wikipedia.org/zh-tw/%E7%A5%9E%E5%9C%A3%E6%94%BE%E9%80%90%E4%B9%90%E9%98%9F
+---
+title name = 東京喰種
+full name = 山田豐
+https://zh.wikipedia.org/zh-tw/%E6%9D%B1%E4%BA%AC%E5%96%B0%E7%A8%AE
+---
+title name = BE：FIRST
+full name = 藤田織也
+https://zh.wikipedia.org/zh-tw/BE%EF%BC%9AFIRST
+---
+title name = HIGH CARD 至高之牌
+full name = FIVE NEW OLD
+https://zh.wikipedia.org/zh-tw/HIGH_CARD
+---
+title name = 湘南乃風
+full name = HAN-KUN
+https://zh.wikipedia.org/zh-tw/%E6%B9%98%E5%8D%97%E4%B9%83%E9%A3%8E
+---
+title name = 乃亞
+full name = NOA
+https://zh.wikipedia.org/zh-tw/%E4%B9%83%E4%BA%9E
+---
+title name = FANTASTICS from EXILE TRIBE
+full name = FantasticYouth
+https://zh.wikipedia.org/zh-tw/FANTASTICS_from_EXILE_TRIBE
+---
+title name = 仁科百華
+full name = にしな
+https://zh.wikipedia.org/zh-tw/%E4%BB%81%E7%A7%91%E7%99%BE%E8%8F%AF
+---
+title name = 伯備線
+full name = Hakubi
+https://zh.wikipedia.org/zh-tw/%E4%BC%AF%E5%82%99%E7%B7%9A
+---
+title name = 環球音樂
+full name = 映秀。
+https://zh.wikipedia.org/zh-tw/%E7%92%B0%E7%90%83%E9%9F%B3%E6%A8%82_(%E6%97%A5%E6%9C%AC)
+---
+title name = 北區
+full name = NORTH
+https://zh.wikipedia.org/zh-tw/%E5%8C%97%E5%8D%80_(%E6%9D%B1%E4%BA%AC%E9%83%BD)
+---
+title name = 幾田莉拉
+full name = 幾田りら
+https://zh.wikipedia.org/zh-tw/%E5%B9%BE%E7%94%B0%E8%8E%89%E6%8B%89
+---
+title name = 日本湖泊列表
+full name = あぶらこぶ
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E6%9C%AC%E6%B9%96%E6%B3%8A%E5%88%97%E8%A1%A8
+---
+title name = 日本人名
+full name = さんひ
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E6%9C%AC%E4%BA%BA%E5%90%8D
+---
+title name = 因為是反派大小姐所以養了魔王
+full name = ACCAMER
+https://zh.wikipedia.org/zh-tw/%E5%9B%A0%E7%82%BA%E6%98%AF%E5%8F%8D%E6%B4%BE%E5%A4%A7%E5%B0%8F%E5%A7%90%E6%89%80%E4%BB%A5%E9%A4%8A%E4%BA%86%E9%AD%94%E7%8E%8B
+---
+title name = 搖滾少女
+full name = SHOWBYROCK!!STARS!!
+https://zh.wikipedia.org/zh-tw/%E6%90%96%E6%BB%BE%E5%B0%91%E5%A5%B3
+---
+title name = 中村倫也
+full name = 神不擲骰子
+https://zh.wikipedia.org/zh-tw/%E4%B8%AD%E6%9D%91%E5%80%AB%E4%B9%9F
+---
+title name = 2022年日本動畫列表
+full name = Super Break Dawn
+https://zh.wikipedia.org/zh-tw/2022%E5%B9%B4%E6%97%A5%E6%9C%AC%E5%8B%95%E7%95%AB%E5%88%97%E8%A1%A8
+---
+title name = 菅野美穗
+full name = 蓮井朱夏
+https://zh.wikipedia.org/zh-tw/%E8%8F%85%E9%87%8E%E7%BE%8E%E7%A9%97
+---
+title name = 櫻井優衣
+full name = BlooDye
+https://zh.wikipedia.org/zh-tw/%E6%AB%BB%E4%BA%95%E5%84%AA%E8%A1%A3
+---
+title name = J-WAVE
+full name = JP THE WAVY
+https://zh.wikipedia.org/zh-tw/J-WAVE
+---
+title name = Three
+full name = すりぃ
+https://zh.wikipedia.org/zh-tw/Three
+---
+title name = 野替愁平
+full name = DOBERMAN INFINITY
+https://zh.wikipedia.org/zh-tw/%E9%87%8E%E6%9B%BF%E6%84%81%E5%B9%B3
+---
+title name = 川野夏美
+full name = natsumi
+https://zh.wikipedia.org/zh-tw/%E5%B7%9D%E9%87%8E%E5%A4%8F%E7%BE%8E
+---
+title name = 緋紅結繫
+full name = Ayumu Imazu
+https://zh.wikipedia.org/zh-tw/%E7%B7%8B%E7%B4%85%E7%B5%90%E7%B9%AB
+---
+title name = 三月的Phantasia
+full name = 三月のパンタシア
+https://zh.wikipedia.org/zh-tw/%E4%B8%89%E6%9C%88%E7%9A%84Phantasia
+---
+title name = 噶嗚·古拉
+full name = Gawr Gura
+https://zh.wikipedia.org/zh-tw/%E5%99%B6%E5%97%9A%C2%B7%E5%8F%A4%E6%8B%89
+---
+title name = 夜明車站
+full name = YOAKE
+https://zh.wikipedia.org/zh-tw/%E5%A4%9C%E6%98%8E%E7%AB%99
+---
+title name = 宮下早紀
+full name = 宮下 遊
+https://zh.wikipedia.org/zh-tw/%E5%AE%AE%E4%B8%8B%E6%97%A9%E7%B4%80
+---
+title name = Linux
+full name = Linus
+https://zh.wikipedia.org/zh-tw/Linux
+---
+title name = 永遠是深夜有多好。
+full name = Lanndo
+https://zh.wikipedia.org/zh-tw/%E6%B0%B8%E8%BF%9C%E6%98%AF%E6%B7%B1%E5%A4%9C%E6%9C%89%E5%A4%9A%E5%A5%BD%E3%80%82
+---
+title name = 早稻田町
+full name = 早稻叽
+https://zh.wikipedia.org/zh-tw/%E6%97%A9%E7%A8%BB%E7%94%B0%E7%94%BA
+---
+title name = Yuika
+full name = 『ユイカ』
+https://zh.wikipedia.org/zh-tw/Yuika
+---
+title name = YOASOBI
+full name = 遙海
+https://zh.wikipedia.org/zh-tw/YOASOBI
+---
+title name = 小幡洋子
+full name = YO_CO
+https://zh.wikipedia.org/zh-tw/%E5%B0%8F%E5%B9%A1%E6%B4%8B%E5%AD%90
+---
+title name = Ado
+full name = jon-YAKITORY
+https://zh.wikipedia.org/zh-tw/Ado_(%E6%AD%8C%E6%89%8B)
+---
+title name = 韋馱天～東京奧運故事～
+full name = 富金原佑菜
+https://zh.wikipedia.org/wiki/%E9%9F%8B%E9%A6%B1%E5%A4%A9%EF%BD%9E%E6%9D%B1%E4%BA%AC%E5%A5%A7%E9%81%8B%E6%95%85%E4%BA%8B%EF%BD%9E
+---
+title name = 日英辭典
+full name = EOW
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E8%8B%B1%E8%BE%AD%E5%85%B8
+---
+title name = 森美聲
+full name = Mori Calliope
+https://zh.wikipedia.org/zh-tw/%E6%A3%AE%E7%BE%8E%E8%81%B2
+---
+title name = Mrs. GREEN APPLE
+full name = Siip
+https://zh.wikipedia.org/zh-tw/Mrs._GREEN_APPLE
+---
+title name = 日本流行音樂
+full name = chilldspot
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E6%9C%AC%E6%B5%81%E8%A1%8C%E9%9F%B3%E6%A8%82
+---
+title name = 可不
+full name = NOMELON NOLEMON
+https://zh.wikipedia.org/zh-tw/%E5%8F%AF%E4%B8%8D
+---
+title name = 松本若菜
+full name = 松本千夏
+https://zh.wikipedia.org/zh-tw/%E6%9D%BE%E6%9C%AC%E3%82%8F%E3%81%8B%E3%81%AA
+---
+title name = 環球音樂
+full name = シズクノメ
+https://zh.wikipedia.org/zh-tw/%E7%92%B0%E7%90%83%E9%9F%B3%E6%A8%82_(%E6%97%A5%E6%9C%AC)
+---
+title name = 環球音樂
+full name = Bearwear
+https://zh.wikipedia.org/zh-tw/%E7%92%B0%E7%90%83%E9%9F%B3%E6%A8%82_(%E6%97%A5%E6%9C%AC)
+---
+title name = 日本
+full name = RQNY
+https://zh.wikipedia.org/zh-tw/%E6%97%A5%E6%9C%AC
+---
+title name = 爛貨子
+full name = ロクデナシ
+https://zh.wikipedia.org/zh-tw/%E7%83%82%E8%B4%A7%E5%AD%90
+---
+title name = 賀川春
+full name = はる賀
+https://zh.wikipedia.org/zh-tw/%E8%B3%80%E5%B7%9D%E6%98%A5
+---
+title name = 辻亞彌乃
+full name = つじあやの
+https://zh.wikipedia.org/zh-tw/%E8%BE%BB%E4%BA%9E%E5%BD%8C%E4%B9%83
+---
+title name = Uri Nakayama
+full name = 中山うり
+https://en.wikipedia.org/wiki/Uri_Nakayama
+---
+title name = 金魚妻
+full name = sino R fine
+https://zh.wikipedia.org/zh-tw/%E9%87%91%E9%AD%9A%E5%A6%BB
+---
+title name = 和ぬか
+full name = MAISONdes
+https://zh.wikipedia.org/zh-tw/%E5%92%8C%E3%81%AC%E3%81%8B
+---
+title name = 通心粉鉛筆
+full name = マカロニえんぴつ
+https://zh.wikipedia.org/zh-tw/%E9%80%9A%E5%BF%83%E7%B2%89%E9%89%9B%E7%AD%86
+---
+title name = 木谷龍也
+full name = キタニタツヤ
+https://zh.wikipedia.org/zh-tw/%E6%9C%A8%E8%B0%B7%E9%BE%8D%E4%B9%9F
+---
+title name = FANTASTICS from EXILE TRIBE
+full name = FANTASTICS from 放浪一族
+https://zh.wikipedia.org/zh-tw/FANTASTICS_from_EXILE_TRIBE
+---
+title name = 月半小夜曲
+full name = Sugar Rain
+https://zh.wikipedia.org/zh-tw/%E6%9C%88%E5%8D%8A%E5%B0%8F%E5%A4%9C%E6%9B%B2
+---
+title name = hitorie
+full name = ヒトリエ
+https://zh.wikipedia.org/zh-tw/Hitorie
+---
+title name = 清水美沙
+full name = 清水美依紗
+https://zh.wikipedia.org/zh-tw/%E6%B8%85%E6%B0%B4%E7%BE%8E%E6%B2%99
+---
+title name = 只想告訴你
+full name = 黒沼英之
+https://zh.wikipedia.org/zh-tw/%E5%8F%AA%E6%83%B3%E5%91%8A%E8%A8%B4%E4%BD%A0
+---
+title name = 杉野文保
+full name = ayaho
+https://zh.wikipedia.org/zh-tw/%E6%9D%89%E9%87%8E%E6%96%87%E4%BF%9D
+---
+title name = 真瑠梨與隆雅
+full name = まるり
+https://zh.wikipedia.org/zh-tw/%E7%9C%9F%E7%91%A0%E6%A2%A8%E8%88%87%E9%9A%86%E9%9B%85
+---
+title name = 如果，有一所只有帥哥的高中
+full name = 川崎鷹也
+https://zh.wikipedia.org/zh-tw/%E5%A6%82%E6%9E%9C%EF%BC%8C%E6%9C%89%E4%B8%80%E6%89%80%E5%8F%AA%E6%9C%89%E5%B8%A5%E5%93%A5%E7%9A%84%E9%AB%98%E4%B8%AD
+---
+title name = 20歲的靈魂
+full name = Kenta Dedachi
+https://zh.wikipedia.org/zh-tw/20%E6%AD%B2%E7%9A%84%E9%9D%88%E9%AD%82
+---
+title name = 松山龍平
+full name = Ryu Matsuyama
+https://zh.wikipedia.org/zh-tw/%E6%9D%BE%E5%B1%B1%E9%BE%8D%E5%B9%B3
+---
+title name = 鯨
+full name = くじら
+https://zh.wikipedia.org/zh-tw/%E9%AF%A8_(%E9%85%8D%E9%9F%B3%E5%93%A1)
+---
+title name = 鈴原美蘭
+full name = みらん
+https://zh.wikipedia.org/zh-tw/%E9%93%83%E5%8E%9F%E7%BE%8E%E5%85%B0
+---
+title name = Shiyui
+full name = シユイ
+https://zh.wikipedia.org/zh-tw/Shiyui
+---
+title name = 名取市
+full name = なとり
+https://zh.wikipedia.org/zh-tw/%E5%90%8D%E5%8F%96%E5%B8%82
+---
+title name = 團結Band
+full name = 結束バンド
+https://zh.wikipedia.org/zh-tw/%E5%9C%98%E7%B5%90Band_(%E5%B0%88%E8%BC%AF)
+---
+title name = WANDS
+full name = 上杉昇
+https://zh.wikipedia.org/zh-tw/WANDS
+---
+title name = 彩虹社
+full name = 戌亥とこ
+https://zh.wikipedia.org/zh-tw/%E5%BD%A9%E8%99%B9%E7%A4%BE
+---
+title name = 大黑摩季
+full name = 大黒摩季
+https://zh.wikipedia.org/zh-tw/%E5%A4%A7%E9%BB%91%E6%91%A9%E5%AD%A3
+---
+title name = 柚子
+full name = 7co
+https://zh.wikipedia.org/zh-tw/%E6%9F%9A%E5%AD%90_(%E7%B5%84%E5%90%88)
+---
+title name = 辛希雅
+full name = Sincere
+https://zh.wikipedia.org/zh-tw/%E8%BE%9B%E5%B8%8C%E9%9B%85
+---
+title name = DREAMS COME TRUE
+full name = 高真 TRU
+https://zh.wikipedia.org/zh-tw/DREAMS_COME_TRUE
+---
+title name = 朝日新聞社
+full name = ASA
+https://zh.wikipedia.org/zh-tw/%E6%9C%9D%E6%97%A5%E6%96%B0%E9%97%BB%E7%A4%BE
+---
+title name = TSUKI
+full name = tuki.
+https://zh.wikipedia.org/zh-tw/TSUKI_(%E6%AD%8C%E6%89%8B)
+---
+title name = 星街彗星
+full name = 星街すいせい
+https://zh.wikipedia.org/zh-tw/%E6%98%9F%E8%A1%97%E5%BD%97%E6%98%9F
+---
