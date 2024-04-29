@@ -8,12 +8,12 @@ from fuzzywuzzy import fuzz
 
 # korean
 language = '韓國'
-json_file = 'korean.json'
+json_file = '../korean.json'
 waiting_artists = 'korean_waiting.txt'
 finished_artists = 'korean_z.txt'
 problem_file1 = 'korean_problem1.txt'  # 名稱對不起來
 problem_file2 = 'korean_problem2.txt'  # 不是wikipedia
-link_file = 'korean_link.txt'
+link_file = '../links/korean_link.txt'
 
 def write_data_json(json_name, new_data):
     # json檔案不存在或是裡面沒資料
@@ -180,7 +180,7 @@ def write_data_json(json_name, new_data):
 
 def get_wiki_data(current_url, singer_name):
     # 先判斷這個網頁有沒有造訪過
-    with open('z_visited_urls.txt', 'r', encoding='utf-8') as f:
+    with open('../z_visited_urls.txt', 'r', encoding='utf-8') as f:
         visited_urls = f.readlines()
 
     visited_urls = [visited_url.replace('\n', '') for visited_url in visited_urls]
@@ -279,7 +279,7 @@ def get_wiki_data(current_url, singer_name):
 
                         write_data_json(json_file, new_data)
 
-                        with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
+                        with open('../z_visited_urls.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
 
                         with open(finished_artists, 'a', encoding='utf-8') as f:
@@ -289,7 +289,7 @@ def get_wiki_data(current_url, singer_name):
                     else:
                         print('! step 4')
 
-                        with open('z_image_but_problem.txt', 'a', encoding='utf-8') as f:
+                        with open('../z_image_but_problem.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
                 # 有方塊，但是沒有圖片
                 else:
@@ -307,7 +307,7 @@ def get_wiki_data(current_url, singer_name):
                     print('image_name = ', image_name)
                     print('cc = ', cc)
 
-                    with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
+                    with open('../z_visited_urls.txt', 'a', encoding='utf-8') as f:
                         f.write(singer_page_url + '\n')
 
                     with open(finished_artists, 'a', encoding='utf-8') as f:

@@ -6,15 +6,14 @@ import json
 import threading
 from fuzzywuzzy import fuzz
 
-# taiwanese
-language = '歌手'
-json_file = 'taiwanese.json'
-waiting_artists = 'taiwanese_waiting.txt'
-finished_artists = 'taiwanese_z.txt'
-problem_file1 = 'taiwanese_problem1.txt'  # 名稱對不起來
-problem_file2 = 'taiwanese_problem2.txt'  # 不是wikipedia
-link_file = 'taiwanese_link.txt'
-
+# japanese
+language = '日本'
+json_file = '../japanese.json'
+waiting_artists = 'japanese_waiting.txt'
+finished_artists = 'japanese_z.txt'
+problem_file1 = 'japanese_problem1.txt'  # 名稱對不起來
+problem_file2 = 'japanese_problem2.txt'  # 不是wikipedia
+link_file = '../links/japanese_link.txt'
 
 def write_data_json(json_name, new_data):
     # json檔案不存在或是裡面沒資料
@@ -181,7 +180,7 @@ def write_data_json(json_name, new_data):
 
 def get_wiki_data(current_url, singer_name):
     # 先判斷這個網頁有沒有造訪過
-    with open('z_visited_urls.txt', 'r', encoding='utf-8') as f:
+    with open('../z_visited_urls.txt', 'r', encoding='utf-8') as f:
         visited_urls = f.readlines()
 
     visited_urls = [visited_url.replace('\n', '') for visited_url in visited_urls]
@@ -280,7 +279,7 @@ def get_wiki_data(current_url, singer_name):
 
                         write_data_json(json_file, new_data)
 
-                        with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
+                        with open('../z_visited_urls.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
 
                         with open(finished_artists, 'a', encoding='utf-8') as f:
@@ -290,7 +289,7 @@ def get_wiki_data(current_url, singer_name):
                     else:
                         print('! step 4')
 
-                        with open('z_image_but_problem.txt', 'a', encoding='utf-8') as f:
+                        with open('../z_image_but_problem.txt', 'a', encoding='utf-8') as f:
                             f.write(singer_page_url + '\n')
                 # 有方塊，但是沒有圖片
                 else:
@@ -308,7 +307,7 @@ def get_wiki_data(current_url, singer_name):
                     print('image_name = ', image_name)
                     print('cc = ', cc)
 
-                    with open('z_visited_urls.txt', 'a', encoding='utf-8') as f:
+                    with open('../z_visited_urls.txt', 'a', encoding='utf-8') as f:
                         f.write(singer_page_url + '\n')
 
                     with open(finished_artists, 'a', encoding='utf-8') as f:
@@ -436,5 +435,6 @@ with sync_playwright() as p:
             browser = p.chromium.launch(headless=False)
             context = browser.new_context()
             page = context.new_page()
+            page.set_default_timeout(10000)
 
             continue

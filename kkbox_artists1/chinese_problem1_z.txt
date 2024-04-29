@@ -1,128 +1,56 @@
-title name = 創作歌手
-full name = Various Artists
-https://zh.wikipedia.org/zh-tw/%E5%89%B5%E4%BD%9C%E6%AD%8C%E6%89%8B
----
-title name = 蔡詩芸
-full name = 蔡詩蕓DOMINIQUE TSAI
+full name = 蔡詩芸 DOMINIQUE TSAI
 https://zh.wikipedia.org/zh-tw/%E8%94%A1%E8%A9%A9%E8%8A%B8
 ---
 title name = 大臺風樂團
-full name = 台風 (Typhoon)
+full name = 大臺風樂團 (Typhoon)
 https://zh.wikipedia.org/zh-tw/%E5%A4%A7%E8%87%BA%E9%A2%A8%E6%A8%82%E5%9C%98
 ---
-title name = 蕭瀟
-full name = 蕭蕭
+full name = 蕭瀟
 https://zh.wikipedia.org/zh-tw/%E8%95%AD%E7%80%9F
 ---
-title name = 呂建中
 full name = TANK 呂建中
 https://zh.wikipedia.org/zh-tw/%E5%91%82%E5%BB%BA%E4%B8%AD
 ---
-title name = 陳信宏
 full name = 五月天 阿信 (Ashin)
 https://zh.wikipedia.org/zh-tw/%E9%99%B3%E4%BF%A1%E5%AE%8F
----
-title name = 何以奇
-full name = 超口愛樂團 (Super Q)
-https://zh.wikipedia.org/zh/%E4%BD%95%E4%BB%A5%E5%A5%87
----
-title name = 陳綺雯
-full name = Aki
-https://zh.wikipedia.org/zh-tw/%E9%99%B3%E7%B6%BA%E9%9B%AF
----
-title name = 安溥
-full name = 張懸 (Deserts Xuan)
-https://zh.wikipedia.org/zh-tw/%E5%AE%89%E6%BA%A5
 ---
 title name = F.I.R.飛兒樂團
 full name = 飛兒樂團 (F.I.R.)
 https://zh.wikipedia.org/zh-tw/F.I.R.%E9%A3%9B%E5%85%92%E6%A8%82%E5%9C%98
 ---
-title name = 歌手·當打之年
-full name = 打打
-https://zh.wikipedia.org/zh-tw/%E6%AD%8C%E6%89%8B%C2%B7%E5%BD%93%E6%89%93%E4%B9%8B%E5%B9%B4
----
-title name = 張惠妹得獎與提名列表
-full name = 2006 KTV點唱精選國語總排行
-https://zh.wikipedia.org/zh/%E5%BC%B5%E6%83%A0%E5%A6%B9%E5%BE%97%E7%8D%8E%E8%88%87%E6%8F%90%E5%90%8D%E5%88%97%E8%A1%A8
----
-title name = Lollipop@F
-full name = 棒棒堂 (Lollipop)
+full name = Lollipop@F
 https://zh.wikipedia.org/zh-tw/Lollipop@F
 ---
-title name = 21世紀新人歌唱排行榜
-full name = 男女情歌對唱冠軍全記錄
-https://zh.wikipedia.org/zh-tw/21%E4%B8%96%E7%B4%80%E6%96%B0%E4%BA%BA%E6%AD%8C%E5%94%B1%E6%8E%92%E8%A1%8C%E6%A6%9C
----
-title name = 台灣歌手列表
-full name = 楊韻禾 (Melody Yeung)
-https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8
----
-title name = 台灣歌手列表
-full name = 潘兒
-https://zh.wikipedia.org/zh-tw/%E5%8F%B0%E7%81%A3%E6%AD%8C%E6%89%8B%E5%88%97%E8%A1%A8
----
-title name = 劉虹翎
-full name = 虹翎ML (Mia Liu)
+full name = 劉虹翎ML (Mia Liu)
 https://zh.wikipedia.org/zh-tw/%E5%8A%89%E8%99%B9%E7%BF%8E
 ---
-title name = 超級星光大道
-full name = 星光幫
-https://zh.wikipedia.org/zh-tw/%E8%B6%85%E7%B4%9A%E6%98%9F%E5%85%89%E5%A4%A7%E9%81%93
----
-title name = 藍眼睛
-full name = 不可能的Mix
-https://zh.wikipedia.org/zh-tw/%E8%97%8D%E7%9C%BC%E7%9D%9B
----
-title name = 石錦航
 full name = 五月天 石頭 (Stone)
 https://zh.wikipedia.org/zh-tw/%E7%9F%B3%E9%8C%A6%E8%88%AA
 ---
-title name = 蕭秉治
-full name = 大開天窗 (Always Open Your Heart)
+full name = 蕭秉治
 https://zh.wikipedia.org/zh-tw/%E8%95%AD%E7%A7%89%E6%B2%BB
 ---
-title name = 方泂鑌
-full name = 方烱彬 (Abin Fang)
+full name = 方泂鑌 (Abin Fang)
 https://zh.wikipedia.org/zh-tw/%E6%96%B9%E6%B3%82%E9%91%8C
 ---
-title name = 張惠妹
-full name = AMIT
+full name = 張惠妹 a-mei
 https://zh.wikipedia.org/wiki/%E5%BC%B5%E6%83%A0%E5%A6%B9
 ---
-title name = 王樂妍
-full name = 王心如 (Cynthia Wang)
+full name = 王樂妍 (Cynthia Wang)
 https://zh.wikipedia.org/zh-tw/%E7%8E%8B%E6%A8%82%E5%A6%8D
 ---
-title name = 萊娜·邁爾-蘭德魯特
-full name = 楊青倩 (Lena)
-https://zh.wikipedia.org/zh-tw/%E8%90%8A%E5%A8%9C%C2%B7%E9%82%81%E7%88%BE-%E8%98%AD%E5%BE%B7%E9%AD%AF%E7%89%B9
----
-title name = 李榮浩
-full name = 張暄祺
-https://zh.wikipedia.org/zh-tw/%E6%9D%8E%E6%A6%AE%E6%B5%A9
----
-title name = 陶嫚曼
-full name = 陶妍霖 (Elleya Tao)
+full name = 陶嫚曼 (Elleya Tao)
 https://zh.wikipedia.org/zh-tw/%E9%99%B6%E5%AB%9A%E6%9B%BC
 ---
-title name = 吳亦帆
-full name = 亦帆 (Canace Wu)
+full name = 吳亦帆 (Canace Wu)
 https://zh.wikipedia.org/zh-tw/%E5%90%B3%E4%BA%A6%E5%B8%86
 ---
-title name = 紀家盈
 full name = 家家 (JiaJia)
 https://zh.wikipedia.org/zh-tw/%E7%B4%80%E5%AE%B6%E7%9B%88
 ---
-title name = 法蘭黛樂團
-full name = 法蘭 (Fran)
-https://zh.wikipedia.org/zh-tw/%E6%B3%95%E8%98%AD%E9%BB%9B%E6%A8%82%E5%9C%98
----
-title name = 劉艾立
-full name = ERIKA
+full name = ERIKA 劉艾立
 https://zh.wikipedia.org/zh-tw/%E5%8A%89%E8%89%BE%E7%AB%8B
 ---
-title name = 獅子LION
 full name = 獅子 (LION)
 https://zh.wikipedia.org/zh-tw/%E7%8D%85%E5%AD%90LION
 ---
@@ -358,8 +286,7 @@ title name = 常思思
 full name = 向思思
 https://zh.wikipedia.org/zh-tw/%E5%B8%B8%E6%80%9D%E6%80%9D
 ---
-title name = 宋雨琦
-full name = 雨琦 (YUQI)
+full name = 宋雨琦 (YUQI)
 https://zh.wikipedia.org/zh-tw/%E5%AE%8B%E9%9B%A8%E7%90%A6
 ---
 title name = 聲林之王
@@ -382,7 +309,20 @@ title name = 李善雄
 full name = TABLO (타블로)
 https://zh.wikipedia.org/zh-tw/%E6%9D%8E%E5%96%84%E9%9B%84
 ---
-title name = 菲道爾
-full name = 菲道尔
+菲道爾
 https://zh.wikipedia.org/zh-tw/%E8%8F%B2%E9%81%93%E5%B0%94
+---
+
+
+title name = 何以奇
+full name = 超口愛樂團 (Super Q)
+https://zh.wikipedia.org/zh/%E4%BD%95%E4%BB%A5%E5%A5%87
+---
+title name = 陳綺雯
+full name = Aki
+https://zh.wikipedia.org/zh-tw/%E9%99%B3%E7%B6%BA%E9%9B%AF
+---
+title name = 安溥
+full name = 張懸 (Deserts Xuan)
+https://zh.wikipedia.org/zh-tw/%E5%AE%89%E6%BA%A5
 ---

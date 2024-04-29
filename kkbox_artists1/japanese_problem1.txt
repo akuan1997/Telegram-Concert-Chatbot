@@ -915,7 +915,7 @@ full name = Kenichiro Nishihara
 https://zh.wikipedia.org/zh-tw/%E5%A6%AE%E5%A8%9C%C2%B7%E7%BB%B4%E8%BE%BE%E5%B0%94
 ---
 title name = 七森莉莉
-full name = RIRI
+full name = RIRI.
 https://zh.wikipedia.org/zh-tw/%E4%B8%83%E6%A3%AE%E8%8E%89%E8%8E%89
 ---
 title name = 疊蓆

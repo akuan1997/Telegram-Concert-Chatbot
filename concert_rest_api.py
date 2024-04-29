@@ -5,6 +5,8 @@ import requests
 from pprint import pprint
 from y_example_read_json import *
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import re
+from datetime import datetime, timedelta
 
 url = "https://concertinfo.site/wp-json/wp/v2/posts"
 username = "user"
@@ -59,12 +61,83 @@ city_code = {
     "演唱會": 68
 }
 
+# '<!-- wp:html -->
+# '<!-- /wp:html -->
+
 # Header
 headers = {
     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
     "Authorization": "Basic {}".format(token.decode("utf-8")),
     "content-type": "application/json",
 }
+
+
+def replace_time(text):
+    pattern = r'\d{2}:\d{2}'  # 匹配時間的正則表達式模式
+    text = re.sub(pattern, '', text)
+    text = re.sub(r'\s{2,}', ' ', text)
+    return text.strip()  # 去除首尾空格
+
+
+def format_date(date_str):
+    parts = date_str.split('-')
+    month = parts[1].zfill(2)  # 用 zfill(2) 將月份填充成兩位數
+    day = parts[2].zfill(2)  # 用 zfill(2) 將日期填充成兩位數
+    return f"{parts[0]}-{month}-{day}"
+
+
+def generate_date_range(start_date_str, end_date_str):
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+
+    date_range = []
+    current_date = start_date
+
+    while current_date <= end_date:
+        date_range.append(current_date.strftime("%Y-%m-%d"))
+        current_date += timedelta(days=1)
+
+    return date_range
+
+
+def get_city_code(text):
+    # 將字典鍵轉換為小寫形式
+    lowercase_dict = {key.lower(): value for key, value in city_code.items()}
+
+    # 將要轉換的文字轉換成統一小寫形式
+    lower_text = text.lower()
+
+    # 將統一小寫形式的文字轉換成數字，沒有找到就輸出71 (unknown)
+    code = lowercase_dict.get(lower_text, 71)
+
+    print(code)
+
+    return code
+
+
+def delete_article(post_id):
+    # Delete
+    r = requests.delete(  # <--- change "post" to "delete"
+        "{}/{}".format(url, post_id),
+        headers=headers,
+    )
+
+    pprint(r.text)
+
+
+def update_article_content(post_id, content):
+    post = {
+        "content": content,
+    }
+
+    # Post
+    r = requests.post(
+        "{}/{}".format(url, post_id),
+        headers=headers,
+        json=post,
+    )
+
+    pprint(r.text)
 
 
 def get_post_data(id):
@@ -74,10 +147,164 @@ def get_post_data(id):
 
     return post_data
 
+
+def post_singer(title, content):
+    categories = []
+    categories.append(51)
+
+
+def post_concert(data):
+    sdt_str = f"售票時間  :  {print_list_str(data['sdt'])}"
+    prc_str = f"價格         :  {print_list_str(data['prc'])}"
+    pdt_str = f"表演時間  :  {print_list_str(data['pdt'])}"
+    loc_str = f"地點         :  {print_list_str(data['loc'])}"
+    web_str = f"售票網站  :  {data['web']}"
+    url_str = f"售票網址  :  <a href='{data['url']}' target='_blank'>{data['url']}</a>"
+
+    content = f"""
+            <!-- wp:html -->
+            <div style="white-space: pre-wrap;">
+                <p class="has-palette-color-4-color has-text-color has-link-color">
+                    {sdt_str}<br>
+                    {prc_str}<br>
+                    {pdt_str}<br>
+                    {loc_str}<br>
+                    {web_str}<br>
+                    {url_str}
+                </p>
+            </div>
+            <!-- /wp:html -->
+            """
+
+    categories = [68]  # 演唱會
+    if data['cit'] != '':
+        categories.append(get_city_code(data['cit']))
+
+    if data['pdt']:
+        date = replace_time(data['pdt'][0]).replace('/', '-')
+
+        if '~' not in date:
+            date = format_date(date)
+            concert_dates = [{"concert_date": date}]
+        else:
+            date = f"{format_date(date.split(' ~ ')[0])} ~ {date.split(' ~ ')[1]}"
+            date_range = generate_date_range(date.split(' ~ ')[0], date.split(' ~ ')[1])
+            concert_dates = []
+            for i in range(len(date_range)):
+                concert_dates.append({f"concert_date": date_range[i]})
+
+        # Post info
+        post = {
+            "title": data['tit'],
+            "content": content,
+            "status": "publish",
+            "categories": categories,
+            "fields": {
+                "concert_dates": concert_dates
+            }
+            # "fields": {  # 添加自定義字段部分
+            #     "concert_date": "2024-04-20"
+
+            # "fields": {
+            #     "concert_dates": [
+            #         {"concert_date": "2024-04-01"},
+            #         {"concert_date": "2024-04-02"},
+            #     ]
+            # }
+        }
+    else:
+        # Post info
+        post = {
+            "title": data['tit'],
+            "content": content,
+            "status": "publish",
+            "categories": categories,
+        }
+
+    # Post
+    r = requests.post(
+        url,
+        headers=headers,
+        json=post,
+    )
+
+    post_id = json.loads(r.text).get('id')
+    print(f'post_id = {post_id}')
+
+    with open('concert_pin_postid.txt', 'a', encoding='utf-8') as f:
+        f.write(f"{post_id}|||{data['pin']}\n")
+
+    # Print
+    pprint(r.text)
+
+
+# def post_concert(title, content, date, city, pin):  # 倒數第二個argument, 0 演唱會, 1 歌手
+#     # categories [(中文68 or 英文67) + 城市code]
+#
+#     categories = [68]  # 演唱會
+#     if city != '':
+#         categories.append(get_city_code(city))
+#
+#     # if category == 0:
+#     #     categories.append(68)  # 演唱會
+#     # elif category == 1:
+#     #     categories.append(67)  # concert
+#     # elif category == 2:
+#     #     categories.append(51)  # 歌手
+#     # elif category == 3:
+#     #     categories.append(52)  # singer
+#
+#     print(f'in function')
+#     print(title)
+#     print(content)
+#     print(date)
+#     print(city)
+#     print(pin)
+#
+#     # Post info
+#     post = {
+#         "title": title,
+#         "content": content,
+#         "status": "publish",
+#         "categories": categories,
+#         # "fields": {  # 添加自定義字段部分
+#         #     "concert_date": "2024-04-20"
+#         "fields": {
+#             "follow_emails": [
+#                 {"follow_email: 'pfii1997119@gmail.com'"}
+#             ]
+#         }
+#     }
+#
+#     # post = {
+#     #     "title": "測試la",
+#     #     "content": content1,
+#     #     "status": "publish",
+#     #     "categories": 68,
+#
+#     # Post
+#     r = requests.post(
+#         url,
+#         headers=headers,
+#         json=post,
+#     )
+#
+#     post_id = json.loads(r.text).get('id')
+#     print(f'post_id = {post_id}')
+#
+#     with open('concert_pin_postid.txt', 'a', encoding='utf-8') as f:
+#         f.write(f'{post_id}|||{pin}\n')
+#
+#     # Print
+#     pprint(r.text)
+#
+#     # return post_id
+
+
 # '<!-- wp:html -->
 # '<!-- /wp:html -->
-post_data = get_post_data(2019)
-print(post_data['content']['rendered'])
+# post_data = get_post_data(2019)
+# print(post_data['content']['rendered'])
 
 '''
 def check_availability():
@@ -137,31 +364,6 @@ def post_article(title, content, city, category, pin):
     pprint(r.text)
 
     return post_id
-
-
-def update_article(post_id):
-    post = {
-        "content": f"Yes, you can update this post.",
-    }
-
-    # Post
-    r = requests.post(
-        "{}/{}".format(url, post_id),
-        headers=headers,
-        json=post,
-    )
-
-    pprint(r.text)
-
-
-def delete_article(post_id):
-    # Delete
-    r = requests.delete(  # <--- change "post" to "delete"
-        "{}/{}".format(url, post_id),
-        headers=headers,
-    )
-
-    pprint(r.text)
 
 
 # def get_tag_number(text):
@@ -268,21 +470,6 @@ def singer_remove_link(singer_id, concert_id):
 # )
 
 
-def get_city_code(text):
-    # 將字典鍵轉換為小寫形式
-    lowercase_dict = {key.lower(): value for key, value in city_code.items()}
-
-    # 將要轉換的文字轉換成統一小寫形式
-    lower_text = text.lower()
-
-    # 將統一小寫形式的文字轉換成數字，沒有找到就輸出71 (unknown)
-    code = lowercase_dict.get(lower_text, 71)
-
-    print(code)
-
-    return code
-
-
 # title, content, city_name, zh_en_concert_singer, pin
 # content = f"""
 # <p class="has-palette-color-4-color has-text-color has-link-color">售票: 123456</p>
@@ -336,33 +523,78 @@ def print_list_str(lst):
 #         post_article(data[i]['tit'], content, data[i]['cit'], 0, data[i]['pin'])
 
 
-# data = read_json("concert_3_14_23.json")
+data = read_json("concert_4_15_1.json")
+post_concert1(data[1])
+# for i in range(1):
+#     title = data[i]['tit']
+#     sdt_str = f"售票時間  :  {print_list_str(data[i]['sdt'])}"
+#     prc_str = f"價格         :  {print_list_str(data[i]['prc'])}"
+#     pdt_str = f"表演時間  :  {print_list_str(data[i]['pdt'])}"
+#     loc_str = f"地點         :  {print_list_str(data[i]['loc'])}"
+#     web_str = f"售票網站  :  {data[i]['web']}"
+#     url_str = f"售票網址  :  <a href='{data[i]['url']}' target='_blank'>{data[i]['url']}</a>"
 #
-# index = 88
-# sdt = ''
-# prc = ''
-# pdt = ''
-# loc = ''
+#     content = f"""
+#         <!-- wp:html -->
+#         <div style="white-space: pre-wrap;">
+#             <p class="has-palette-color-4-color has-text-color has-link-color">
+#                 {sdt_str}<br>
+#                 {prc_str}<br>
+#                 {pdt_str}<br>
+#                 {loc_str}<br>
+#                 {web_str}<br>
+#                 {url_str}
+#             </p>
+#         </div>
+#         <!-- /wp:html -->
+#         """
 #
+#     post_concert(title, content, data[i]['cit'], data[i]['pdt'], data[i]['pin'])
+
+
+# index = 100
+#
+# title = data[index]['tit']
 # sdt_str = f"售票時間  :  {print_list_str(data[index]['sdt'])}"
 # prc_str = f"價格         :  {print_list_str(data[index]['prc'])}"
 # pdt_str = f"表演時間  :  {print_list_str(data[index]['pdt'])}"
 # loc_str = f"地點         :  {print_list_str(data[index]['loc'])}"
 # web_str = f"售票網站  :  {data[index]['web']}"
-# url_txt = f"售票網址  :  "
-# url_str = f"<a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
-
+# url_str = f"售票網址  :  <a href='{data[index]['url']}' target='_blank'>{data[index]['url']}</a>"
+#
 # content = f"""
-#     <div style="white-space: pre-wrap;>
-#     <p class="has-palette-color-4-color has-text-color has-link-color"></p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{sdt_str}</p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{prc_str}</p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{pdt_str}</p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{loc_str}</p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{web_str}</p>
-#     <p class="has-palette-color-4-color has-text-color has-link-color">{url_str}</p>
+#     <!-- wp:html -->
+#     <div style="white-space: pre-wrap;">
+#         <p class="has-palette-color-4-color has-text-color has-link-color">
+#             {sdt_str}<br>
+#             {prc_str}<br>
+#             {pdt_str}<br>
+#             {loc_str}<br>
+#             {web_str}<br>
+#             {url_str}
+#         </p>
 #     </div>
+#     <!-- /wp:html -->
 #     """
+#
+# # Post info
+# post = {
+#     "title": title,
+#     "content": content,
+#     "status": "publish",
+#     "categories": 68,
+#     "fields": {  # 添加自定義字段部分
+#         "concert_date": "2024-04-30"
+#     }
+# }
+
+# # Post
+# r = requests.post(
+#     url,
+#     headers=headers,
+#     json=post,
+# )
+
 ''' '''
 # content = f"""
 #     <div style="white-space: pre-wrap;>
@@ -449,6 +681,7 @@ content = """
 # pprint(r.text)
 
 ''''''
+
 # content1 = '''
 # <div style="border: 1px solid black; padding: 10px;">
 #   <h2>这是一个HTML方块</h2>
