@@ -14,9 +14,9 @@ jieba.load_userdict('user_dict.txt')
 # use bm25 & jieba
 
 def keyword_adjustment(user_input):
-    '''
+    """
     修正字串當中含有類似keyword.yml的關鍵字
-    '''
+    """
     # print(user_input)
     with open('data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
@@ -259,6 +259,7 @@ def get_keyword_indexes(text, json_file):
         # print('沒有找到匹配的資料')
         # return None
         return []
+
 
 def get_language(user_input):
     chinese_pattern = re.compile(r'[\u4e00-\u9fa5]')

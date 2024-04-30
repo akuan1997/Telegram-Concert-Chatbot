@@ -13,7 +13,7 @@ import re
 
 def keyword_adjustment(user_input):
     # print(user_input)
-    with open('data/singer.yml', 'r', encoding='utf-8') as f:
+    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -203,8 +203,11 @@ words2 = [
     '那下個月呢',
     '如果是後天呢',
 ]
-
+words3 = [
+    '鄭伊健'
+]
 model_path = r'models\nlu-20240216-234555-uniform-calico.tar.gz'
 
-run_cmdline1(model_path, words1)
+# run_cmdline1(model_path, words1)
 # run_cmdline1(model_path, words2)
+run_cmdline1(model_path, words3)
