@@ -89,6 +89,38 @@ def keyword_adjustment(user_input):
     else:
         return user_input, False
 
+
+def keyword_adjustment_optimized(user_input):
+    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+
+    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+    # names_without_space = [name.replace(' ', '') for name in names]
+
+    # 創建名字的小寫版本set以提高查找效率
+    names_set = {name.lower() for name in names}
+
+    # 提取用戶輸入中的英文字詞並轉成小寫
+    english_words = re.findall(r'[A-Za-z0-9]+', user_input.lower())
+
+    # 基本匹配檢查
+    for word in english_words:
+        if word in names_set:
+            return user_input, True  # 如果找到精確匹配，直接返回
+
+    # 如果基本匹配未找到，進行模糊匹配
+    for word in english_words:
+        for name in names:
+            if fuzz.partial_ratio(word, name.lower()) > 80:
+                user_input = user_input.replace(word, name)
+                return user_input, True
+
+    return user_input, False  # 如果都沒找到匹配，返回原輸入
+
+
+# print(keyword_adjustment_optimized("post malone"))
+
+
 #
 # def run_cmdline(model_path: Text) -> None:
 #     """Loops over CLI input, passing each message to a loaded NLU model."""
@@ -136,8 +168,10 @@ def run_cmdline1(model_path: Text, words) -> None:
 
     print_success("NLU model loaded. Type a message and press enter to parse it.")
     for word in words:
-        message, find_singer = keyword_adjustment(word)
-        print(f'ori msg: {message}')
+        print('origi msg:', word)
+        # message, find_singer = keyword_adjustment(word)
+        message, find_singer = keyword_adjustment_optimized(word)
+        print(f'after function: {message}')
 
         result = asyncio.run(agent.parse_message(message))
 
@@ -150,18 +184,70 @@ def run_cmdline1(model_path: Text, words) -> None:
         >> greet 
         '''
 
-        print(f'message: {message}')
-        print(f'find singer?', find_singer)
+        print(f'find singer?', find_singer)  # from function
         print(f"intent: {result['intent']['name']}")
         print(f"score: {result['intent']['confidence']}")
         if result['intent']['confidence'] > 0.6:
             print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         print('--')
         if len(result['entities']) == 0:
+            """
+            鄭伊健 (Ekin Cheng) 名字必須分開
+            """
             print('No Entities')
         else:
             for i in range(len(result['entities'])):
-                print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+                if result['entities'][i]['value']:
+                    print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+
+        print('-----------------------------------------------')
+
+
+def run_cmdline2(model_path: Text, words) -> None:
+    """Loops over CLI input, passing each message to a loaded NLU model."""
+    agent = Agent.load(model_path)
+
+    print_success("NLU model loaded. Type a message and press enter to parse it.")
+    for word in words:
+        message = word
+        print('origi msg:', message)
+        # message, find_singer = keyword_adjustment(word)
+        # message, find_singer = keyword_adjustment_optimized(word)
+        # print(f'after function: {message}')
+
+        result = asyncio.run(agent.parse_message(message))
+
+        '''
+        輸入句子: 你好
+        print(result['intent'])
+        >> {'name': 'greet', 'confidence': 0.9999651908874512}
+
+        print(result['intent']['name'])
+        >> greet 
+        '''
+
+        # print(f'find singer?', find_singer)  # from function
+        print(f"intent: {result['intent']['name']}")
+        print(f"score: {result['intent']['confidence']}")
+        if result['intent']['confidence'] > 0.6:
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print('--')
+        if len(result['entities']) == 0:
+            with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+                singers = yaml.safe_load(f)
+            singers = [singer.lower() for singer in singers]
+            if message.lower() in singers:
+                print('model找不到歌手，但是透過比對找到')
+                print(message)
+            """
+            鄭伊健 (Ekin Cheng) 名字必須分開
+            """
+            print('No Entities')
+        else:
+            for i in range(len(result['entities'])):
+                if result['entities'][i]['value']:
+                    print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+
         print('-----------------------------------------------')
 
 
@@ -195,7 +281,15 @@ words1 = [
     '那麼後天呢？在台北或其他城市有類似的饒舌演唱會嗎？',
     '鄧福如',
     'postmalone',
-    'taylorswift'
+    'taylorswift',
+    '你好呀 ive',
+    '我真的蠻喜歡postmalone的',
+    '我真的蠻喜歡post malone的',
+    '我真的蠻喜歡Post Malone的',
+    '鄭伊健',
+    'new jeans最近會來開演唱會嗎',
+    'newjeans最近會來開演唱會嗎',
+    'Apink CHOBOM的演唱會資訊'
 ]
 words2 = [
     '那麼下周呢',
@@ -204,10 +298,16 @@ words2 = [
     '如果是後天呢',
 ]
 words3 = [
-    '鄭伊健'
+    '鄭伊健',
+    '請告訴我鄭伊健的演唱會資訊',
+    '請告訴我IU的演唱會資訊',
+    "陳奕迅那首歌 是唱他他自己 男人歌",
+    "你可以告訴我鄭伊健的演唱會資訊嗎"
 ]
-model_path = r'models\nlu-20240216-234555-uniform-calico.tar.gz'
+# model_path = r'models\nlu-20240216-234555-uniform-calico.tar.gz'
+model_path = r'models\nlu-20240501-165733-frayed-acre.tar.gz'
 
 # run_cmdline1(model_path, words1)
 # run_cmdline1(model_path, words2)
-run_cmdline1(model_path, words3)
+# run_cmdline1(model_path, words3)
+run_cmdline2(model_path, words1)

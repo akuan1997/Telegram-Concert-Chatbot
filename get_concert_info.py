@@ -3359,7 +3359,7 @@ def reset_failure_log():
 def move_concert_files(concert_json_filenames):
     for concert_json_file in concert_json_filenames:
         source_file = concert_json_file
-        target_folder = 'concert_json_files'
+        target_folder = 'website_jsons'
 
         # 检查目标文件是否存在，如果存在，删除它
         if os.path.exists(os.path.join(target_folder, source_file)):
@@ -3720,7 +3720,7 @@ def get_latest_concert_info(json_filename):
     print('--- Playwright finished ---')
     merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
     print('--- Json merged ---')
-    move_concert_files(concert_json_filenames)  # move each website json file to folder "concert_json_files"
+    move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
     print('--- Json moved ---')
     # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
     # print('--- Files deleted ---')

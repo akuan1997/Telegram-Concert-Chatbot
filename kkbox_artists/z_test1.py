@@ -1,61 +1,27 @@
-import json
-
-# with open('artist_korean1.json', 'r', encoding='utf-8') as f:
-#     data = json.load(f)
+# from playwright.sync_api import sync_playwright, Playwright
+# from playwright.sync_api import expect, Page
 #
-# with open('korean_sorted.txt', 'r', encoding='utf-8') as f:
-#     lines = f.readlines()
-# lines = [line.replace('\n', '') for line in lines]
-
-
-# for line in lines:
-#     for i in range(len(data)):
-#         if data[i]['singer_name'] in line:
-#             if data[i]['singer_name'] == line:
-#                 pass
-#             elif '(' in line:
-#                 print(line)
-#                 print(data[i]['singer_name'])
-#                 data[i]['singer_name'] = line
-#                 with open('artist_korean1.json', "w", encoding="utf-8") as f:
-#                     json.dump(data, f, indent=4, ensure_ascii=False)
-#                 print('---')
-from fuzzywuzzy import fuzz
-
-
-def missing(all_artists, json_file):
-    with open(all_artists, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    lines = [line.replace('\n', '') for line in lines]
-
-    with open(json_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    for line in lines:
-        found = False
-        for i in range(len(data)):
-            if data[i]['singer_name'] == line:
-                found = True
-                break
-        if not found:
-            print(line)
-
-
-missing('korean_sorted.txt', 'artist_korean1.json')
-# with open('korean_sorted.txt', 'r', encoding='utf-8') as f:
-#     lines = f.readlines()
-# lines = [line.replace('\n', '') for line in lines]
+# with sync_playwright() as p:
+#     browser = p.chromium.launch(headless=False)
+#     context = browser.new_context()
+#     page = context.new_page()
 #
-# with open('artist_korean1.json', 'r', encoding='utf-8') as f:
-#     data = json.load(f)
+#     page.goto("https://google.com")
 #
-# for line in lines:
-#     for i in range(len(data)):
-#         sim = fuzz.ratio(line, data[i]['singer_name'])
-#         if sim > 70:
-#             if line == data[i]["singer_name"]:
-#                 pass
-#             else:
-#                 print(line)
-#                 print(data[i]["singer_name"])
-#                 print('---')
+#     page.wait_for_selector("#APjFqb", state="visible")
+#
+#     page.locator("#APjFqb").fill("SHINee 韓國 維基百科")
+#
+#     page.keyboard.press('Enter')
+#
+#     page.wait_for_selector("#hdtb-sc > div > div > div.crJ18e > div.Ap1Qsc > span > div", state="visible")
+#
+#     if page.locator('span[jscontroller="msmzHf"] a').nth(0).is_visible():
+#         page.locator('span[jscontroller="msmzHf"] a').nth(0).click()
+#     else:
+#         print('找不到')
+#
+#     page.wait_for_timeout(5000)
+txt = "蘇宥蓉|||https://zh.wikipedia.org/zh-tw/%E8%98%87%E5%AE%A5%E8%93%89"
+a = txt.split('|||')
+print(a)

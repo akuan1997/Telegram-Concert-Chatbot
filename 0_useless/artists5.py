@@ -197,7 +197,7 @@ def click_actions():
                 # 這位歌手沒有圖片
                 else:
                     print('這位歌手沒有圖片')
-                    page.screenshot(path=os.path.join('../screenshot_no_images', f"{title_name}.png"))
+                    page.screenshot(path=os.path.join('screenshot_no_images', f"{title_name}.png"))
                     names = [re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", name) for name in names]
                     names = [name.replace('[編輯]', '') for name in names]
                     names = [name.strip() for name in names]

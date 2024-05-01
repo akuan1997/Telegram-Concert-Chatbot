@@ -1486,12 +1486,13 @@ def zh_get_until(found_dates, text, matched_time_lines, data):
         else:
             print(f'篩選 {start_time_obj} <= something <= {end_time_obj}')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if start_time_obj <= pdt_obj <= end_time_obj:
-                        found_dates.append(i)
-                # else:
-                #     print('zh_get_until / 有~ 晚點處理')
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if start_time_obj <= pdt_obj <= end_time_obj:
+                            found_dates.append(i)
+                    # else:
+                    #     print('zh_get_until / 有~ 晚點處理')
 
         for i in range(2):
             del matched_time_lines[0]
@@ -1518,12 +1519,13 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
             else:
                 print(f'篩選 {start_time_obj} <= something <= {end_time_obj}')
                 for i in range(len(data)):
-                    if '~' not in data[i]['pdt'][0]:
-                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                        if start_time_obj <= pdt_obj <= end_time_obj:
-                            found_dates.append(i)
-                    # else:
-                    #     print('zh_get_single / range / 有~ 晚點處理')
+                    if len(data[i]['pdt']) > 0:
+                        if '~' not in data[i]['pdt'][0]:
+                            pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                            if start_time_obj <= pdt_obj <= end_time_obj:
+                                found_dates.append(i)
+                        # else:
+                        #     print('zh_get_single / range / 有~ 晚點處理')
 
         elif match == 'year':
             single_year = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").year
@@ -1531,21 +1533,22 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
 
             print(f'>> 檢查 "{check_text}" 有無前後')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if '前' in check_text and '後' in check_text:
-                        print('不好意思，請問你想要搜尋是前、後還是一整年')
-                    elif '前' in check_text:
-                        if pdt_obj.year < single_year:
-                            found_dates.append(i)
-                    elif '後' in check_text:
-                        if pdt_obj.year > single_year:
-                            found_dates.append(i)
-                    else:
-                        if pdt_obj.year == single_year:
-                            found_dates.append(i)
-                # else:
-                #     print('zh_get_single / year / 有~ 晚點處理')
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if '前' in check_text and '後' in check_text:
+                            print('不好意思，請問你想要搜尋是前、後還是一整年')
+                        elif '前' in check_text:
+                            if pdt_obj.year < single_year:
+                                found_dates.append(i)
+                        elif '後' in check_text:
+                            if pdt_obj.year > single_year:
+                                found_dates.append(i)
+                        else:
+                            if pdt_obj.year == single_year:
+                                found_dates.append(i)
+                    # else:
+                    #     print('zh_get_single / year / 有~ 晚點處理')
 
         elif match == 'month':
             single_month = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").month
@@ -1553,21 +1556,22 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
 
             print(f'>> 檢查 "{check_text}" 有無前後')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if '前' in check_text and '後' in check_text:
-                        print('不好意思，請問你想要搜尋是前、後還是一整個月')
-                    elif '前' in check_text:
-                        if pdt_obj.month < single_month:
-                            found_dates.append(i)
-                    elif '後' in check_text:
-                        if pdt_obj.month > single_month:
-                            found_dates.append(i)
-                    else:
-                        if pdt_obj.month == single_month:
-                            found_dates.append(i)
-                # else:
-                #     print('zh_get_single / month / 有~ 晚點處理')
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if '前' in check_text and '後' in check_text:
+                            print('不好意思，請問你想要搜尋是前、後還是一整個月')
+                        elif '前' in check_text:
+                            if pdt_obj.month < single_month:
+                                found_dates.append(i)
+                        elif '後' in check_text:
+                            if pdt_obj.month > single_month:
+                                found_dates.append(i)
+                        else:
+                            if pdt_obj.month == single_month:
+                                found_dates.append(i)
+                    # else:
+                    #     print('zh_get_single / month / 有~ 晚點處理')
 
         elif match == 'week':
             single_week = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").isocalendar()[1]
@@ -1575,27 +1579,28 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
 
             print(f'>> 檢查 "{check_text}" 有無前後')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    pdt_week = pdt_obj.isocalendar()[1]
-                    if '前' in check_text and '後' in check_text:
-                        print('不好意思，請問你想要搜尋是前、後還是一整周')
-                    elif '前' in check_text:
-                        # print('發現"前"')
-                        if pdt_week < single_week:
-                            # print(f'篩選 pdt week < {single_week}')
-                            found_dates.append(i)
-                    elif '後' in check_text:
-                        # print('發現"後"')
-                        if pdt_week > single_week:
-                            found_dates.append(i)
-                            # print(f'篩選 pdt week > {single_week}')
-                    else:
-                        if pdt_week == single_week:
-                            # print(f'篩選 pdt week == {single_week}')
-                            found_dates.append(i)
-                # else:
-                #     print('zh_get_single / week / 有~ 晚點處理')
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        pdt_week = pdt_obj.isocalendar()[1]
+                        if '前' in check_text and '後' in check_text:
+                            print('不好意思，請問你想要搜尋是前、後還是一整周')
+                        elif '前' in check_text:
+                            # print('發現"前"')
+                            if pdt_week < single_week:
+                                # print(f'篩選 pdt week < {single_week}')
+                                found_dates.append(i)
+                        elif '後' in check_text:
+                            # print('發現"後"')
+                            if pdt_week > single_week:
+                                found_dates.append(i)
+                                # print(f'篩選 pdt week > {single_week}')
+                        else:
+                            if pdt_week == single_week:
+                                # print(f'篩選 pdt week == {single_week}')
+                                found_dates.append(i)
+                    # else:
+                    #     print('zh_get_single / week / 有~ 晚點處理')
 
         elif match == 'day':
             single_month = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").month
@@ -1604,19 +1609,20 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
 
             print(f'>> 檢查 "{check_text}" 有無前後')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if '前' in check_text and '後' in check_text:
-                        print('不好意思，請問你想要搜尋是前、後還是一整天')
-                    elif '前' in check_text:
-                        if pdt_obj.day < single_day:
-                            found_dates.append(i)
-                    elif '後' in check_text:
-                        if pdt_obj.day > single_day:
-                            found_dates.append(i)
-                    else:
-                        if pdt_obj.day == single_day and pdt_obj.month == single_month:
-                            found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if '前' in check_text and '後' in check_text:
+                            print('不好意思，請問你想要搜尋是前、後還是一整天')
+                        elif '前' in check_text:
+                            if pdt_obj.day < single_day:
+                                found_dates.append(i)
+                        elif '後' in check_text:
+                            if pdt_obj.day > single_day:
+                                found_dates.append(i)
+                        else:
+                            if pdt_obj.day == single_day and pdt_obj.month == single_month:
+                                found_dates.append(i)
                 # else:
                 #     print('zh_get_single / day / 有~ 晚點處理')
 
@@ -1628,25 +1634,26 @@ def zh_get_single(found_dates, text, matched_time_lines, data):
 
             print(f'>> 檢查 "{check_text}" 有無前後')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if '前' in check_text and '後' in check_text:
-                        print('不好意思，請問你想要搜尋是前還是後')
-                    elif '前' in check_text:
-                        if pdt_obj.month == time_obj.month and \
-                                pdt_obj.day == time_obj.day and \
-                                pdt_obj < time_obj:
-                            found_dates.append(i)
-                    elif '後' in check_text:
-                        if pdt_obj.month == time_obj.month and \
-                                pdt_obj.day == time_obj.day and \
-                                pdt_obj > time_obj:
-                            found_dates.append(i)
-                    else:
-                        if pdt_obj.month == time_obj.month and \
-                                pdt_obj.day == time_obj.day and \
-                                pdt_obj == time_obj:
-                            found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if '前' in check_text and '後' in check_text:
+                            print('不好意思，請問你想要搜尋是前還是後')
+                        elif '前' in check_text:
+                            if pdt_obj.month == time_obj.month and \
+                                    pdt_obj.day == time_obj.day and \
+                                    pdt_obj < time_obj:
+                                found_dates.append(i)
+                        elif '後' in check_text:
+                            if pdt_obj.month == time_obj.month and \
+                                    pdt_obj.day == time_obj.day and \
+                                    pdt_obj > time_obj:
+                                found_dates.append(i)
+                        else:
+                            if pdt_obj.month == time_obj.month and \
+                                    pdt_obj.day == time_obj.day and \
+                                    pdt_obj == time_obj:
+                                found_dates.append(i)
                 # else:
                 #     print('zh_get_single / hour | minute / 有~ 晚點處理')
 
@@ -1686,41 +1693,45 @@ def en_get_single(found_dates, text, matched_time_lines, data):
                 else:
                     print(f'篩選 {start_time_obj} <= something <= {end_time_obj}')
                     for i in range(len(data)):
-                        if '~' not in data[i]['pdt'][0]:
-                            pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                            if start_time_obj <= pdt_obj <= end_time_obj:
-                                # print(f'發現! {pdt_obj}')
-                                found_dates.append(i)
+                        if len(data[i]['pdt']) > 0:
+                            if '~' not in data[i]['pdt'][0]:
+                                pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                                if start_time_obj <= pdt_obj <= end_time_obj:
+                                    # print(f'發現! {pdt_obj}')
+                                    found_dates.append(i)
                         # else:
                         #     print('zh_get_single / range / 有~ 晚點處理')
             elif matched_time_lines[0][0] != 'None' and matched_time_lines[0][1] == 'None':
                 print('>> range - after')
                 time_obj = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S")
                 for i in range(len(data)):
-                    if '~' not in data[i]['pdt'][0]:
-                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                        if pdt_obj > time_obj:
-                            found_dates.append(i)
+                    if len(data[i]['pdt']) > 0:
+                        if '~' not in data[i]['pdt'][0]:
+                            pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                            if pdt_obj > time_obj:
+                                found_dates.append(i)
                     # else:
                     #     print('zh_get_single / range / 有~ 晚點處理')
             elif matched_time_lines[0][0] == 'None' and matched_time_lines[0][1] != 'None':
                 print('>> range - before')
                 time_obj = datetime.strptime(matched_time_lines[0][1], "%Y-%m-%d %H:%M:%S")
                 for i in range(len(data)):
-                    if '~' not in data[i]['pdt'][0]:
-                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                        if pdt_obj < time_obj:
-                            found_dates.append(i)
+                    if len(data[i]['pdt']) > 0:
+                        if '~' not in data[i]['pdt'][0]:
+                            pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                            if pdt_obj < time_obj:
+                                found_dates.append(i)
 
         elif match == 'year':
             single_year = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").year
             print(f'single year = {single_year}')
 
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if pdt_obj.year == single_year:
-                        found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if pdt_obj.year == single_year:
+                            found_dates.append(i)
                 # else:
                 #     print('zh_get_single / year / 有~ 晚點處理')
             # print(f'>> 檢查 "{check_text}" 有無前後')
@@ -1743,10 +1754,11 @@ def en_get_single(found_dates, text, matched_time_lines, data):
             single_month = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").month
             print(f'single month = {single_month}')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if pdt_obj.month == single_month:
-                        found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if pdt_obj.month == single_month:
+                            found_dates.append(i)
                 # else:
                 #     print('zh_get_single / month / 有~ 晚點處理')
             # print(f'>> 檢查 "{check_text}" 有無前後')
@@ -1772,11 +1784,12 @@ def en_get_single(found_dates, text, matched_time_lines, data):
             print(f'single week = {single_week}')
 
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    pdt_week = pdt_obj.isocalendar()[1]
-                    if pdt_week == single_week:
-                        found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        pdt_week = pdt_obj.isocalendar()[1]
+                        if pdt_week == single_week:
+                            found_dates.append(i)
                 # else:
                 #     print('zh_get_single / week / 有~ 晚點處理')
             # print(f'>> 檢查 "{check_text}" 有無前後')
@@ -1803,10 +1816,11 @@ def en_get_single(found_dates, text, matched_time_lines, data):
             single_day = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S").day
             print(f'single day = {single_day}')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if pdt_obj.month == single_month and pdt_obj.day == single_day:
-                        found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if pdt_obj.month == single_month and pdt_obj.day == single_day:
+                            found_dates.append(i)
                 # else:
                 #     print('zh_get_single / day / 有~ 晚點處理')
             # print(f'>> 檢查 "{check_text}" 有無前後')
@@ -1831,10 +1845,11 @@ def en_get_single(found_dates, text, matched_time_lines, data):
             time_obj = datetime.strptime(matched_time_lines[0][0], "%Y-%m-%d %H:%M:%S")
             print(f'single hour or minute = {time_obj}')
             for i in range(len(data)):
-                if '~' not in data[i]['pdt'][0]:
-                    pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                    if pdt_obj.month == time_obj.month and pdt_obj.day == time_obj.day and pdt_obj == time_obj:
-                        found_dates.append(i)
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if pdt_obj.month == time_obj.month and pdt_obj.day == time_obj.day and pdt_obj == time_obj:
+                            found_dates.append(i)
                 # else:
                 #     print('zh_get_single / hour | minute / 有~ 晚點處理')
             # print(f'>> 檢查 "{check_text}" 有無前後')
@@ -1943,11 +1958,11 @@ def en_dates_cities(text, json_file):
     matched_indexes = [pair[0] for pair in sorted_pairs]
     matched_time_lines = [pair[1] for pair in sorted_pairs]
 
-    print(f'---\ntime_tags: {time_tags}')
+    print(f'--- duckling ---\ntime_tags: {time_tags}')
     print(f'matched_texts: {matched_texts}')
     print(f'matched_indexes: {matched_indexes}')
     print(f'matched_time_lines: {matched_time_lines}')
-    print(f'tag str - {text}\n---')
+    print(f'tag str - {text}\n')
 
     ''''''
 
@@ -1974,9 +1989,9 @@ def en_dates_cities(text, json_file):
 
         city_indexes.append(origin_start_index)
 
-    print(f'city_indexes: {city_indexes}')
+    print(f'--- city ---\ncity_indexes: {city_indexes}')
     print(f'cities: {cities}')
-    print(f'tag & cit str -> {text}\n---')
+    print(f'tag & cit str -> {text}\n')
 
     ''''''
 

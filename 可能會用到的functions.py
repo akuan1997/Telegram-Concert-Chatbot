@@ -13,7 +13,7 @@ def os_show_file_title():
 
 
 def download_image():
-    folder_path = 'screenshot_no_images'
+    folder_path = '0_useless/screenshot_no_images'
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
