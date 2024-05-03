@@ -271,11 +271,11 @@ def get_language(user_input):
 
 
 def get_key_indexes_test():  # 測試用 可刪除
-    text, find_singer = keyword_adjustment('miss ko 三月')
-    print(text, find_singer)
+    text, find_singer = keyword_adjustment('我想要知道taylor swift的演唱會資訊')
+    print(text, '///', find_singer)
     keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
 
-# get_key_indexes_test()
+get_key_indexes_test()
 # search_word = '韓國'
 # search_word = search_word.replace('歌手', '').replace('台灣', '')
 # # search_word = '美國'

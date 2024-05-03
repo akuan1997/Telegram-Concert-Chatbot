@@ -243,7 +243,7 @@ while True:
     # 判斷用戶輸入的語言
     language = get_language(user_input)
     # 調整用戶輸入中的歌手名稱關鍵字；find_singer 的功能尚不清楚
-    user_input, find_english_singer = keyword_adjustment(user_input)
+    # user_input, find_english_singer = keyword_adjustment(user_input)
     # 輸出經過關鍵字調整後的用戶輸入
     print(f'經過 keyword adjustment之後 user input: {user_input}')
 

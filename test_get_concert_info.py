@@ -11,22 +11,22 @@ livenation = read_json('website_jsons/livenation.json')
 ticketplus = read_json('website_jsons/ticketplus.json')
 
 ab = read_json('concert_jsons/concert_3_14_23.json')
-kktix1 = read_json('kktix1.json')
-kktix2 = read_json('kktix2.json')
-kktix3 = read_json('kktix3.json')
+# kktix1 = read_json('kktix1.json')
+# kktix2 = read_json('kktix2.json')
+# kktix3 = read_json('kktix3.json')
 
-for i in range(len(kktix1)):
-    if kktix1[i]['pin'][-1] != '0':
-        print(kktix1[i]['url'])
-        print(kktix1[i]['pin'])
-for i in range(len(kktix2)):
-    if kktix1[i]['pin'][-1] != '0':
-        print(kktix1[i]['url'])
-        print(kktix1[i]['pin'])
-for i in range(len(kktix3)):
-    if kktix1[i]['pin'][-1] != '0':
-        print(kktix1[i]['url'])
-        print(kktix1[i]['pin'])
+# for i in range(len(kktix1)):
+#     if kktix1[i]['pin'][-1] != '0':
+#         print(kktix1[i]['url'])
+#         print(kktix1[i]['pin'])
+# for i in range(len(kktix2)):
+#     if kktix1[i]['pin'][-1] != '0':
+#         print(kktix1[i]['url'])
+#         print(kktix1[i]['pin'])
+# for i in range(len(kktix3)):
+#     if kktix1[i]['pin'][-1] != '0':
+#         print(kktix1[i]['url'])
+#         print(kktix1[i]['pin'])
 
     # print(ab[i]['pin'])
 
@@ -87,8 +87,8 @@ def check_all_cit(data):
     for i in range(len(data)):
         print(data[i]['cit'], data[i]['loc'])
 
-# check_all_sdt()
-check_all_pdt()
+check_all_sdt()
+# check_all_pdt()
 # check_all_loc()
 # check_all_prc()
 # check_all_cit(old_all)
