@@ -1,13 +1,19 @@
 from get_city_date_indexes import *
 
+with open('z_test12.txt', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+lines = [line.replace('\n', '') for line in lines if '-' not in line]
 test_words = [
-    '下個月初以及四月中',  # 錯誤
-    '下個月初還有五月中',  # 錯誤
-    '下個月初、四月底',  # 錯誤
-    '下個月',
-    '下個月初',
-    '四月初',
-    '四月中',
+    '四月',
+
+    # '明年以前 搶票',
+    # '下個月初以及四月中',  # 錯誤
+    # '下個月初還有五月中',  # 錯誤
+    # '下個月初、四月底',  # 錯誤
+    # '下個月',
+    # '下個月初',
+    # '四月初',
+    # '四月中',
     # '下週日以及下周六',
     # '下下周以及下周',
     # '下周六以及下周日',
@@ -37,8 +43,12 @@ test_words = [
     # '今年 八月 九月 十月'
 ]
 
-for word in test_words:
-    # print(zh_dates_cities(word, 'concert_5_2_14.json'))
-    zh_get_dates(word)
+for line in lines:
+    zh_get_ticket_time(line)
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    # print(zh_text_replacement(word))
+# for word in test_words:
+#     # print(zh_dates_cities(word, 'concert_5_2_14.json'))
+#     # zh_get_dates(word)
+#     zh_get_ticket_time(word)
+#     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+#     # print(zh_text_replacement(word))

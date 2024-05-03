@@ -2091,7 +2091,8 @@ def zh_get_dates(text):
 
                     # print("matched_text =", matched_text)
 
-                    check_word = text[text.index(matched_text) + len(matched_text):text.index(matched_text) + len(matched_text)+1]
+                    check_word = text[text.index(matched_text) + len(matched_text):text.index(matched_text) + len(
+                        matched_text) + 1]
                     # print("check_word =", check_word)
 
                     if check_word == '初':
@@ -2895,3 +2896,24 @@ def zh_dates_cities(text, json_file):
     #     print(f'{text} have error: {e}')
     #     print('--------------------------------------------------------------------------')
     #     continue
+
+
+def zh_get_ticket_time(text):
+    found_dates = []
+    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = zh_get_dates(text)
+    # until
+    found_dates, text, matched_time_lines = zh_get_until_sdt(found_dates, text, matched_time_lines, data)
+    after_until_text = text  # test
+    print(after_until_text)
+    print(found_dates)
+    for index in found_dates:
+        print(data[index]['sdt'])
+    # single
+    found_dates, text, matched_time_lines = zh_get_single_sdt(found_dates, text, matched_time_lines, data)
+    after_single_text = text  # test
+    print(after_single_text)
+    for index in found_dates:
+        print(data[index]['sdt'])

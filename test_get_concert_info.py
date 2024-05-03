@@ -11,6 +11,8 @@ livenation = read_json('website_jsons/livenation.json')
 ticketplus = read_json('website_jsons/ticketplus.json')
 
 ab = read_json('concert_jsons/concert_3_14_23.json')
+
+
 # kktix1 = read_json('kktix1.json')
 # kktix2 = read_json('kktix2.json')
 # kktix3 = read_json('kktix3.json')
@@ -28,11 +30,11 @@ ab = read_json('concert_jsons/concert_3_14_23.json')
 #         print(kktix1[i]['url'])
 #         print(kktix1[i]['pin'])
 
-    # print(ab[i]['pin'])
+# print(ab[i]['pin'])
 
 def check_sdt(data):
     for i in range(len(data)):
-        print(data[i]['sdt'])
+        print(i, data[i]['sdt'])
         # print(data[i]['url'])
 
 
@@ -87,10 +89,12 @@ def check_all_cit(data):
     for i in range(len(data)):
         print(data[i]['cit'], data[i]['loc'])
 
-check_all_sdt()
+
+# check_all_sdt()
 # check_all_pdt()
 # check_all_loc()
 # check_all_prc()
 # check_all_cit(old_all)
 # check_all_sdt()
-
+for i in range(len(old_all)):
+    print(i, old_all[i]['sdt'])
