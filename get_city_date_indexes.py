@@ -1230,80 +1230,82 @@ def en_dates_cities(text, json_file):
 
     print(f'ori msg: {text}')
 
-    text = en_text_replacement(text)
+    # text = en_text_replacement(text)
+    #
+    # time_tags = []
+    # matched_texts = []
+    # matched_indexes = []
+    # matched_time_lines = []
+    #
+    # while True:
+    #     duckling_result = en.parse_time(text)
+    #     if duckling_result:
+    #         try:
+    #             text_for_indexing = text
+    #
+    #             grain = duckling_result[0]['value']['grain']
+    #             time_line = str(duckling_result[0]['value']['value']).replace('T', ' ').replace('.000+08:00', '')
+    #             matched_text = str(duckling_result[0]['text'])
+    #
+    #             matched_time_lines.append([time_line])
+    #
+    #             time_tags.append(grain)
+    #
+    #         except Exception as e:
+    #             grain = 'range'
+    #             matched_text = str(duckling_result[0]['text'])
+    #             time_tags.append(grain)
+    #
+    #             matched_time_lines.append(
+    #                 [str(duckling_result[0]['value']['value']['from']).replace('T', ' ').replace(
+    #                     '.000+08:00', ''),
+    #                     str(duckling_result[0]['value']['value']['to']).replace('T', ' ').replace(
+    #                         '.000+08:00', '')])
+    #
+    #         ''''''
+    #
+    #         matched_text_start_index = duckling_result[0]['start']
+    #         matched_text_end_index = matched_text_start_index + len(matched_text)
+    #         text = text[:matched_text_start_index] + grain + text[matched_text_end_index:]
+    #         matched_texts.append(matched_text)
+    #
+    #         # print('asd')
+    #         origin_start_index = text_for_indexing.find(matched_text)
+    #         origin_end_index = origin_start_index + len(matched_text)
+    #         text_for_indexing = text_for_indexing[:origin_start_index] + ' ' * len(
+    #             matched_text) + text_for_indexing[origin_end_index:]
+    #         # print(f'text_for_indexing = "{text_for_indexing}"')
+    #
+    #         matched_indexes.append(origin_start_index)
+    #
+    #         # print('matched text:', matched_text)  # test
+    #
+    #     else:
+    #         break
+    #
+    #     ''''''
+    #
+    # # 字串處理完畢 / 把日期按照字串的順序排列
+    #
+    # sorted_pairs = sorted(zip(matched_indexes, matched_texts))
+    # # sorted_indexes  = [pair[0] for pair in sorted_pairs]
+    # matched_texts = [pair[1] for pair in sorted_pairs]
+    #
+    # sorted_pairs = sorted(zip(matched_indexes, time_tags))
+    # # sorted_indexes  = [pair[0] for pair in sorted_pairs]
+    # time_tags = [pair[1] for pair in sorted_pairs]
+    #
+    # sorted_pairs = sorted(zip(matched_indexes, matched_time_lines))
+    # matched_indexes = [pair[0] for pair in sorted_pairs]
+    # matched_time_lines = [pair[1] for pair in sorted_pairs]
+    #
+    # print(f'--- duckling ---\ntime_tags: {time_tags}')
+    # print(f'matched_texts: {matched_texts}')
+    # print(f'matched_indexes: {matched_indexes}')
+    # print(f'matched_time_lines: {matched_time_lines}')
+    # print(f'tag str - {text}\n')
 
-    time_tags = []
-    matched_texts = []
-    matched_indexes = []
-    matched_time_lines = []
-
-    while True:
-        duckling_result = en.parse_time(text)
-        if duckling_result:
-            try:
-                text_for_indexing = text
-
-                grain = duckling_result[0]['value']['grain']
-                time_line = str(duckling_result[0]['value']['value']).replace('T', ' ').replace('.000+08:00', '')
-                matched_text = str(duckling_result[0]['text'])
-
-                matched_time_lines.append([time_line])
-
-                time_tags.append(grain)
-
-            except Exception as e:
-                grain = 'range'
-                matched_text = str(duckling_result[0]['text'])
-                time_tags.append(grain)
-
-                matched_time_lines.append(
-                    [str(duckling_result[0]['value']['value']['from']).replace('T', ' ').replace(
-                        '.000+08:00', ''),
-                        str(duckling_result[0]['value']['value']['to']).replace('T', ' ').replace(
-                            '.000+08:00', '')])
-
-            ''''''
-
-            matched_text_start_index = duckling_result[0]['start']
-            matched_text_end_index = matched_text_start_index + len(matched_text)
-            text = text[:matched_text_start_index] + grain + text[matched_text_end_index:]
-            matched_texts.append(matched_text)
-
-            # print('asd')
-            origin_start_index = text_for_indexing.find(matched_text)
-            origin_end_index = origin_start_index + len(matched_text)
-            text_for_indexing = text_for_indexing[:origin_start_index] + ' ' * len(
-                matched_text) + text_for_indexing[origin_end_index:]
-            # print(f'text_for_indexing = "{text_for_indexing}"')
-
-            matched_indexes.append(origin_start_index)
-
-            # print('matched text:', matched_text)  # test
-
-        else:
-            break
-
-        ''''''
-
-    # 字串處理完畢 / 把日期按照字串的順序排列
-
-    sorted_pairs = sorted(zip(matched_indexes, matched_texts))
-    # sorted_indexes  = [pair[0] for pair in sorted_pairs]
-    matched_texts = [pair[1] for pair in sorted_pairs]
-
-    sorted_pairs = sorted(zip(matched_indexes, time_tags))
-    # sorted_indexes  = [pair[0] for pair in sorted_pairs]
-    time_tags = [pair[1] for pair in sorted_pairs]
-
-    sorted_pairs = sorted(zip(matched_indexes, matched_time_lines))
-    matched_indexes = [pair[0] for pair in sorted_pairs]
-    matched_time_lines = [pair[1] for pair in sorted_pairs]
-
-    print(f'--- duckling ---\ntime_tags: {time_tags}')
-    print(f'matched_texts: {matched_texts}')
-    print(f'matched_indexes: {matched_indexes}')
-    print(f'matched_time_lines: {matched_time_lines}')
-    print(f'tag str - {text}\n')
+    time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = en_get_dates(text)
 
     ''''''
 
@@ -2917,3 +2919,98 @@ def zh_get_ticket_time(text):
     print(after_single_text)
     for index in found_dates:
         print(data[index]['sdt'])
+
+
+def en_get_dates(text):
+    text = en_text_replacement(text)
+
+    time_tags = []
+    matched_texts = []
+    matched_indexes = []
+    matched_time_lines = []
+
+    while True:
+        duckling_result = en.parse_time(text)
+        if duckling_result:
+            try:
+                text_for_indexing = text
+
+                grain = duckling_result[0]['value']['grain']
+                time_line = str(duckling_result[0]['value']['value']).replace('T', ' ').replace('.000+08:00', '')
+                matched_text = str(duckling_result[0]['text'])
+
+                matched_time_lines.append([time_line])
+
+                time_tags.append(grain)
+
+            except Exception as e:
+                grain = 'range'
+                matched_text = str(duckling_result[0]['text'])
+                time_tags.append(grain)
+
+                matched_time_lines.append(
+                    [str(duckling_result[0]['value']['value']['from']).replace('T', ' ').replace(
+                        '.000+08:00', ''),
+                        str(duckling_result[0]['value']['value']['to']).replace('T', ' ').replace(
+                            '.000+08:00', '')])
+
+            ''''''
+
+            matched_text_start_index = duckling_result[0]['start']
+            matched_text_end_index = matched_text_start_index + len(matched_text)
+            text = text[:matched_text_start_index] + grain + text[matched_text_end_index:]
+            matched_texts.append(matched_text)
+
+            # print('asd')
+            origin_start_index = text_for_indexing.find(matched_text)
+            origin_end_index = origin_start_index + len(matched_text)
+            text_for_indexing = text_for_indexing[:origin_start_index] + ' ' * len(
+                matched_text) + text_for_indexing[origin_end_index:]
+            # print(f'text_for_indexing = "{text_for_indexing}"')
+
+            matched_indexes.append(origin_start_index)
+
+            # print('matched text:', matched_text)  # test
+
+        else:
+            break
+
+        ''''''
+
+    # 字串處理完畢 / 把日期按照字串的順序排列
+
+    sorted_pairs = sorted(zip(matched_indexes, matched_texts))
+    # sorted_indexes  = [pair[0] for pair in sorted_pairs]
+    matched_texts = [pair[1] for pair in sorted_pairs]
+
+    sorted_pairs = sorted(zip(matched_indexes, time_tags))
+    # sorted_indexes  = [pair[0] for pair in sorted_pairs]
+    time_tags = [pair[1] for pair in sorted_pairs]
+
+    sorted_pairs = sorted(zip(matched_indexes, matched_time_lines))
+    matched_indexes = [pair[0] for pair in sorted_pairs]
+    matched_time_lines = [pair[1] for pair in sorted_pairs]
+
+    print(f'--- duckling ---\ntime_tags: {time_tags}')
+    print(f'matched_texts: {matched_texts}')
+    print(f'matched_indexes: {matched_indexes}')
+    print(f'matched_time_lines: {matched_time_lines}')
+    print(f'tag str - {text}\n')
+
+    return time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing
+
+
+def en_get_ticket_time(text, json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = en_get_dates(text)
+
+    found_dates = []
+    # single
+    found_dates, text, matched_time_lines = en_get_single(found_dates, text, matched_time_lines, data)
+    # after_single_text = text  # test
+
+    # print(f'after_single_text = {after_single_text}')  # test
+
+    return found_dates
