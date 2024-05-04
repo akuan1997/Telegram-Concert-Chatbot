@@ -53,7 +53,7 @@ with open('z_test11.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 lines = [line.replace('\n', '') for line in lines if '-' not in line]
 for line in lines:
-    # en_get_dates(line)
-    ticket_indexes = en_get_ticket_time(line, 'concert_data_old_zh.json')
+    en_get_dates(line)
+    # ticket_indexes = en_get_ticket_time(line, 'concert_data_old_zh.json')
     print(f'ticket_indexes = {ticket_indexes}')
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')

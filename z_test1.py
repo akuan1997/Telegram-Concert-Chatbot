@@ -18,7 +18,11 @@ for i in range(len(data)):
         full_names.append(full_name)
 
 for name in full_names:
-    print(f'      - {name}')
+    chinese_name = re.findall(r'[\u4e00-\u9fff]', name)
+    if chinese_name:
+        pass
+    else:
+        print(f'      - {name}')
 #     bracket_name = re.findall(pattern, data[i]['singer_name'])
 #     if bracket_name:
 #         bracket_names.append(bracket_name[0])
@@ -34,3 +38,8 @@ for name in full_names:
 #     print(bracket_name)
 # for name in names:
 #     print(name)
+# user_status = {}
+# user_id = "12345"
+# current_status = "active"
+# user_status[user_id] = current_status
+# print(user_status)
