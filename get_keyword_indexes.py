@@ -275,16 +275,16 @@ def get_key_indexes_test():  # 測試用 可刪除
     print(text, '///', find_singer)
     keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
 
-get_key_indexes_test()
+# get_key_indexes_test()
 # search_word = '韓國'
 # search_word = search_word.replace('歌手', '').replace('台灣', '')
-# # search_word = '美國'
-# matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
-# if matched_indexes is not None:
-#     with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
-#         data = json.load(f)
-#     for index in matched_indexes:
-#         print(data[index]['tit'])
-#         print(data[index]['url'])
-# else:
-#     print('沒有找到')
+search_word = 'post malone'
+matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
+if matched_indexes is not None:
+    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    for index in matched_indexes:
+        print(data[index]['tit'])
+        print(data[index]['url'])
+else:
+    print('沒有找到')

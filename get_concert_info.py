@@ -3615,15 +3615,15 @@ def zh_to_en():
     pass
 
 
-def zh_en():
+def zh_en(zh_json, en_json):
     city_mapping = dict(zip(zh_cities, en_cities))
     # Copying the original file to a new file for translated content
-    shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
+    shutil.copy(zh_json, en_json)
 
     translator = Translator()
 
     # Open the copied file for reading and translation
-    with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
+    with open(en_json, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     for i in range(len(data)):
@@ -3655,7 +3655,7 @@ def zh_en():
         print('------------------------------------')
 
     # Write the translated data back to the file
-    with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
+    with open(en_json, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
@@ -3704,6 +3704,7 @@ def price_str_to_int(json_filename):
                 except:
                     pass
 
+
 def price_in_order(json_filename):
     with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -3712,6 +3713,7 @@ def price_in_order(json_filename):
             data[i]['prc'] = sorted(data[i]['prc'], reverse=True)
             with open(json_filename, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
+
 
 def get_latest_concert_info(json_filename):
     reset_failure_log()
@@ -3756,8 +3758,6 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 get_latest_concert_info(concert_today)
 
 ''''''
-
-
 
 # get_era('era', 'era.json', 'era_temp.txt')
 # get_era_without_error_mechanism('era', 'era.json', 'era_temp.txt')

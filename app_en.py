@@ -15,131 +15,53 @@ from duckling import *
 d = DucklingWrapper(language=Language.CHINESE)
 
 
-def find_singer_name(user_input):
-    # print(user_input)
-    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
 
-    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
-    names_without_space = [name.replace(' ', '') for name in names]
-
-    # 匹配英文单词
-    english_words = re.findall(r'[A-Za-z0-9]+', user_input)
-    # 将匹配到的英文单词拼接起来
-    english_part = ' '.join(english_words)
-
-    ''''''
-
-    # Post Malone
-    # print('round 1')
-    for name in names:
-        if name in english_part:
-            return user_input, True
-
-    ''''''
-
-    # post malone
-    # print('round 2')
-    for name in names:
-        if name.lower() in user_input.lower():
-            start_index = user_input.lower().find(name.lower())
-            end_index = start_index + len(name.lower()) - 1
-            user_input = user_input.replace(user_input[start_index:end_index + 1], name)
-            return user_input, True
-
-    ''''''
-
-    english_split = english_part.split(' ')
-
-    for i, name in enumerate(names_without_space):
-        for e_split in english_split:
-            score = fuzz.partial_ratio(e_split.lower(), name.lower())
-            if score >= 80:
-                # print('abc', score)
-                # print(e_split.lower(), name.lower())
-                if len(name) - 1 < len(e_split) < len(name) + 1:
-                    user_input = user_input.replace(e_split, names[i])
-                else:
-                    pass
-
-    ''''''
-
-    max_score = -1
-    singer_name = None
-
-    for name in names:
-        score = fuzz.partial_ratio(user_input.lower(), name.lower())
-        if score > max_score:
-            max_score = score
-            singer_name = name
-
-    if max_score > 60:
-        # 匹配英文单词
-        english_words = re.findall(r'[A-Za-z0-9]+', user_input)
-        # 将匹配到的英文单词拼接起来
-        english_part = ' '.join(english_words)
-        # # print('English Part', english_part)
-        english_split = english_part.split(' ')
-        # # print('Singer', singer_name)
-        singer_split = singer_name.split(' ')
-        # # print(singer_split)
-        for s_split in singer_split:
-            for e_split in english_split:
-                score = fuzz.partial_ratio(s_split.lower(), e_split.lower())
-                if score > 80:
-                    # # print(s_split, e_split, score)
-                    user_input = user_input.replace(e_split, s_split)
-        return user_input, True
-    else:
-        return user_input, False
-
-
-def run_cmdline(model_path: Text) -> None:
-    """Loops over CLI input, passing each message to a loaded NLU model."""
-    agent = Agent.load(model_path)
-
-    print_success("NLU model loaded. Type a message and press enter to parse it.")
-    while True:
-        # print_success("Next message:")
-        try:
-            message = input().strip()
-            duckling_result = d.parse_time(message)
-            if duckling_result:
-                print(duckling_result[0]['value'])
-            else:
-                print('Duckling None')
-
-        except (EOFError, KeyboardInterrupt):
-            print_info("Wrapping up command line chat...")
-            break
-
-        result = asyncio.run(agent.parse_message(message))
-
-        print(result)
-        '''
-        輸入句子: 你好
-        print(result['intent'])
-        >> {'name': 'greet', 'confidence': 0.9999651908874512}
-
-        print(result['intent']['name'])
-        >> greet 
-        '''
-        # print(result['intent'])
-        # print(json_to_string(result))
-        print('---')
-        print(f'message: {message}')
-        print(f"intent: {result['intent']['name']}")
-        print(f"score: {result['intent']['confidence']}")
-        print('--')
-        # print(result['entities'])
-        if len(result['entities']) == 0:
-            print('No Entities')
-        else:
-            for i in range(len(result['entities'])):
-                if result['entities'][i]['value']:
-                    print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
-        print('--')
-        # print(json_to_string(result))
+# def run_cmdline(model_path: Text) -> None:
+#     """Loops over CLI input, passing each message to a loaded NLU model."""
+#     agent = Agent.load(model_path)
+#
+#     print_success("NLU model loaded. Type a message and press enter to parse it.")
+#     while True:
+#         # print_success("Next message:")
+#         try:
+#             message = input().strip()
+#             duckling_result = d.parse_time(message)
+#             if duckling_result:
+#                 print(duckling_result[0]['value'])
+#             else:
+#                 print('Duckling None')
+#
+#         except (EOFError, KeyboardInterrupt):
+#             print_info("Wrapping up command line chat...")
+#             break
+#
+#         result = asyncio.run(agent.parse_message(message))
+#
+#         print(result)
+#         '''
+#         輸入句子: 你好
+#         print(result['intent'])
+#         >> {'name': 'greet', 'confidence': 0.9999651908874512}
+#
+#         print(result['intent']['name'])
+#         >> greet
+#         '''
+#         # print(result['intent'])
+#         # print(json_to_string(result))
+#         print('---')
+#         print(f'message: {message}')
+#         print(f"intent: {result['intent']['name']}")
+#         print(f"score: {result['intent']['confidence']}")
+#         print('--')
+#         # print(result['entities'])
+#         if len(result['entities']) == 0:
+#             print('No Entities')
+#         else:
+#             for i in range(len(result['entities'])):
+#                 if result['entities'][i]['value']:
+#                     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+#         print('--')
+#         # print(json_to_string(result))
 
 
 def run_cmdline1(model_path: Text, words) -> None:
@@ -331,11 +253,6 @@ words1 = [
 ]
 
 model_path = r'models\nlu-20240505-013208-fixed-itinerary.tar.gz'
-
-# run_cmdline1(model_path, words1)
-# run_cmdline1(model_path, words2)
-# run_cmdline1(model_path, words4)
-# run_cmdline(model_path)
 
 with open('z_test1.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
