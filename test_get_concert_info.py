@@ -97,4 +97,5 @@ def check_all_cit(data):
 # check_all_cit(old_all)
 # check_all_sdt()
 for i in range(len(old_all)):
-    print(i, old_all[i]['sdt'])
+    print(old_all[i]['tit'])
+#     print(i, old_all[i]['sdt'])

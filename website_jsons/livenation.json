@@ -14,7 +14,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw",
         "pin": "https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw0",
-        "tim": "2024-05-04 20:48:46.157754"
+        "tim": "2024-05-07 21:41:03.519297"
     },
     {
         "tit": "elijah woods : ilu 24/7, 365 tour",
@@ -31,7 +31,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1468089/elijah-woods-ilu-24-7-365-tour/taipei/2024-05-24/tw",
         "pin": "https://www.livenation.com.tw/show/1468089/elijah-woods-ilu-24-7-365-tour/taipei/2024-05-24/tw1",
-        "tim": "2024-05-04 20:48:47.682399"
+        "tim": "2024-05-07 21:41:04.941652"
     },
     {
         "tit": "GRYFFIN – ASIA TOUR 2024",
@@ -48,12 +48,21 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1482266/gryffin-asia-tour-2024/taipei/2024-06-11/tw",
         "pin": "https://www.livenation.com.tw/show/1482266/gryffin-asia-tour-2024/taipei/2024-06-11/tw2",
-        "tim": "2024-05-04 20:48:49.159867"
+        "tim": "2024-05-07 21:41:06.763464"
     },
     {
         "tit": "滅火器 Fire EX.《一生到底 One Life, One Shot》演唱會 - 台北場",
-        "sdt": [],
-        "prc": [],
+        "sdt": [
+            "2024/03/04 12:00",
+            "2024/03/05 12:00"
+        ],
+        "prc": [
+            2880,
+            1280,
+            3180,
+            1680,
+            2480
+        ],
         "pdt": [
             "2024/6/15 19:30"
         ],
@@ -61,11 +70,11 @@
             "臺北流行音樂中心"
         ],
         "cit": "",
-        "int": "",
+        "int": "▚▚▚▚▚▚▚▚　滅火器 Fire EX.　▚▚▚▚▚▚▚▚▚▚\n《一生到底 One Life, One Shot》演唱會\n▚▚▚▚▚▚　 06/15 台北流行音樂中心　▚▚▚▚▚▚一生到底 One Life, One Shot\n人生像場一鏡到底的電影，\n時間不曾為誰停下，\n無法倒轉重來、也無法按下暫停。 Let’s keep rolling!\n不斷前進的過程中，\n最珍貴的便是每次聚在一起就充滿能量，\n很多事情一時沒有答案，\n至少、你有滅火器的音樂可以作伴。人生keep rolling的BGM，\n讓滅火器陪你，一生到底。♦演出日期：2024/6/15 (六)\n♦演出時間：19:30 (實際演出時間以現場公告為準)\n♦演出地點：台北流行音樂中心\n♦票價：\n1F搖滾區NT$ 2,880 (請依票面序號排隊入場)\n2F座位區NT$ 3,180/2,480/1,680/1,280（劃位座席，請依票面座位排號入座）\n3F座位區NT$ 2,480/1,680/1,280（劃位座席，請依票面座位排號入座）🎫Live Nation Taiwan會員預售 : 2024/3/4 12PM–11:59PM\n(會員註冊：http://bit.ly/lnregister 會員預購流程：http://bit.ly/lnpreHP)\n🎫售票時間：2024/3/5 12PM 拓元售票系統全面開賣*以上活動內容，主辦單位Live Nation Taiwan保留異動之權力。",
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1474356/%e6%bb%85%e7%81%ab%e5%99%a8-fire-ex-%e4%b8%80%e7%94%9f%e5%88%b0%e5%ba%95-one-life-one-shot-%e6%bc%94%e5%94%b1%e6%9c%83-%e5%8f%b0%e5%8c%97%e5%a0%b4/taipei/2024-06-15/tw",
         "pin": "https://www.livenation.com.tw/show/1474356/%e6%bb%85%e7%81%ab%e5%99%a8-fire-ex-%e4%b8%80%e7%94%9f%e5%88%b0%e5%ba%95-one-life-one-shot-%e6%bc%94%e5%94%b1%e6%9c%83-%e5%8f%b0%e5%8c%97%e5%a0%b4/taipei/2024-06-15/tw3",
-        "tim": "2024-05-04 20:48:50.477948"
+        "tim": "2024-05-07 21:41:09.590495"
     },
     {
         "tit": "Alexander 23: American Boy in Asia",
@@ -82,7 +91,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1474353/alexander-23-american-boy-in-asia/taipei/2024-06-16/tw",
         "pin": "https://www.livenation.com.tw/show/1474353/alexander-23-american-boy-in-asia/taipei/2024-06-16/tw4",
-        "tim": "2024-05-04 20:48:52.117108"
+        "tim": "2024-05-07 21:41:11.079242"
     },
     {
         "tit": "[BABYMONSTER PRESENTS : SEE YOU THERE] IN TAIPEI",
@@ -99,7 +108,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw",
         "pin": "https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw5",
-        "tim": "2024-05-04 20:48:53.371134"
+        "tim": "2024-05-07 21:41:12.794970"
     },
     {
         "tit": "ATARASHII GAKKO! World Tour⁠",
@@ -116,7 +125,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1478141/atarashii-gakko-world-tour-/taipei/2024-06-27/tw",
         "pin": "https://www.livenation.com.tw/show/1478141/atarashii-gakko-world-tour-/taipei/2024-06-27/tw6",
-        "tim": "2024-05-04 20:48:54.941899"
+        "tim": "2024-05-07 21:41:15.082378"
     },
     {
         "tit": "ITZY 2ND WORLD TOUR <BORN TO BE> in TAIPEI",
@@ -133,7 +142,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1473365/itzy-2nd-world-tour-born-to-be-in-taipei/taipei/2024-07-20/tw",
         "pin": "https://www.livenation.com.tw/show/1473365/itzy-2nd-world-tour-born-to-be-in-taipei/taipei/2024-07-20/tw7",
-        "tim": "2024-05-04 20:48:56.762828"
+        "tim": "2024-05-07 21:41:17.150886"
     },
     {
         "tit": "Alec Benjamin: 12 Notes Tour",
@@ -150,7 +159,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1484004/alec-benjamin-12-notes-tour/taipei/2024-07-24/tw",
         "pin": "https://www.livenation.com.tw/show/1484004/alec-benjamin-12-notes-tour/taipei/2024-07-24/tw8",
-        "tim": "2024-05-04 20:48:58.258510"
+        "tim": "2024-05-07 21:41:18.603356"
     },
     {
         "tit": "血肉果汁機 2024建宮蓋廟-宇宙預言",
@@ -167,7 +176,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1480300/%e8%a1%80%e8%82%89%e6%9e%9c%e6%b1%81%e6%a9%9f-2024%e5%bb%ba%e5%ae%ae%e8%93%8b%e5%bb%9f-%e5%ae%87%e5%ae%99%e9%a0%90%e8%a8%80/taipei/2024-07-27/tw",
         "pin": "https://www.livenation.com.tw/show/1480300/%e8%a1%80%e8%82%89%e6%9e%9c%e6%b1%81%e6%a9%9f-2024%e5%bb%ba%e5%ae%ae%e8%93%8b%e5%bb%9f-%e5%ae%87%e5%ae%99%e9%a0%90%e8%a8%80/taipei/2024-07-27/tw9",
-        "tim": "2024-05-04 20:48:59.919461"
+        "tim": "2024-05-07 21:41:20.525829"
     },
     {
         "tit": "Chris James : Dopamine Overload Asia Tour 2024",
@@ -184,7 +193,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1483048/chris-james-dopamine-overload-asia-tour-2024/taipei/2024-08-22/tw",
         "pin": "https://www.livenation.com.tw/show/1483048/chris-james-dopamine-overload-asia-tour-2024/taipei/2024-08-22/tw10",
-        "tim": "2024-05-04 20:49:01.641674"
+        "tim": "2024-05-07 21:41:22.435852"
     },
     {
         "tit": "Conan Gray - Found Heaven On Tour",
@@ -201,7 +210,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1485152/conan-gray-found-heaven-on-tour/taipei/2024-08-30/tw",
         "pin": "https://www.livenation.com.tw/show/1485152/conan-gray-found-heaven-on-tour/taipei/2024-08-30/tw11",
-        "tim": "2024-05-04 20:49:02.829424"
+        "tim": "2024-05-07 21:41:23.617909"
     },
     {
         "tit": "Laufey – Bewitched: The Goddess Tour (Asia & Australia)",
@@ -218,7 +227,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw",
         "pin": "https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw12",
-        "tim": "2024-05-04 20:49:04.502169"
+        "tim": "2024-05-07 21:41:24.940253"
     },
     {
         "tit": "Nigel Ng: The Haiyaa World Tour",
@@ -235,7 +244,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw",
         "pin": "https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw13",
-        "tim": "2024-05-04 20:49:05.979462"
+        "tim": "2024-05-07 21:41:25.914744"
     },
     {
         "tit": "LANY - a beautiful blur: the world tour",
@@ -252,7 +261,7 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw",
         "pin": "https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw14",
-        "tim": "2024-05-04 20:49:07.408655"
+        "tim": "2024-05-07 21:41:27.513892"
     },
     {
         "tit": "Porter Robinson SMILE! :D World Tour",
@@ -269,6 +278,6 @@
         "web": "Live Nation",
         "url": "https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw",
         "pin": "https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw15",
-        "tim": "2024-05-04 20:49:09.501789"
+        "tim": "2024-05-07 21:41:29.289242"
     }
 ]

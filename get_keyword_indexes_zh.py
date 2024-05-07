@@ -144,7 +144,6 @@ def jieba_english_tokenize(words):
 def chinese_tokenizer(text):
     return jieba_english_tokenize(jieba.lcut(text))
 
-
 # # 你的演唱會資料
 # with open('concert_data_old_zh.json', 'r', encoding='utf-8') as file:
 #     concert_data = json.load(file)
@@ -220,6 +219,8 @@ def get_keyword_indexes(text, json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
+    print(f"輸入的文字分詞結果為 = {chinese_tokenizer(text)}")
+
     documents = [chinese_tokenizer(concert["tit"] + " " + concert["int"]) for concert in data]  # ori
     for i, document in enumerate(documents):
         for j, element in enumerate(document):
@@ -236,7 +237,7 @@ def get_keyword_indexes(text, json_file):
 
     # 找到最相似的幾個演唱會
     sorted_indices = np.argsort(scores)[::-1]  # 從高到低排序
-    how_many_results = 15
+    how_many_results = 10
     top_concerts = []
     for i in sorted_indices:
         if scores[i] > 0:
@@ -271,20 +272,24 @@ def get_language(user_input):
 
 
 def get_key_indexes_test():  # 測試用 可刪除
-    text, find_singer = keyword_adjustment('我想要知道taylor swift的演唱會資訊')
-    print(text, '///', find_singer)
-    keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
+    # text, find_singer = keyword_adjustment('我想要知道taylor swift的演唱會資訊')
+    # print(text, '///', find_singer)
+    # keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
+    # search_word = '韓國'
+    # search_word = search_word.replace('歌手', '').replace('台灣', '')
+    search_word = '龐克萬歲'
+    matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
+    print(f"matched_indexes = {matched_indexes}")
+    if matched_indexes is not None:
+        with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        if matched_indexes:
+            for index in matched_indexes:
+                print(data[index]['tit'])
+                print(data[index]['url'])
+        else:
+            print('沒有找到任何資訊')
+    else:
+        print('沒有找到')
 
-# get_key_indexes_test()
-# search_word = '韓國'
-# search_word = search_word.replace('歌手', '').replace('台灣', '')
-search_word = 'post malone'
-matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
-if matched_indexes is not None:
-    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    for index in matched_indexes:
-        print(data[index]['tit'])
-        print(data[index]['url'])
-else:
-    print('沒有找到')
+get_key_indexes_test()

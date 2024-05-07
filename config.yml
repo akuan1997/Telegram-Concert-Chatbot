@@ -12,8 +12,6 @@ pipeline:
   model_name: "bert"
   model_weights: "bert-base-chinese"
 
-#- name: RegexFeaturizer # idk
-
 - name: SklearnIntentClassifier
   epochs: 100
   tensorboard_log_directory: ./log

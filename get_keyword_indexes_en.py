@@ -12,7 +12,7 @@ with open('concert_data_old_en.json', 'r', encoding='utf-8') as file:
     concerts = json.load(file)
 
 # 構建文檔
-documents = [concert["tit"] + "///" + concert["int"] for concert in concerts]
+documents = [concert["tit"] + " " + concert["int"] for concert in concerts]
 
 
 # 預處理函數，進行分詞和去除停用詞
@@ -44,14 +44,16 @@ def search(query):
     scores = bm25.get_scores(query_processed)
     ranked_scores = sorted(((score, idx) for idx, score in enumerate(scores)), reverse=True, key=lambda x: x[0])
     # Filter out documents with a score of 0
-    return [(documents[idx].split("///")[0], score) for score, idx in ranked_scores[:10] if score > 0]
+    # return [(documents[idx].split("///")[0], score) for score, idx in ranked_scores[:10] if score > 0]
+    results = [(idx, score) for score, idx in ranked_scores[:10] if score > 0]
+    indexes = []
+    for result in results:
+        indexes.append(result[0])
+    return indexes
 
 
 # 測試查詢
 query = "super robot"
-results = search(query)
-
-for result in results:
-    # print(type(result))
-    print(result[0])
-    # print('score = ', result[1])
+indexes = search(query)
+for index in indexes:
+    print(concerts[index]['tit'])

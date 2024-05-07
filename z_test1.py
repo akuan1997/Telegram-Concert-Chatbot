@@ -46,13 +46,17 @@
 
 import json
 from y_example_read_json import *
-data = read_json("concert_data_old_zh.json")
-print(data[289]['tit'])
-if data[289]['tit']:
-    print('yes')
-else:
-    print('no')
 
-from googletrans import Translator
-translator = Translator()
-translate
+data = read_json("singer_info.json")
+print(len(data))
+# print(data[9])
+# for i in range(len(data)):
+#
+#     if '\"' in data[i]['tit']:
+#         print(i, data[i]['tit'])
+
+# print(data[289]['tit'])
+# if data[289]['tit']:
+#     print('yes')
+# else:
+#     print('no')

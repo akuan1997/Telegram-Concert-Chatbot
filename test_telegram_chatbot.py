@@ -15,7 +15,7 @@ import re
 
 from get_city_date_indexes import en_dates_cities, zh_dates_cities
 
-from get_keyword_indexes import get_keyword_indexes, keyword_adjustment, get_language
+from get_keyword_indexes_zh import get_keyword_indexes, keyword_adjustment, get_language
 
 zh_model = r"models\nlu-20240312-042044-vibrato-modern.tar.gz"
 en_model = 'models/model_en.tar.gz'
