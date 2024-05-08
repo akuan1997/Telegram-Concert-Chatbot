@@ -317,7 +317,7 @@ def singer_add_concert(id, data):
         </div>
     """
     former = "<!-- wp:html -->" + content.split('<h1>即將來臨的演唱會</h1>')[0] + "<h1>即將來臨的演唱會</h1>"
-    latter =  new_concert + content.split('<h1>即將來臨的演唱會</h1>')[1] + "<!-- /wp:html -->"
+    latter = new_concert + content.split('<h1>即將來臨的演唱會</h1>')[1] + "<!-- /wp:html -->"
     print(former)
     print('-------')
     print(latter)

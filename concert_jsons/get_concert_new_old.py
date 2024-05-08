@@ -1,6 +1,8 @@
 import json
 import re
 from datetime import datetime, time
+import shutil  # test
+from concert_rest_api import post_concert
 
 
 def find_unique_part(str1, str2):
@@ -64,20 +66,6 @@ def show_old_but_new(old_but_new_pins, old_data):
     print('\n--- old but new ---\n')
 
 
-# Function to remove concerts from all_data that are no longer active
-def old_concert_delete(old_but_new_pins, all_data):
-    print(f'all_data ({len(all_data)}) - old_but_new_pins ({len(old_but_new_pins)}) = ', end='')
-    # print(f'len(delete_pins) = {len(old_but_new_pins)}')
-    # print(f'len(all_data) = {len(all_data)}')
-    all_data_filtered = [data for data in all_data if
-                         data['pin'] not in old_but_new_pins]  # Filter out deleted concerts
-    all_data.clear()  # Clear existing data
-    all_data.extend(all_data_filtered)  # Update all_data with filtered list
-    print(f'all_data ({len(all_data)})')
-
-    return all_data
-
-
 # Function to find the index of a concert in all_data using its pin
 def get_pin_index_in_all_data(pin, all_data):
     index = -1  # Default index
@@ -90,12 +78,14 @@ def get_pin_index_in_all_data(pin, all_data):
 
 # Function to check and update concert information between new and old data sets
 def check_each_info(new_data, old_data, all_data):
+    change_pins = []
     # Iterate over each item in new_data
     for i in range(len(new_data)):
         # Iterate over each item in old_data
         for j in range(len(old_data)):
             # Check if the current items in new_data and old_data have the same 'pin' value
             if new_data[i]['pin'] == old_data[j]['pin']:
+
                 pin = old_data[j]['pin']  # Retrieve the 'pin' code, which is the same in both new and old data
                 pin_index_in_all_data = get_pin_index_in_all_data(pin,
                                                                   all_data)  # Find the index of this 'pin' in all_data
@@ -129,6 +119,8 @@ def check_each_info(new_data, old_data, all_data):
                         print(f"{new_data[i]['tit']}")
                         print(f"新增sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n{new_data[i]['pin']}\n---")
                         all_data[pin_index_in_all_data]['sdt'] = new_data[i]['sdt']
+                        # to do, website
+                        change_pins.append(new_data[i]['pin'])
                     elif len(new_data[i]['sdt']) == len(old_data[j]['sdt']):
                         print(f"{new_data[i]['tit']}")
                         for k in range(len(new_data[i]['sdt'])):
@@ -139,6 +131,8 @@ def check_each_info(new_data, old_data, all_data):
                             print(
                                 f"相同數量的sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n修改all_data\n{new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['sdt'] = new_data[i]['sdt']
+                            # to do, website
+                            change_pins.append(new_data[i]['pin'])
                         else:
                             print(
                                 f"相同數量的sdt，但是出現空白 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['pin']}\n---")
@@ -153,6 +147,8 @@ def check_each_info(new_data, old_data, all_data):
                         print(f"{new_data[i]['tit']}")
                         print(f"新增pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n{new_data[i]['pin']}\n---")
                         all_data[pin_index_in_all_data]['pdt'] = new_data[i]['pdt']
+                        # to do, website
+                        change_pins.append(new_data[i]['pin'])
                     elif len(new_data[i]['pdt']) == len(old_data[j]['pdt']):
                         print(f"{new_data[i]['tit']}")
                         for k in range(len(new_data[i]['pdt'])):
@@ -163,6 +159,8 @@ def check_each_info(new_data, old_data, all_data):
                             print(
                                 f"相同數量的pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n修改all_data\n{new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['pdt'] = new_data[i]['pdt']
+                            # to do, website
+                            change_pins.append(new_data[i]['pin'])
                         else:
                             print(
                                 f"相同數量的pdt，但是出現空白 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\nall_data\n{new_data[i]['pin']}\n---")
@@ -177,6 +175,8 @@ def check_each_info(new_data, old_data, all_data):
                         print(f"{new_data[i]['tit']}")
                         print(f"新增loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n{new_data[i]['pin']}\n---")
                         all_data[pin_index_in_all_data]['loc'] = new_data[i]['loc']
+                        # to do, website
+                        change_pins.append(new_data[i]['pin'])
                     elif len(new_data[i]['loc']) == len(old_data[j]['loc']):
                         print(f"{new_data[i]['tit']}")
                         for k in range(len(new_data[i]['loc'])):
@@ -187,6 +187,8 @@ def check_each_info(new_data, old_data, all_data):
                             print(
                                 f"相同數量的loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n修改all_data\n{new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['loc'] = new_data[i]['loc']
+                            # to do, website
+                            change_pins.append(new_data[i]['pin'])
                         else:
                             print(
                                 f"相同數量的loc，但是出現空白 / {old_data[j]['loc']} -> {new_data[i]['loc']}\nall_data\n{new_data[i]['pin']}\n---")
@@ -202,6 +204,8 @@ def check_each_info(new_data, old_data, all_data):
                         print(f"{new_data[i]['tit']}")
                         print(f"新增prc / {old_data[j]['prc']} -> {new_data[i]['prc']}\n{new_data[i]['pin']}\n---")
                         all_data[pin_index_in_all_data]['prc'] = new_data[i]['prc']
+                        # to do, website
+                        change_pins.append(new_data[i]['pin'])
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
@@ -218,11 +222,15 @@ def check_each_info(new_data, old_data, all_data):
                     if '加場' in unique_part or '加開' in unique_part or '釋票' in unique_part or '清票' in unique_part:
                         print('重要資訊！通知使用者')
                         all_data[pin_index_in_all_data]['int'] = new_data[i]['int']
+                        # to do, website
+                        change_pins.append(new_data[i]['pin'])
                     else:
                         print('沒有加場、加開、釋票、清票資訊')
                         if len(new_data[i]['int']) != 0 and len(new_data[i]['int']) > len(old_data[j]['int']):
                             print('新內文 > 舊內文\n修改all_data當中的內文')
                             all_data[pin_index_in_all_data]['int'] = new_data[i]['int']  # Update 'int' in all_data
+                            # to do, website
+                            change_pins.append(new_data[i]['pin'])
                         else:
                             print(f'新內文 < 舊內文\n不修改all_data當中的內文')
                     print('---')
@@ -248,16 +256,44 @@ def check_each_info(new_data, old_data, all_data):
                 # Potential code to write the updated all_data to a JSON file
                 # with open('concert_zh.json', 'w', encoding='utf-8') as file:
                 #     json.dump(all_data, file, indent=4, ensure_ascii=False)
-
+    print(f"change_pins = {change_pins}")
+    print(f"len(change_pins) = {len(change_pins)}")
     return all_data
 
 
 # Function to add new concerts to all_data
-def new_concerts(new_but_old_pins, new_data, all_data):
+def new_concert_add(new_but_old_pins, new_data, all_data):
     print(f'all_data ({len(all_data)}) + new_but_old_pins ({len(new_but_old_pins)}) = ', end='')
     new_data_filtered = [data for data in new_data if data['pin'] in new_but_old_pins]  # Filter new concerts by pin
     all_data.extend(new_data_filtered)  # Add new concerts to all_data
     print(f'all_data ({len(all_data)})')
+
+    # 不應該用Pin
+    print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+    for i in range(len(new_data_filtered)):
+        post_concert(new_data_filtered[i])
+
+    return all_data
+
+
+# Function to remove concerts from all_data that are no longer active
+def old_concert_delete(old_but_new_pins, old_data, all_data):
+    print(f'all_data ({len(all_data)}) - old_but_new_pins ({len(old_but_new_pins)}) = ', end='')
+    # print(f'len(delete_pins) = {len(old_but_new_pins)}')
+    # print(f'len(all_data) = {len(all_data)}')
+    all_data_filtered = [data for data in all_data if
+                         data['pin'] not in old_but_new_pins]  # Filter out deleted concerts
+    all_data.clear()  # Clear existing data
+    all_data.extend(all_data_filtered)  # Update all_data with filtered list
+    print(f'all_data ({len(all_data)})')
+
+    """ test """
+    for i in range(len(old_data)):
+        for j in range(len(old_but_new_pins)):
+            if old_data[i]['pin'] == old_but_new_pins[j]:
+                # to do, 透過這個pin去刪除文章
+                print(old_data[i]['tit'])
+    """ test """
 
     return all_data
 
@@ -265,89 +301,152 @@ def new_concerts(new_but_old_pins, new_data, all_data):
 def get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data):
     # 1. 新增新的演唱會資訊
     # show_new_but_old(new_but_old_pins, new_data)
-    all_data = new_concerts(new_but_old_pins, new_data, all_data)
+    all_data = new_concert_add(new_but_old_pins, new_data, all_data)
     # 2. 移除那些演唱會無法獲得的演唱會資訊
     # show_old_but_new(old_but_new_pins, old_data)
-    all_data = old_concert_delete(old_but_new_pins, all_data)
+    all_data = old_concert_delete(old_but_new_pins, old_data, all_data)
     print('---')
     # 3. 比較內文
     all_data = check_each_info(new_data, old_data, all_data)
     return all_data
 
 
-""" test """
-json_list = [
-    "concert_3_14_23.json",
-    "concert_3_17_16.json",
-    "concert_3_17_19.json",
-    "concert_3_18_13.json",
-    "concert_3_20_16.json",
-    "concert_3_22_0.json",
-    "concert_3_23_14.json",
-    "concert_3_24_8.json",
-    "concert_3_25_0.json",
-    "concert_3_25_17.json",
-    "concert_3_26_0.json",
-    "concert_3_27_3.json",
-    "concert_3_29_0.json",
-    "concert_3_30_13.json",
-    "concert_3_30_20.json",
-    "concert_3_31_14.json",
-    "concert_3_31_18.json",
-    "concert_4_15_1.json",
-    "concert_4_2_0.json",
-    "concert_4_3_10.json",
-    "concert_4_3_22.json",
-    "concert_4_4_14.json",
-    "concert_4_4_3.json",
-    "concert_4_5_16.json",
-    "concert_4_7_17.json",
-    "concert_5_2_14.json",
-    "concert_5_4_20.json",
-    "concert_5_7_1.json",
-    "concert_5_7_21.json",
-]
-print(f"len(json_list) = {len(json_list)}")
-for i in range(len(json_list) - 1):
-    current_index = i
-    print(f"current_index = {current_index}")
-    old_json = json_list[current_index]
-    new_json = json_list[current_index + 1]
+def testing_for_whole():
+    """ test """
+    json_list = [
+        "concert_3_14_23.json",
+        "concert_3_17_16.json",
+        "concert_3_17_19.json",
+        "concert_3_18_13.json",
+        "concert_3_20_16.json",
+        "concert_3_22_0.json",
+        "concert_3_23_14.json",
+        "concert_3_24_8.json",
+        "concert_3_25_0.json",
+        "concert_3_25_17.json",
+        "concert_3_26_0.json",
+        "concert_3_27_3.json",
+        "concert_3_29_0.json",
+        "concert_3_30_13.json",
+        "concert_3_30_20.json",
+        "concert_3_31_14.json",
+        "concert_3_31_18.json",
+        "concert_4_15_1.json",
+        "concert_4_2_0.json",
+        "concert_4_3_10.json",
+        "concert_4_3_22.json",
+        "concert_4_4_14.json",
+        "concert_4_4_3.json",
+        "concert_4_5_16.json",
+        "concert_4_7_17.json",
+        "concert_5_2_14.json",
+        "concert_5_4_20.json",
+        "concert_5_7_1.json",
+        "concert_5_7_21.json",
+    ]
+    print(f"len(json_list) = {len(json_list)}")
 
-    print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
+    for i in range(10):
+        current_index = i
+        print(f"current_index = {current_index}")
+        old_json = json_list[current_index]
+        new_json = json_list[current_index + 1]
 
-    with open(old_json, 'r', encoding='utf-8') as f:
-        old_data = json.load(f)
-    with open(new_json, 'r', encoding='utf-8') as f:
-        new_data = json.load(f)
-    with open('concert_zh.json', 'r', encoding='utf-8') as f:
-        all_data = json.load(f)
+        shutil.copy(old_json, 'concert_zh.json')  # test
 
-    pins_new = [entry['pin'] for entry in new_data]
-    pins_old = [entry['pin'] for entry in old_data]
+        print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
 
-    new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
-    old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
+        with open(old_json, 'r', encoding='utf-8') as f:
+            old_data = json.load(f)
+        with open(new_json, 'r', encoding='utf-8') as f:
+            new_data = json.load(f)
+        with open('concert_zh.json', 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
 
-    print(f'current_index = {current_index}')
-    print(f'len(new_data) = {len(new_data)}')
-    print(f'len(old_data) = {len(old_data)}')
-    print(f'len(all_data) = {len(all_data)}')
-    print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
-    print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
+        pins_new = [entry['pin'] for entry in new_data]
+        pins_old = [entry['pin'] for entry in old_data]
 
-    # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
-    all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
-    print(f'運算結束 -> len(all_data) = {len(all_data)}')
-    # 寫進json裡面
-    write_json = 1  # 0 not write, 1 write (for testing)
-    if write_json == 1:
-        with open('concert_zh.json', "w", encoding="utf-8") as f:
-            json.dump(all_data, f, indent=4, ensure_ascii=False)
-            print('寫入成功')
-    else:
-        print('設定為未寫入')
-    print(f"current_index = {current_index}")
+        new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
+        old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
 
-json_in_order('concert_zh.json')
+        print(f'current_index = {current_index}')
+        print(f'len(new_data) = {len(new_data)}')
+        print(f'len(old_data) = {len(old_data)}')
+        print(f'len(all_data) = {len(all_data)}')
+        print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
+        print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
 
+        # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
+        all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        print(f'運算結束 -> len(all_data) = {len(all_data)}')
+        # 寫進json裡面
+        write_json = 0  # 0 not write, 1 write (for testing)
+        if write_json == 1:
+            with open('concert_zh.json', "w", encoding="utf-8") as f:
+                json.dump(all_data, f, indent=4, ensure_ascii=False)
+                print('寫入成功')
+        else:
+            print('設定為未寫入')
+        print(f"current_index = {current_index}")
+
+    json_in_order('concert_zh.json')
+
+
+def testing_for_small(start_index):
+    """ test """
+    json_list = [
+        "test1.json",
+        "test2.json",
+        "test3.json"
+    ]
+    print(f"len(json_list) = {len(json_list)}")
+
+    # for i in range(len(json_list) - 1):
+    for i in range(start_index, start_index+1):
+        current_index = i
+        print(f"current_index = {current_index}")
+        old_json = json_list[current_index]
+        new_json = json_list[current_index + 1]
+
+        shutil.copy(old_json, 'concert_zh.json')  # test
+
+        print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
+
+        with open(old_json, 'r', encoding='utf-8') as f:
+            old_data = json.load(f)
+        with open(new_json, 'r', encoding='utf-8') as f:
+            new_data = json.load(f)
+        with open('concert_zh.json', 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+
+        pins_new = [entry['pin'] for entry in new_data]
+        pins_old = [entry['pin'] for entry in old_data]
+
+        new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
+        old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
+
+        print(f'current_index = {current_index}')
+        print(f'len(new_data) = {len(new_data)}')
+        print(f'len(old_data) = {len(old_data)}')
+        print(f'len(all_data) = {len(all_data)}')
+        print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
+        print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
+
+        # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
+        all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        print(f'運算結束 -> len(all_data) = {len(all_data)}')
+        # 寫進json裡面
+        write_json = 0  # 0 not write, 1 write (for testing)
+        if write_json == 1:
+            with open('concert_zh.json', "w", encoding="utf-8") as f:
+                json.dump(all_data, f, indent=4, ensure_ascii=False)
+                print('寫入成功')
+        else:
+            print('設定為未寫入')
+        print(f"current_index = {current_index}")
+
+    json_in_order('concert_zh.json')
+
+
+# testing_for_whole()
+testing_for_small(1)

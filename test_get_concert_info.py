@@ -96,6 +96,10 @@ def check_all_cit(data):
 # check_all_prc()
 # check_all_cit(old_all)
 # check_all_sdt()
-for i in range(len(old_all)):
-    print(old_all[i]['tit'])
+# for i in range(len(old_all)):
+#     print(old_all[i]['tit'])
 #     print(i, old_all[i]['sdt'])
+for i in range(len(old_all)):
+    for j in range(i + 1, len(old_all)):
+        if old_all[i]['pin'] == old_all[j]['pin']:
+            print('yes')
