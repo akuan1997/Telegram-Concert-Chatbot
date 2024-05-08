@@ -45,12 +45,20 @@ json_list = [
     "concert_jsons/concert_5_7_1.json",
     "concert_jsons/concert_5_7_21.json",
     "concert_jsons/concert_5_8_16.json",
+
 ]
 
-for i in range(len(json_list)):
-    data = read_json(json_list[i])
-    for j in range(len(data)):
-        if data[j]['tit'] == '':
-            print(data[j]['web'])
-            print(data[j]['url'])
+# for i in range(len(json_list)):
+#     data = read_json(json_list[i])
+#     for j in range(len(data)):
+#         if data[j]['tit'] == '':
+#             print(data[j]['web'])
+#             print(data[j]['url'])
+#     print('-----------------------------------------')
+
+data = read_json("concert_5_8_20.json")
+for j in range(len(data)):
+    if data[j]['tit'] == '':
+        print(data[j]['web'])
+        print(data[j]['url'])
     print('-----------------------------------------')

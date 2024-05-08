@@ -490,9 +490,9 @@ def testing_for_small(start_index):
 
 
 # to do, index 0的所有演唱會要先post
-with open('concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
-for i in range(len(data)):
-    post_concert(data[i])
-testing_for_whole()
+# with open('concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
+#     data = json.load(f)
+# for i in range(len(data)):
+#     post_concert(data[i])
+# testing_for_whole()
 # testing_for_small(1)
