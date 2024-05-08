@@ -340,41 +340,42 @@ def get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data
 
 
 def testing_for_whole():
-    """ test """
     json_list = [
-        "concert_3_14_23.json",
-        "concert_3_17_16.json",
-        "concert_3_17_19.json",
-        "concert_3_18_13.json",
-        "concert_3_20_16.json",
-        "concert_3_22_0.json",
-        "concert_3_23_14.json",
-        "concert_3_24_8.json",
-        "concert_3_25_0.json",
-        "concert_3_25_17.json",
-        "concert_3_26_0.json",
-        "concert_3_27_3.json",
-        "concert_3_29_0.json",
-        "concert_3_30_13.json",
-        "concert_3_30_20.json",
-        "concert_3_31_14.json",
-        "concert_3_31_18.json",
-        "concert_4_15_1.json",
-        "concert_4_2_0.json",
-        "concert_4_3_10.json",
-        "concert_4_3_22.json",
-        "concert_4_4_14.json",
-        "concert_4_4_3.json",
-        "concert_4_5_16.json",
-        "concert_4_7_17.json",
-        "concert_5_2_14.json",
-        "concert_5_4_20.json",
-        "concert_5_7_1.json",
-        "concert_5_7_21.json",
+        "concert_jsons/concert_3_14_23.json",
+        "concert_jsons/concert_3_17_16.json",
+        "concert_jsons/concert_3_17_19.json",
+        "concert_jsons/concert_3_18_13.json",
+        "concert_jsons/concert_3_20_16.json",
+        "concert_jsons/concert_3_22_0.json",
+        "concert_jsons/concert_3_23_14.json",
+        "concert_jsons/concert_3_24_8.json",
+        "concert_jsons/concert_3_25_0.json",
+        "concert_jsons/concert_3_25_17.json",
+        "concert_jsons/concert_3_26_0.json",
+        "concert_jsons/concert_3_27_3.json",
+        "concert_jsons/concert_3_29_0.json",
+        "concert_jsons/concert_3_30_13.json",
+        "concert_jsons/concert_3_30_20.json",
+        "concert_jsons/concert_3_31_14.json",
+        "concert_jsons/concert_3_31_18.json",
+        "concert_jsons/concert_4_15_1.json",
+        "concert_jsons/concert_4_2_0.json",
+        "concert_jsons/concert_4_3_10.json",
+        "concert_jsons/concert_4_3_22.json",
+        "concert_jsons/concert_4_4_14.json",
+        "concert_jsons/concert_4_4_3.json",
+        "concert_jsons/concert_4_5_16.json",
+        "concert_jsons/concert_4_7_17.json",
+        "concert_jsons/concert_5_2_14.json",
+        "concert_jsons/concert_5_4_20.json",
+        "concert_jsons/concert_5_7_1.json",
+        "concert_jsons/concert_5_7_21.json",
+        "concert_jsons/concert_5_8_16.json",
     ]
     print(f"len(json_list) = {len(json_list)}")
 
-    for i in range(10):
+    for i in range(len(json_list) - 1):
+    # for i in range(start_index, start_index + 1):
         current_index = i
         print(f"current_index = {current_index}")
         old_json = json_list[current_index]
@@ -405,10 +406,16 @@ def testing_for_whole():
         print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
 
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
-        all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
+                                                                                     new_data, old_data, all_data)
+        print(f"new_data_filtered = {new_data_filtered}")
+        print(f"plus_concerts = {plus_concerts}")
+        for i in range(len(plus_concerts)):
+            print(plus_concerts[i]['tit'])
+            print(plus_concerts[i]['url'])
         print(f'運算結束 -> len(all_data) = {len(all_data)}')
         # 寫進json裡面
-        write_json = 0  # 0 not write, 1 write (for testing)
+        write_json = 1  # 0 not write, 1 write (for testing)
         if write_json == 1:
             with open('concert_zh.json', "w", encoding="utf-8") as f:
                 json.dump(all_data, f, indent=4, ensure_ascii=False)
@@ -421,7 +428,7 @@ def testing_for_whole():
 
 
 def testing_for_small(start_index):
-    """ test """
+
     json_list = [
         "test1.json",
         "test2.json",
@@ -461,7 +468,8 @@ def testing_for_small(start_index):
         print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
 
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
-        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
+                                                                                     new_data, old_data, all_data)
         print(f"new_data_filtered = {new_data_filtered}")
         print(f"plus_concerts = {plus_concerts}")
         for i in range(len(plus_concerts)):
@@ -481,5 +489,10 @@ def testing_for_small(start_index):
     json_in_order('concert_zh.json')
 
 
-# testing_for_whole()
-testing_for_small(1)
+# to do, index 0的所有演唱會要先post
+with open('concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+for i in range(len(data)):
+    post_concert(data[i])
+testing_for_whole()
+# testing_for_small(1)
