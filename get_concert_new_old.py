@@ -79,6 +79,7 @@ def get_pin_index_in_all_data(pin, all_data):
 # Function to check and update concert information between new and old data sets
 def check_each_info(new_data, old_data, all_data):
     change_pins = []
+    plus_concerts = []
     # Iterate over each item in new_data
     for i in range(len(new_data)):
         # Iterate over each item in old_data
@@ -221,6 +222,7 @@ def check_each_info(new_data, old_data, all_data):
                     print(f'unique_part = {repr(unique_part)}')
                     if '加場' in unique_part or '加開' in unique_part or '釋票' in unique_part or '清票' in unique_part:
                         print('重要資訊！通知使用者')
+                        plus_concerts.append(new_data[i])
                         all_data[pin_index_in_all_data]['int'] = new_data[i]['int']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
@@ -269,7 +271,7 @@ def check_each_info(new_data, old_data, all_data):
                         update_post_content(post_id, all_data[i])
     print(f"len(change_pins) = {len(change_pins)}")
 
-    return all_data
+    return plus_concerts, all_data
 
 
 # Function to add new concerts to all_data
@@ -286,7 +288,7 @@ def new_concert_add(new_but_old_pins, new_data, all_data):
     for i in range(len(new_data_filtered)):
         post_concert(new_data_filtered[i])
 
-    return all_data
+    return new_data_filtered, all_data
 
 
 # Function to remove concerts from all_data that are no longer active
@@ -327,14 +329,14 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
 def get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data):
     # 1. 新增新的演唱會資訊
     # show_new_but_old(new_but_old_pins, new_data)
-    all_data = new_concert_add(new_but_old_pins, new_data, all_data)
+    new_data_filtered, all_data = new_concert_add(new_but_old_pins, new_data, all_data)
     # 2. 移除那些演唱會無法獲得的演唱會資訊
     # show_old_but_new(old_but_new_pins, old_data)
     all_data = old_concert_delete(old_but_new_pins, old_data, all_data)
     print('---')
     # 3. 比較內文
-    all_data = check_each_info(new_data, old_data, all_data)
-    return all_data
+    plus_concerts, all_data = check_each_info(new_data, old_data, all_data)
+    return new_data_filtered, plus_concerts, all_data
 
 
 def testing_for_whole():
@@ -459,7 +461,12 @@ def testing_for_small(start_index):
         print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
 
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
-        all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data, old_data, all_data)
+        print(f"new_data_filtered = {new_data_filtered}")
+        print(f"plus_concerts = {plus_concerts}")
+        for i in range(len(plus_concerts)):
+            print(plus_concerts[i]['tit'])
+            print(plus_concerts[i]['url'])
         print(f'運算結束 -> len(all_data) = {len(all_data)}')
         # 寫進json裡面
         write_json = 0  # 0 not write, 1 write (for testing)
