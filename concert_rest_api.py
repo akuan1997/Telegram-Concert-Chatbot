@@ -493,7 +493,7 @@ def update_post_content(post_id, data):
         json=post,
     )
 
-    print(f"文徵編號{post_id}修改成功")
+    print(f"文章編號{post_id}修改成功")
 
 
 def testing_add_concert():

@@ -216,8 +216,8 @@ def check_each_info(new_data, old_data, all_data):
                 # Check 'int' field again for changes other than KKTIX
                 if new_data[i]['int'] != old_data[j]['int']:
                     print(new_data[i]['tit'])
-                    print('old /', repr(old_data[j]['int']))
-                    print('new /', repr(new_data[i]['int']))
+                    # print('old /', repr(old_data[j]['int']))  # test
+                    # print('new /', repr(new_data[i]['int']))  # test
                     unique_part = find_unique_part(old_data[j]['int'], new_data[i]['int'])
                     print(f'unique_part = {repr(unique_part)}')
                     if '加場' in unique_part or '加開' in unique_part or '釋票' in unique_part or '清票' in unique_part:
@@ -259,17 +259,17 @@ def check_each_info(new_data, old_data, all_data):
                 # with open('concert_zh.json', 'w', encoding='utf-8') as file:
                 #     json.dump(all_data, file, indent=4, ensure_ascii=False)
 
-    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    for pin in change_pins:
-        for i in range(len(all_data)):
-            if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
-                for line in lines:
-                    line_pin = line.split('|||')[1].replace('\n', '')
-                    if pin == line_pin:
-                        post_id = line.split('|||')[0]
-                        update_post_content(post_id, all_data[i])
-    print(f"len(change_pins) = {len(change_pins)}")
+    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+    #     lines = f.readlines()
+    # for pin in change_pins:
+    #     for i in range(len(all_data)):
+    #         if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
+    #             for line in lines:
+    #                 line_pin = line.split('|||')[1].replace('\n', '')
+    #                 if pin == line_pin:
+    #                     post_id = line.split('|||')[0]
+    #                     update_post_content(post_id, all_data[i])
+    # print(f"len(change_pins) = {len(change_pins)}")
 
     return plus_concerts, all_data
 
@@ -285,8 +285,8 @@ def new_concert_add(new_but_old_pins, new_data, all_data):
     # 記得不要使用pin，而是直接使用data
     print(f"len(new_data_filtered) = {len(new_data_filtered)}")
     print('-------------------------------------------------------------------------------------------------------')
-    for i in range(len(new_data_filtered)):
-        post_concert(new_data_filtered[i])
+    # for i in range(len(new_data_filtered)):
+    #     post_concert(new_data_filtered[i])
 
     return new_data_filtered, all_data
 
@@ -303,7 +303,6 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
     all_data.extend(all_data_filtered)  # Update all_data with filtered list
     print(f'all_data ({len(all_data)})')
     print('-------------------------------------------------------------------------------------------------------')
-    """ test """
     with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()
     for index, line in enumerate(lines):
@@ -316,12 +315,6 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
                 lines.pop(index)
     with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
         f.writelines(lines)
-    # for i in range(len(old_data)):
-    #     for j in range(len(old_but_new_pins)):
-    #         if old_data[i]['pin'] == old_but_new_pins[j]:
-    #             # to do, 透過這個pin去刪除文章
-    #             print(old_data[i]['tit'])
-    """ test """
 
     return all_data
 
@@ -371,11 +364,12 @@ def testing_for_whole():
         "concert_jsons/concert_5_7_1.json",
         "concert_jsons/concert_5_7_21.json",
         "concert_jsons/concert_5_8_16.json",
+        "concert_5_8_20.json"
     ]
     print(f"len(json_list) = {len(json_list)}")
 
     for i in range(len(json_list) - 1):
-    # for i in range(start_index, start_index + 1):
+        # for i in range(start_index, start_index + 1):
         current_index = i
         print(f"current_index = {current_index}")
         old_json = json_list[current_index]
@@ -408,8 +402,8 @@ def testing_for_whole():
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
         new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
                                                                                      new_data, old_data, all_data)
-        print(f"new_data_filtered = {new_data_filtered}")
-        print(f"plus_concerts = {plus_concerts}")
+        print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+        print(f"len(plus_concerts) = {len(plus_concerts)}")
         for i in range(len(plus_concerts)):
             print(plus_concerts[i]['tit'])
             print(plus_concerts[i]['url'])
@@ -428,7 +422,6 @@ def testing_for_whole():
 
 
 def testing_for_small(start_index):
-
     json_list = [
         "test1.json",
         "test2.json",
@@ -470,8 +463,99 @@ def testing_for_small(start_index):
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
         new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
                                                                                      new_data, old_data, all_data)
-        print(f"new_data_filtered = {new_data_filtered}")
-        print(f"plus_concerts = {plus_concerts}")
+        print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+        print(f"len(plus_concerts) = {len(plus_concerts)}")
+        for i in range(len(plus_concerts)):
+            print(plus_concerts[i]['tit'])
+            print(plus_concerts[i]['url'])
+        print(f'運算結束 -> len(all_data) = {len(all_data)}')
+        # 寫進json裡面
+        write_json = 0  # 0 not write, 1 write (for testing)
+        if write_json == 1:
+            with open('concert_zh.json', "w", encoding="utf-8") as f:
+                json.dump(all_data, f, indent=4, ensure_ascii=False)
+                print('寫入成功')
+        else:
+            print('設定為未寫入')
+        print(f"current_index = {current_index}")
+
+    json_in_order('concert_zh.json')
+
+
+def testing_for_large(start_index):
+    json_list = [
+        "concert_jsons/concert_3_14_23.json",
+        "concert_jsons/concert_3_17_16.json",
+        "concert_jsons/concert_3_17_19.json",
+        "concert_jsons/concert_3_18_13.json",
+        "concert_jsons/concert_3_20_16.json",
+        "concert_jsons/concert_3_22_0.json",
+        "concert_jsons/concert_3_23_14.json",
+        "concert_jsons/concert_3_24_8.json",
+        "concert_jsons/concert_3_25_0.json",
+        "concert_jsons/concert_3_25_17.json",
+        "concert_jsons/concert_3_26_0.json",
+        "concert_jsons/concert_3_27_3.json",
+        "concert_jsons/concert_3_29_0.json",
+        "concert_jsons/concert_3_30_13.json",
+        "concert_jsons/concert_3_30_20.json",
+        "concert_jsons/concert_3_31_14.json",
+        "concert_jsons/concert_3_31_18.json",
+        "concert_jsons/concert_4_15_1.json",
+        "concert_jsons/concert_4_2_0.json",
+        "concert_jsons/concert_4_3_10.json",
+        "concert_jsons/concert_4_3_22.json",
+        "concert_jsons/concert_4_4_14.json",
+        "concert_jsons/concert_4_4_3.json",
+        "concert_jsons/concert_4_5_16.json",
+        "concert_jsons/concert_4_7_17.json",
+        "concert_jsons/concert_5_2_14.json",
+        "concert_jsons/concert_5_4_20.json",
+        "concert_jsons/concert_5_7_1.json",
+        "concert_jsons/concert_5_7_21.json",
+        "concert_jsons/concert_5_8_16.json",
+        "concert_5_8_20.json"
+    ]
+    print(f"len(json_list) = {len(json_list)}")
+
+    shutil.copy(json_list[0], 'concert_zh.json')  # test
+
+    # for i in range(len(json_list) - 1):
+    for i in range(start_index, start_index + 1):
+        current_index = i
+        print(f"current_index = {current_index}")
+        old_json = json_list[current_index]
+        new_json = json_list[current_index + 1]
+
+        # shutil.copy(old_json, 'concert_zh.json')  # test
+
+        print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
+
+        with open(old_json, 'r', encoding='utf-8') as f:
+            old_data = json.load(f)
+        with open(new_json, 'r', encoding='utf-8') as f:
+            new_data = json.load(f)
+        with open('concert_zh.json', 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+
+        pins_new = [entry['pin'] for entry in new_data]
+        pins_old = [entry['pin'] for entry in old_data]
+
+        new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
+        old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
+
+        print(f'current_index = {current_index}')
+        print(f'len(new_data) = {len(new_data)}')
+        print(f'len(old_data) = {len(old_data)}')
+        print(f'len(all_data) = {len(all_data)}')
+        print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
+        print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
+
+        # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
+        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
+                                                                                     new_data, old_data, all_data)
+        print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+        print(f"len(plus_concerts) = {len(plus_concerts)}")
         for i in range(len(plus_concerts)):
             print(plus_concerts[i]['tit'])
             print(plus_concerts[i]['url'])
@@ -490,9 +574,34 @@ def testing_for_small(start_index):
 
 
 # to do, index 0的所有演唱會要先post
-# with open('concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
-#     data = json.load(f)
-# for i in range(len(data)):
-#     post_concert(data[i])
+def initialize():
+    with open('concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    for i in range(len(data)):
+        print(f"{i + 1}/{len(data)}")
+        post_concert(data[i])
+
+
+def start_over(start_index):
+    with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
+        f.write('')
+
+    for i in range(start_index, start_index + 300):
+        try:
+            print(i)
+            delete_article(i)
+        except Exception as e:
+            print(e)
+            continue
+    print('結束')
+
+# start_over(5484)
+# initialize()
 # testing_for_whole()
 # testing_for_small(1)
+testing_for_large(0)
+
+
+# with open('concert_zh.json', 'r', encoding='utf-8') as f:
+#     data = json.load(f)
+# print(len(data))

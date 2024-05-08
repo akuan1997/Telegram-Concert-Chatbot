@@ -56,9 +56,14 @@ json_list = [
 #             print(data[j]['url'])
 #     print('-----------------------------------------')
 
-data = read_json("concert_5_8_20.json")
-for j in range(len(data)):
-    if data[j]['tit'] == '':
-        print(data[j]['web'])
-        print(data[j]['url'])
-    print('-----------------------------------------')
+# data = read_json("concert_5_8_20.json")
+data = read_json("concert_zh.json")
+print(len(data))
+# blank_titles = []
+# for j in range(len(data)):
+#     if data[j]['tit'] == '':
+#         blank_titles.append(data[j])
+#         print(data[j]['web'])
+#         print(data[j]['url'])
+#         print('-----------------------------------------')
+# print(len(blank_titles))
