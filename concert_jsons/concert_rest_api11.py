@@ -410,6 +410,7 @@ def post_concert(data):
     # Print
     pprint(r.text)
 
+
 # with open('singer_info.json', 'r', encoding='utf-8') as f:
 #     singer_data = json.load(f)
 # with open('concert_4_15_1.json', 'r', encoding='utf-8') as f:
@@ -417,3 +418,88 @@ def post_concert(data):
 #
 # # post_singer(data[506])
 # singer_add_concert(2560, concert_data[100])
+
+def update_post_content(data):
+    sdt_str = f"售票時間  :  {print_list_str(data['sdt'])}"
+    prc_str = f"價格         :  {print_list_str(data['prc'])}"
+    pdt_str = f"表演時間  :  {print_list_str(data['pdt'])}"
+    loc_str = f"地點         :  {print_list_str(data['loc'])}"
+    web_str = f"售票網站  :  {data['web']}"
+    url_str = f"售票網址  :  <a href='{data['url']}' target='_blank'>{data['url']}</a>"
+
+    content = f"""
+                <!-- wp:html -->
+                <div style="white-space: pre-wrap;">
+                    <p class="has-palette-color-4-color has-text-color has-link-color">
+                        {sdt_str}<br>
+                        {prc_str}<br>
+                        {pdt_str}<br>
+                        {loc_str}<br>
+                        {web_str}<br>
+                        {url_str}
+                    </p>
+                </div>
+                <!-- /wp:html -->
+                """
+    print(content)
+    # categories = [68]  # 演唱會
+    # if data['cit'] != '':
+    #     categories.append(get_city_code(data['cit']))
+    #
+    # if data['pdt']:
+    #     date = replace_time(data['pdt'][0]).replace('/', '-')
+    #
+    #     if '~' not in date:
+    #         date = format_date(date)
+    #         concert_dates = [{"concert_date": date}]
+    #     else:
+    #         date = f"{format_date(date.split(' ~ ')[0])} ~ {date.split(' ~ ')[1]}"
+    #         date_range = generate_date_range(date.split(' ~ ')[0], date.split(' ~ ')[1])
+    #         concert_dates = []
+    #         for i in range(len(date_range)):
+    #             concert_dates.append({f"concert_date": date_range[i]})
+    #
+    #     # Post info
+    #     post = {
+    #         "title": data['tit'],
+    #         "content": content,
+    #         "status": "publish",
+    #         "categories": categories,
+    #         "fields": {
+    #             "concert_dates": concert_dates
+    #         }
+    #         # "fields": {  # 添加自定義字段部分
+    #         #     "concert_date": "2024-04-20"
+    #
+    #         # "fields": {
+    #         #     "concert_dates": [
+    #         #         {"concert_date": "2024-04-01"},
+    #         #         {"concert_date": "2024-04-02"},
+    #         #     ]
+    #         # }
+    #     }
+    # else:
+    #     # Post info
+    #     post = {
+    #         "title": data['tit'],
+    #         "content": content,
+    #         "status": "publish",
+    #         "categories": categories,
+    #     }
+    #
+    # # Post
+    # r = requests.post(
+    #     url,
+    #     headers=headers,
+    #     json=post,
+    # )
+    #
+    # post_id = json.loads(r.text).get('id')
+    # print(f'post_id = {post_id}')
+    #
+    # with open('concert_pin_postid.txt', 'a', encoding='utf-8') as f:
+    #     f.write(f"{post_id}|||{data['pin']}\n")
+    #     print('成功寫入concert_pin_postid.txt')
+    #
+    # # Print
+    # pprint(r.text)
