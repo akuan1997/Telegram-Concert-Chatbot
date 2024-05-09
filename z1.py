@@ -72,5 +72,13 @@ json_list = [
 # problems = []
 # print(len(not_exists))
 # print(len(exists))
-for i in range(31):
-    print(i, i + 1)
+# for i in range(31):
+#     print(i, i + 1)
+data = read_json("singer_info.json")
+# print(8101 + len(data))
+with open('singer_postid_wikiurl.txt', 'w', encoding='utf-8') as f:
+    f.write('')
+for i in range(len(data)):
+    with open('singer_postid_wikiurl.txt', 'a', encoding='utf-8') as f:
+        f.write(f"{8101+i}|||{data[i]['singer_name']}|||{data[i]['singer_page_url']}\n")
+    print('---')
