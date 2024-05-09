@@ -36,8 +36,8 @@ with sync_playwright() as p:
         "5742"
     ]
     # for number in numbers:
-    for i in range(5731, 5773):
-        url = f"https://concertinfo.site/?p={i}"
+    for i in range(6062, 6327):
+        url = f"https://concertinfo.site/?p={i}-2"
         page.goto(url)
         try:
             page.wait_for_selector(".page-title")

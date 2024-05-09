@@ -82,6 +82,7 @@ def check_availability():
     print(r)  # 200
 
 
+
 def print_list_str(lst):
     """ list 所有元素用str輸出 """
     lst_str = ''
@@ -501,4 +502,26 @@ def testing_add_concert():
         data = json.load(f)
     for i in range(len(data)):
         post_concert(data[i])
+
 # testing_add_concert()
+
+# # Post info
+# post = {
+#     "title": '測試1',
+#     "content": '測試2',
+#     "status": "publish"
+# }
+#
+# # Post
+# r = requests.post(
+#     url,
+#     headers=headers,
+#     json=post,
+# )
+#
+# # Print
+# pprint(r.text)
+
+data = read_json("singer_info.json")
+for i in range(1, len(data)):
+    post_singer(data[i])

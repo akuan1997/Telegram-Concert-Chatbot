@@ -99,7 +99,12 @@ def check_all_cit(data):
 # for i in range(len(old_all)):
 #     print(old_all[i]['tit'])
 #     print(i, old_all[i]['sdt'])
-for i in range(len(old_all)):
-    for j in range(i + 1, len(old_all)):
-        if old_all[i]['pin'] == old_all[j]['pin']:
-            print('yes')
+# for i in range(len(old_all)):
+#     for j in range(i + 1, len(old_all)):
+#         if old_all[i]['pin'] == old_all[j]['pin']:
+#             print('yes')
+# data = read_json("concert_5_9_14.json")
+data = read_json("concert_zh.json")
+for i in range(len(data)):
+    if "https" in data[i]['tit']:
+        print(data[i]['tit'])

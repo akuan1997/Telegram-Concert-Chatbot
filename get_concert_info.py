@@ -1222,7 +1222,7 @@ def get_kktix_first(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -1399,7 +1399,7 @@ def get_kktix_first(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -1577,7 +1577,7 @@ def get_kktix_first(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -1856,7 +1856,7 @@ def get_kktix_second(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -2033,7 +2033,7 @@ def get_kktix_second(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -2210,7 +2210,7 @@ def get_kktix_second(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -2489,7 +2489,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -2666,7 +2666,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
@@ -2843,7 +2843,7 @@ def get_kktix_third(website, json_filename, txt_filename):
                                 ''''''
 
                                 hk = False
-                                title = page.url
+                                title = page.title()
                                 sell_datetimes_str_list = []
                                 prices = []
                                 performance_datetimes_str_list = []
