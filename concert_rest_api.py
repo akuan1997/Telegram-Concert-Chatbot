@@ -522,6 +522,6 @@ def testing_add_concert():
 # # Print
 # pprint(r.text)
 
-data = read_json("singer_info.json")
-for i in range(1, len(data)):
-    post_singer(data[i])
+# data = read_json("singer_info.json")
+# for i in range(1, len(data)):
+#     post_singer(data[i])

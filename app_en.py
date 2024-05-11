@@ -14,59 +14,100 @@ from duckling import *
 
 d = DucklingWrapper(language=Language.CHINESE)
 
+from get_keyword_indexes_en import *
+from get_city_date_indexes import *
 
+# def find_singer_name(user_input):
+#     # print(user_input)
+#     with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+#         data = yaml.safe_load(f)
+#
+#     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+#     names_without_space = [name.replace(' ', '') for name in names]
+#
+#     # 匹配英文单词
+#     english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+#     # 将匹配到的英文单词拼接起来
+#     english_part = ' '.join(english_words)
+#
+#     ''''''
+#
+#     # Post Malone
+#     # print('round 1')
+#     for name in names:
+#         if name in english_part:
+#             return user_input, True
+#
+#     ''''''
+#
+#     # post malone
+#     # print('round 2')
+#     for name in names:
+#         if name.lower() in user_input.lower():
+#             start_index = user_input.lower().find(name.lower())
+#             end_index = start_index + len(name.lower()) - 1
+#             user_input = user_input.replace(user_input[start_index:end_index + 1], name)
+#             return user_input, True
+#
+#     ''''''
+#
+#     english_split = english_part.split(' ')
+#
+#     for i, name in enumerate(names_without_space):
+#         for e_split in english_split:
+#             score = fuzz.partial_ratio(e_split.lower(), name.lower())
+#             if score >= 80:
+#                 # print('abc', score)
+#                 # print(e_split.lower(), name.lower())
+#                 if len(name) - 1 < len(e_split) < len(name) + 1:
+#                     user_input = user_input.replace(e_split, names[i])
+#                 else:
+#                     pass
+#
+#     ''''''
+#
+#     max_score = -1
+#     singer_name = None
+#
+#     for name in names:
+#         score = fuzz.partial_ratio(user_input.lower(), name.lower())
+#         if score > max_score:
+#             max_score = score
+#             singer_name = name
+#
+#     if max_score > 60:
+#         # 匹配英文单词
+#         english_words = re.findall(r'[A-Za-z0-9]+', user_input)
+#         # 将匹配到的英文单词拼接起来
+#         english_part = ' '.join(english_words)
+#         # # print('English Part', english_part)
+#         english_split = english_part.split(' ')
+#         # # print('Singer', singer_name)
+#         singer_split = singer_name.split(' ')
+#         # # print(singer_split)
+#         for s_split in singer_split:
+#             for e_split in english_split:
+#                 score = fuzz.partial_ratio(s_split.lower(), e_split.lower())
+#                 if score > 80:
+#                     # # print(s_split, e_split, score)
+#                     user_input = user_input.replace(e_split, s_split)
+#         return user_input, True
+#     else:
+#         return user_input, False
 
-# def run_cmdline(model_path: Text) -> None:
-#     """Loops over CLI input, passing each message to a loaded NLU model."""
-#     agent = Agent.load(model_path)
-#
-#     print_success("NLU model loaded. Type a message and press enter to parse it.")
-#     while True:
-#         # print_success("Next message:")
-#         try:
-#             message = input().strip()
-#             duckling_result = d.parse_time(message)
-#             if duckling_result:
-#                 print(duckling_result[0]['value'])
-#             else:
-#                 print('Duckling None')
-#
-#         except (EOFError, KeyboardInterrupt):
-#             print_info("Wrapping up command line chat...")
-#             break
-#
-#         result = asyncio.run(agent.parse_message(message))
-#
-#         print(result)
-#         '''
-#         輸入句子: 你好
-#         print(result['intent'])
-#         >> {'name': 'greet', 'confidence': 0.9999651908874512}
-#
-#         print(result['intent']['name'])
-#         >> greet
-#         '''
-#         # print(result['intent'])
-#         # print(json_to_string(result))
-#         print('---')
-#         print(f'message: {message}')
-#         print(f"intent: {result['intent']['name']}")
-#         print(f"score: {result['intent']['confidence']}")
-#         print('--')
-#         # print(result['entities'])
-#         if len(result['entities']) == 0:
-#             print('No Entities')
-#         else:
-#             for i in range(len(result['entities'])):
-#                 if result['entities'][i]['value']:
-#                     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
-#         print('--')
-#         # print(json_to_string(result))
+en_json = "concert_en.json"
+
 
 
 def run_cmdline1(model_path: Text, words) -> None:
     """Loops over CLI input, passing each message to a loaded NLU model."""
     agent = Agent.load(model_path)
+
+    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+
+    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+    names = [name.replace(' ', '') for name in names]
 
     print_success("NLU model loaded. Type a message and press enter to parse it.")
     for index, word in enumerate(words):
@@ -96,47 +137,78 @@ def run_cmdline1(model_path: Text, words) -> None:
         if len(result['entities']) == 0:
             print('No Entities')
         else:
-            keywords = []
-            for i in range(len(result['entities'])):
-                if result['entities'][i]['entity'] != 'keyword' and result['entities'][i]['value']:
-                    print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
-                elif result['entities'][i]['entity'] == 'keyword':
-                    keywords.append(result['entities'][i]['value'])
-            singer_name = max(keywords, key=len)
-            # print(type(singer_name))
-            # print(f"singer name = {singer_name.title()}")
+            if result['intent']['name'] == "query_ticket_time":
+                ticket_time_indexes = en_get_ticket_time(word, en_json)
+                print(f"ticket_time_indexes = {ticket_time_indexes}")
+            elif result['intent']['name'] == "query_keyword":
+                keywords = []
+                found_datetime = False
 
-            with open('data/keyword.yml', 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
+                for i in range(len(result['entities'])):
+                    # if result['entities'][i]['entity'] != 'keyword' and result['entities'][i]['value']:
+                    #     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+                    if result['entities'][i]['entity'] == 'datetime':
+                        found_datetime = True
+                    elif result['entities'][i]['entity'] == 'keyword':
+                        keywords.append(result['entities'][i]['value'])
 
-            names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
-            names = [name.replace(' ', '') for name in names]
+                if keywords:
+                    keyword = max(keywords, key=len)
 
-            found = False
-            for j, name in enumerate(names):
-                if name.lower() == singer_name.lower():
-                    singer_name = names[j]
-                    found = True
-                    break
-            if not found:
-                singer_name = singer_name.title()
-            print(f"singer name = {singer_name}")
+                    found_keyword = False
+                    for j, name in enumerate(names):
+                        if name.lower() == keyword.lower():
+                            keyword = names[j]
+                            found_keyword = True
+                            break
 
+                    if not found_keyword:
+                        print('沒有在keyword.yml當中找到keyword')
+                        keyword = keyword.title()
+                    else:
+                        print('有在keyword.yml當中找到keyword')
 
-
-            # keywords = []
-            # for i in range(len(result['entities'])):
-            #     if result['entities'][i]['entity'] == 'keyword' and result['entities'][i]['value']:
-            #         keywords.append(result['entities'][i]['value'])
-            # singer_name = max(keywords, key=len)
-            # print(type(singer_name))
-            # print(singer_name)
+                    print(f"keyword = {keyword}")
+                    if found_datetime:
+                        print('有keyword，也有datetime，取集合')
+                        en_dates_cities_indexes = en_dates_cities(word, en_json)
+                        print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                        get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                        print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                        intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
+                        print(f"intersection = {intersection}")
+                    else:
+                        print('有keyword，但是沒有datetime，直接顯示keyword indexes')
+                        get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                        print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                else:
+                    print('沒有keyword')
+                    if found_datetime:
+                        en_dates_cities_indexes = en_dates_cities(word, en_json)
+                        print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                    else:
+                        print('什麼都沒有')
+                # print(f"found_datetime = {found_datetime}")
 
         print('-----------------------------------------------')
 
 
-
 logger = logging.getLogger(__name__)
+
+
+words1 = [
+    'IVE',
+    'hip hop taipei',
+    'could you tell me any boombap concerts in taipei?'
+]
+
+model_path = r'en_models\nlu-20240511-033142-brilliant-set.tar.gz'
+
+with open('z1.txt', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+lines = [line.replace('\n', '') for line in lines]
+run_cmdline1(model_path, lines)
+
 #
 # words1 = [
 #     'Post Malone',
@@ -245,16 +317,3 @@ logger = logging.getLogger(__name__)
 #     "是否有任何關於演唱會的家庭友好性質？",
 #     "演唱會的主題或概念是什麼？",
 # ]
-
-words1 = [
-    'IVE',
-    'hip hop taipei',
-    'could you tell me any boombap concerts in taipei?'
-]
-
-model_path = r'models\nlu-20240505-013208-fixed-itinerary.tar.gz'
-
-with open('z_test1.txt', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
-lines = [line.replace('\n', '') for line in lines]
-run_cmdline1(model_path, lines)

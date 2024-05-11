@@ -251,6 +251,46 @@ def run_cmdline2(model_path: Text, words) -> None:
         print('-----------------------------------------------')
 
 
+def run_cmdline(model_path: Text, user_input) -> None:
+    """Loops over CLI input, passing each message to a loaded NLU model."""
+    agent = Agent.load(model_path)
+
+    print_success("NLU model loaded. Type a message and press enter to parse it.")
+    # message, find_singer = keyword_adjustment(word)
+    print(f"user input: {user_input}")
+    user_input, find_singer = keyword_adjustment_optimized(user_input)
+    print(f'after function: {user_input}')
+
+    result = asyncio.run(agent.parse_message(user_input))
+
+    '''
+    輸入句子: 你好
+    print(result['intent'])
+    >> {'name': 'greet', 'confidence': 0.9999651908874512}
+
+    print(result['intent']['name'])
+    >> greet 
+    '''
+
+    # print(f'find singer?', find_singer)  # from function
+    # print(f"intent: {result['intent']['name']}")
+    # print(f"score: {result['intent']['confidence']}")
+    # if result['intent']['confidence'] > 0.6:
+    #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # print('--')
+    # if len(result['entities']) == 0:
+    #     """
+    #     鄭伊健 (Ekin Cheng) 名字必須分開
+    #     """
+    #     print('No Entities')
+    # else:
+    #     for i in range(len(result['entities'])):
+    #         if result['entities'][i]['value']:
+    #             print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+    #
+    #     print('-----------------------------------------------')
+    return result
+
 logger = logging.getLogger(__name__)
 
 words1 = [
@@ -289,7 +329,8 @@ words1 = [
     '鄭伊健',
     'new jeans最近會來開演唱會嗎',
     'newjeans最近會來開演唱會嗎',
-    'Apink CHOBOM的演唱會資訊'
+    'Apink CHOBOM的演唱會資訊',
+    "taylor swift"
 ]
 words2 = [
     '那麼下周呢',

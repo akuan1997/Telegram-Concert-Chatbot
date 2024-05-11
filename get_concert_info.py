@@ -11,7 +11,6 @@ from get_concert_new_old import *
 from get_data_from_text import *
 from fuzzywuzzy import process
 
-
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
 en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Miaoli",
@@ -36,6 +35,65 @@ concert_today = f'concert_{month}_{day}_{hour}.json'
 print(concert_today)
 with open(concert_today, 'w', encoding='utf-8') as f:
     json.dump([], f, indent=4, ensure_ascii=False)
+
+
+def get_old_json_filename(directory):
+    # 檢查目錄是否存在
+    if not os.path.exists(directory):
+        print(f"目錄 '{directory}' 不存在。")
+        return
+
+    # 獲取目錄中的所有檔案名稱
+    filenames = os.listdir(directory)
+
+    filenames = [filename for filename in filenames if ".json" in filename]
+
+    old_json = filenames[-1]
+
+    return old_json
+
+
+def get_new_old(json_filename):
+    old_json = get_old_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+    new_json = json_filename
+    print(f"old_json = {old_json}")
+    print(f"new_json = {new_json}")
+
+    with open(f"concert_jsons/{old_json}", 'r', encoding='utf-8') as f:
+        old_data = json.load(f)
+    with open(f"concert_jsons/{new_json}", 'r', encoding='utf-8') as f:
+        new_data = json.load(f)
+    with open('concert_zh.json', 'r', encoding='utf-8') as f:
+        all_data = json.load(f)
+
+    pins_new = [entry['pin'] for entry in new_data]
+    pins_old = [entry['pin'] for entry in old_data]
+
+    new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
+    old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
+
+    print(f'len(new_data) = {len(new_data)}')
+    print(f'len(old_data) = {len(old_data)}')
+    print(f'len(all_data) = {len(all_data)}')
+    print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
+    print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
+
+    new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
+                                                                                 new_data, old_data, all_data)
+
+    print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+    print(f"len(plus_concerts) = {len(plus_concerts)}")
+    for i in range(len(plus_concerts)):
+        print(plus_concerts[i]['tit'])
+        print(plus_concerts[i]['url'])
+    print(f'運算結束 -> len(all_data) = {len(all_data)}')
+
+    # 寫進json裡面
+    with open('concert_zh.json', "w", encoding="utf-8") as f:
+        json.dump(all_data, f, indent=4, ensure_ascii=False)
+        print('寫入成功')
+
+    return new_data_filtered, plus_concerts
 
 
 def write_data_json(json_name, new_data):
@@ -3145,142 +3203,142 @@ def compare_concerts(new_concert, old_concerts):
     return None
 
 
-def new_concerts():
-    # 加载数据
-    old_concerts = load_data('concert_data_old_zh.json')
-    new_concerts = load_data('concert_data_new_zh.json')
-
-    new_concert_list = []
-
-    # 比较数据
-    for new_concert in new_concerts:
-        matched_concert = compare_concerts(new_concert, old_concerts)
-        if matched_concert is None:
-            new_concert_list.append(new_concert)
-
-    # 打印结果
-    print("New Concert information:")
-    for concert in new_concert_list:
-        print(concert['tit'])
-
-        # -------------------------------------
-        # 表演時間
-        # -------------------------------------
-
-        # 创建两个空列表来存储表演时间信息
-        performance_datetimes = []
-        performance_datetimes_until = []
-
-        # 遍历concert['pdt']中的每个表演时间
-        for pdt in concert['pdt']:
-            # 检查表演时间中是否包含'~'，如果包含，则将其添加到另一个列表中
-            if '~' in pdt:
-                performance_datetimes_until.append(pdt)
-            else:
-                # 否则，将其添加到第一个列表中
-                performance_datetimes.append(pdt)
-
-        # 对表演时间进行排序
-        performance_datetimes = sort_datetime(performance_datetimes)
-
-        # 创建空字符串来存储表演时间的字符串表示形式
-        performance_datetime_str = ''
-        performance_datetime_until_str = ''
-
-        # 将排序后的表演时间转换为字符串
-        for i, performance_datetime in enumerate(performance_datetimes):
-            performance_datetime_str += performance_datetime
-            if i < len(performance_datetimes) - 1:
-                performance_datetime_str += ', '
-
-        # 如果同时存在performance_datetimes和performance_datetimes_until
-        if performance_datetimes and performance_datetimes_until:
-            # 将performance_datetimes_until中的时间添加到字符串中
-            for i, performance_datetime in enumerate(performance_datetimes_until):
-                performance_datetime_until_str += f'({performance_datetime})'
-                if i < len(performance_datetimes_until) - 1:
-                    performance_datetime_until_str += ', '
-            # 合并performance_datetime_str和performance_datetime_until_str，用换行符分隔
-            performance_datetime_str = performance_datetime_str + '\n' + performance_datetime_until_str
-        # 如果只有performance_datetimes_until
-        elif not performance_datetimes and performance_datetimes_until:
-            # 直接将performance_datetimes_until中的时间赋值给performance_datetime_str
-            for i, performance_datetime in enumerate(performance_datetimes_until):
-                performance_datetime_until_str += f'{performance_datetime}'
-                if i < len(performance_datetimes_until) - 1:
-                    performance_datetime_until_str += ', '
-            performance_datetime_str = performance_datetime_until_str
-
-        if performance_datetimes or performance_datetimes_until:
-            print(f"表演時間\tPerformance Time:\t{performance_datetime_str}")
-        else:
-            print(f"表演時間\tPerformance Time:\t-")
-        # -------------------------------------
-        # 票價
-        # -------------------------------------
-
-        prices = []
-        for price in concert['prc']:
-            prices.append(price)
-        price_str = ''
-        prices = sorted(list(set(prices)), reverse=True)
-        for i, price in enumerate(prices):
-            price_str += str(price)
-            if i < len(prices) - 1:
-                price_str += ', '
-        if not prices:
-            print(f"票價\t\tPrices:\t\t\t\t-")
-        else:
-            print(f"票價\t\tPrices:\t\t\t\t{price_str}")
-
-        # -------------------------------------
-        # 地點
-        # -------------------------------------
-
-        locations = []
-        for location in concert['loc']:
-            locations.append(location)
-        location_str = ''
-        for i, location in enumerate(locations):
-            location_str += location
-            if i < len(locations) - 1:
-                location_str += ', '
-        if locations:
-            print(f"地點\t\tLocations:\t\t\t{location_str}")
-        else:
-            print(f"地點\t\tLocations:\t\t\t\t-")
-
-        # -------------------------------------
-        # 售票時間
-        # -------------------------------------
-
-        sell_datetimes = []
-        for sdt in concert['sdt']:
-            sell_datetimes.append(sdt)
-        sell_datetimes = sort_datetime(sell_datetimes)
-        sell_datetime_str = ''
-        for i, sell_datetime in enumerate(sell_datetimes):
-            sell_datetime_str += sell_datetime
-            if i < len(sell_datetimes) - 1:
-                sell_datetime_str += ', '
-
-        if not concert['sdt']:
-            print(f"售票時間\tTicketing Time:\t\t售票中 Available")
-        else:
-            print(f"售票時間\tTicketing Time:\t{concert['sdt']}")
-
-        # -------------------------------------
-        # 售票網站
-        # -------------------------------------
-
-        print(f"售票網站\tTicketing Website:\t{concert['web']}")
-
-        # -------------------------------------
-        # 網址
-        # -------------------------------------
-
-        print(f"網址\t\tURL: {concert['url']}")
-        print()
+# def new_concerts():
+#     # 加载数据
+#     old_concerts = load_data('concert_data_old_zh.json')
+#     new_concerts = load_data('concert_data_new_zh.json')
+#
+#     new_concert_list = []
+#
+#     # 比较数据
+#     for new_concert in new_concerts:
+#         matched_concert = compare_concerts(new_concert, old_concerts)
+#         if matched_concert is None:
+#             new_concert_list.append(new_concert)
+#
+#     # 打印结果
+#     print("New Concert information:")
+#     for concert in new_concert_list:
+#         print(concert['tit'])
+#
+#         # -------------------------------------
+#         # 表演時間
+#         # -------------------------------------
+#
+#         # 创建两个空列表来存储表演时间信息
+#         performance_datetimes = []
+#         performance_datetimes_until = []
+#
+#         # 遍历concert['pdt']中的每个表演时间
+#         for pdt in concert['pdt']:
+#             # 检查表演时间中是否包含'~'，如果包含，则将其添加到另一个列表中
+#             if '~' in pdt:
+#                 performance_datetimes_until.append(pdt)
+#             else:
+#                 # 否则，将其添加到第一个列表中
+#                 performance_datetimes.append(pdt)
+#
+#         # 对表演时间进行排序
+#         performance_datetimes = sort_datetime(performance_datetimes)
+#
+#         # 创建空字符串来存储表演时间的字符串表示形式
+#         performance_datetime_str = ''
+#         performance_datetime_until_str = ''
+#
+#         # 将排序后的表演时间转换为字符串
+#         for i, performance_datetime in enumerate(performance_datetimes):
+#             performance_datetime_str += performance_datetime
+#             if i < len(performance_datetimes) - 1:
+#                 performance_datetime_str += ', '
+#
+#         # 如果同时存在performance_datetimes和performance_datetimes_until
+#         if performance_datetimes and performance_datetimes_until:
+#             # 将performance_datetimes_until中的时间添加到字符串中
+#             for i, performance_datetime in enumerate(performance_datetimes_until):
+#                 performance_datetime_until_str += f'({performance_datetime})'
+#                 if i < len(performance_datetimes_until) - 1:
+#                     performance_datetime_until_str += ', '
+#             # 合并performance_datetime_str和performance_datetime_until_str，用换行符分隔
+#             performance_datetime_str = performance_datetime_str + '\n' + performance_datetime_until_str
+#         # 如果只有performance_datetimes_until
+#         elif not performance_datetimes and performance_datetimes_until:
+#             # 直接将performance_datetimes_until中的时间赋值给performance_datetime_str
+#             for i, performance_datetime in enumerate(performance_datetimes_until):
+#                 performance_datetime_until_str += f'{performance_datetime}'
+#                 if i < len(performance_datetimes_until) - 1:
+#                     performance_datetime_until_str += ', '
+#             performance_datetime_str = performance_datetime_until_str
+#
+#         if performance_datetimes or performance_datetimes_until:
+#             print(f"表演時間\tPerformance Time:\t{performance_datetime_str}")
+#         else:
+#             print(f"表演時間\tPerformance Time:\t-")
+#         # -------------------------------------
+#         # 票價
+#         # -------------------------------------
+#
+#         prices = []
+#         for price in concert['prc']:
+#             prices.append(price)
+#         price_str = ''
+#         prices = sorted(list(set(prices)), reverse=True)
+#         for i, price in enumerate(prices):
+#             price_str += str(price)
+#             if i < len(prices) - 1:
+#                 price_str += ', '
+#         if not prices:
+#             print(f"票價\t\tPrices:\t\t\t\t-")
+#         else:
+#             print(f"票價\t\tPrices:\t\t\t\t{price_str}")
+#
+#         # -------------------------------------
+#         # 地點
+#         # -------------------------------------
+#
+#         locations = []
+#         for location in concert['loc']:
+#             locations.append(location)
+#         location_str = ''
+#         for i, location in enumerate(locations):
+#             location_str += location
+#             if i < len(locations) - 1:
+#                 location_str += ', '
+#         if locations:
+#             print(f"地點\t\tLocations:\t\t\t{location_str}")
+#         else:
+#             print(f"地點\t\tLocations:\t\t\t\t-")
+#
+#         # -------------------------------------
+#         # 售票時間
+#         # -------------------------------------
+#
+#         sell_datetimes = []
+#         for sdt in concert['sdt']:
+#             sell_datetimes.append(sdt)
+#         sell_datetimes = sort_datetime(sell_datetimes)
+#         sell_datetime_str = ''
+#         for i, sell_datetime in enumerate(sell_datetimes):
+#             sell_datetime_str += sell_datetime
+#             if i < len(sell_datetimes) - 1:
+#                 sell_datetime_str += ', '
+#
+#         if not concert['sdt']:
+#             print(f"售票時間\tTicketing Time:\t\t售票中 Available")
+#         else:
+#             print(f"售票時間\tTicketing Time:\t{concert['sdt']}")
+#
+#         # -------------------------------------
+#         # 售票網站
+#         # -------------------------------------
+#
+#         print(f"售票網站\tTicketing Website:\t{concert['web']}")
+#
+#         # -------------------------------------
+#         # 網址
+#         # -------------------------------------
+#
+#         print(f"網址\t\tURL: {concert['url']}")
+#         print()
 
 
 def delete_files(json_file):
@@ -3630,6 +3688,15 @@ def zh_en(zh_json, en_json):
     for i in range(len(data)):
         print(f'current progress {i + 1}/{len(data)}')
 
+        if data[i]['tit']:
+            try:
+                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
+                translated_title = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
+                data[i]['tit'] = translated_title
+            except Exception as e:
+                print(f'Error translating title: {e}')
+                print('Skipping this entry')
+
         # Check if 'int' field is not None or empty
         if data[i]['int']:
             try:
@@ -3640,7 +3707,7 @@ def zh_en(zh_json, en_json):
                 data[i]['int'] = translated_text
                 print('Successful')
             except Exception as e:
-                print(f'Error translating: {e}')
+                print(f'Error translating inner text: {e}')
                 print('Skipping this entry')
         else:
             print('None or empty, skip')
@@ -3649,9 +3716,6 @@ def zh_en(zh_json, en_json):
             if data[i]['cit'] in city_mapping:
                 data[i]['cit'] = city_mapping[data[i]['cit']]
                 print(data[i]['cit'])
-
-                # with open('concert_test.json', 'w', encoding='utf-8') as f:
-                #     json.dump(data, f, indent=4, ensure_ascii=False)
 
         print('------------------------------------')
 
@@ -3735,15 +3799,17 @@ def get_latest_concert_info(json_filename):
     print('--- Replaced str with int for all str! ---')
     price_in_order(json_filename)  # price in order, start from the most highest price
     print('--- Price in order ---')
+    shutil.move(json_filename, "concert_jsons")
+    print(f'\n------------------\nzh okay!\n------------------\n')
     # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
     # print('--- Delete all past ticketing time ---')
-    print(f'\n------------------\nzh okay!\n------------------\n')
-    ''' new, old, changed concert '''
-    # to do
-    ''' zh to en '''
-    # to do with zh_en() function
-    ''' delete old json file and move new json file as old json file '''
-    # to do with json_new_to_old()
+    new_concerts, plus_concerts = get_new_old(json_filename)  # 要記得現在rest api, write_json都沒有開啟
+    print(f"new_concerts = {new_concerts}")
+    print(f"plus_concerts = {plus_concerts}")
+    """ zh to en """
+    zh_en("concert_zh.json", "concert_en.json")  # 注意5_10_11的還沒有翻譯成英文
+    # ''' delete old json file and move new json file as old json file '''
+    # # to do with json_new_to_old()
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))

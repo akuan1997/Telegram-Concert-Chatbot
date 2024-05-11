@@ -1950,7 +1950,7 @@ def en_dates_cities(text, json_file):
         print('只有找到日期，沒有城市')
 
         # single
-        found_dates, text, matched_time_lines = en_get_single(found_dates, text, matched_time_lines, data)
+        found_dates, text, matched_time_lines = en_get_single(found_dates, text, matched_time_lines, data, 'pdt')
         after_single_text = text  # test
 
         print(f'after_single_text = {after_single_text}')  # test
@@ -3131,11 +3131,11 @@ def zh_dates_cities(text, json_file):
     #     continue
 
 
-def zh_get_ticket_time(text):
-    found_dates = []
-    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+def zh_get_ticket_time(text, json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
+    found_dates = []
     time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = zh_get_dates(text)
     # until
     found_dates, text, matched_time_lines = zh_get_until_sdt(found_dates, text, matched_time_lines, data)
@@ -3150,6 +3150,7 @@ def zh_get_ticket_time(text):
     print(after_single_text)
     for index in found_dates:
         print(data[index]['sdt'])
+    return found_dates
 
 
 def en_get_dates(text):
@@ -3160,12 +3161,12 @@ def en_get_dates(text):
     matched_indexes = []
     matched_time_lines = []
 
+    text_for_indexing = text
+
     while True:
         duckling_result = en.parse_time(text)
         if duckling_result:
             try:
-                text_for_indexing = text
-
                 grain = duckling_result[0]['value']['grain']
                 time_line = str(duckling_result[0]['value']['value']).replace('T', ' ').replace('.000+08:00', '')
                 matched_text = str(duckling_result[0]['text'])
@@ -3231,8 +3232,8 @@ def en_get_dates(text):
     return time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing
 
 
-def en_get_ticket_time(text, json_file):
-    with open(json_file, 'r', encoding='utf-8') as f:
+def en_get_ticket_time(text, json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = en_get_dates(text)
@@ -3245,4 +3246,11 @@ def en_get_ticket_time(text, json_file):
     # print(f'after_single_text = {after_single_text}')  # test
     for index in found_dates:
         print(data[index]['sdt'])
+
     return list(set(found_dates))
+
+
+# print('可以輸入了')
+# while True:
+#     user_input = input()
+#     zh_get_ticket_time(user_input, "concert_zh.json")

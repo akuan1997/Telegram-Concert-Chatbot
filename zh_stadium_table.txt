@@ -90,3 +90,6 @@ nanganginternationalexhibitioncenter,hall1:台北
 westar:台北
 好運來洲際宴展中心:台中
 樹德科技大學行政大樓地下二樓:高雄
+雲門 Cloud Gate:新北
+雲門劇場cloudgatetheater:新北
+partiiistudio未來基地:台北

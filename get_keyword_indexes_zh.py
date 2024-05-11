@@ -215,7 +215,7 @@ def chinese_tokenizer(text):
 # zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
 #              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
 
-def get_keyword_indexes(text, json_file):
+def get_keyword_indexes_zh(text, json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -271,25 +271,25 @@ def get_language(user_input):
     return language
 
 
-def get_key_indexes_test():  # 測試用 可刪除
-    # text, find_singer = keyword_adjustment('我想要知道taylor swift的演唱會資訊')
-    # print(text, '///', find_singer)
-    # keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
-    # search_word = '韓國'
-    # search_word = search_word.replace('歌手', '').replace('台灣', '')
-    search_word = '龐克萬歲'
-    matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
-    print(f"matched_indexes = {matched_indexes}")
-    if matched_indexes is not None:
-        with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        if matched_indexes:
-            for index in matched_indexes:
-                print(data[index]['tit'])
-                print(data[index]['url'])
-        else:
-            print('沒有找到任何資訊')
-    else:
-        print('沒有找到')
+# def get_key_indexes_test():  # 測試用 可刪除
+#     # text, find_singer = keyword_adjustment('我想要知道taylor swift的演唱會資訊')
+#     # print(text, '///', find_singer)
+#     # keyword_indexes = get_keyword_indexes(text, 'concert_data_old_zh.json')
+#     # search_word = '韓國'
+#     # search_word = search_word.replace('歌手', '').replace('台灣', '')
+#     search_word = '龐克萬歲'
+#     matched_indexes = get_keyword_indexes(search_word, 'concert_data_old_zh.json')
+#     print(f"matched_indexes = {matched_indexes}")
+#     if matched_indexes is not None:
+#         with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#         if matched_indexes:
+#             for index in matched_indexes:
+#                 print(data[index]['tit'])
+#                 print(data[index]['url'])
+#         else:
+#             print('沒有找到任何資訊')
+#     else:
+#         print('沒有找到')
 
-get_key_indexes_test()
+# get_key_indexes_test()
