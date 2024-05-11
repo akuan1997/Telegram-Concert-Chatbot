@@ -1,0 +1,174 @@
+version: "3.0"
+nlu:
+#  - intent: greet
+#    examples: |
+#      - 你好
+#      - 您好
+#      - hello
+#      - hi
+#      - 喂
+#  - intent: goodbye
+#    examples: |
+#      - 拜拜
+#      - 再見
+#      - 拜
+#      - 退出
+#      - 结束
+
+  - intent: query_keyword
+    examples: |
+      - [Taylor Swift](keyword)
+      - [Post Malone](keyword) Concert
+      - [Justin Bieber](keyword) Performance
+      - [Taipei](city) concert information
+      - [Taipei](city) concert
+      - [Hualien](city) [tomorrow](datetime)
+      - [Taitung](city) concert [next year](datetime)
+      - Concerts, [today](datetime)
+      - Concerts, [today](datetime), [Taipei](city)
+      - [This month](datetime), concerts
+      - [Tainan](city), concerts
+      - [IVE](keyword) Will there be a concert in Taipei soon?
+      - Please inform me about [Mayday](keyword) concert in [Tainan](city).
+      - Is [Eason Chan](keyword) planning to hold a concert in [Taitung](city)?
+      - Will [JJ Lin](keyword) be performing in [Hualien](city) [next month](datetime)?
+      - Please tell me the latest music activities of [Jay Chou](keyword).
+      - Has [Wang Leehom](keyword) recently held a concert in [Tainan](city)?
+      - I want to know the tour schedule of [Jam Hsiao](keyword).
+      - Does [A-Lin](keyword) have plans to hold a concert in [Taichung](city)?
+      - Please tell me the release date of [Jolin Tsai](keyword)'s latest album.
+      - What are the tour arrangements for [Khalil Fong](keyword) in the [next year](datetime)?
+      - Has [G.E.M.](keyword) recently held a concert in [Tainan](city)?
+      - Are there any plans for [Mayday](keyword) to perform in [Taitung](city)?
+      - Please tell me the release date of [Mavis Fan](keyword)'s latest single.
+      - Will [Jacky Cheung](keyword) be performing in [Hualien](city) [next month](datetime)?
+      - Has [G.E.M.](keyword) recently held a concert in [Taipei](city)?
+      - I want to know the music concert schedule of [Sodagreen](keyword).
+      - Is [Andy Lau](keyword) planning to perform in [Tainan](city)?
+      - Please provide an overview of Hebe [Tien](keyword)'s new album.
+      - What are the concert arrangements for [Crowd Lu](keyword) in the [next six months](datetime)?
+      - Has [Cyndi Wang](keyword) recently held a concert in [Taichung](city)?
+      - Will [Wei Li-an](keyword) be performing in [Taitung](city) [next month](datetime)?
+      - Please inform me of [Chris Lee](keyword)'s tour schedule.
+      - Does [A-Mei](keyword) have plans to hold a concert in [Hualien](city)?
+      - Has [Na Ying](keyword) recently held a concert in [Taipei](city)?
+      - What are the concert dates and venues for [Jolin Tsai](keyword) in the [next month](datetime)?
+      - Please tell me the online release date of [Eason Chan](keyword)'s new song MV.
+      - Will [Mayday](keyword) be performing in [Tainan](city) [next month](datetime)?
+      - Has [JJ Lin](keyword) recently held a concert in [Taitung](city)?
+      - I want to know the release date of [Jam Hsiao](keyword)'s new song.
+      - Does [A-Lin](keyword) have plans to hold a concert in [Taichung](city)?
+      - Please provide the latest information on [Wang Leehom](keyword)'s new single release.
+      - Will [Jay Chou](keyword) be holding a concert in [Taipei](city) [next month](datetime)?
+      - Has [Jolin Tsai](keyword) recently performed in [Tainan](city)?
+      - What are the tour arrangements for [Jam Hsiao](keyword) in the [next year](datetime)?
+      - Please tell me the release date of [Mayday](keyword)'s new album.
+      - What are the ticket prices and seating arrangements for [Eason Chan](keyword)'s [next concert](datetime)?
+      - Has [JJ Lin](keyword) recently held a concert in [Taitung](city)?
+      - What are the concert dates and venues for [Jam Hsiao](keyword) in the [next month](datetime)?
+      - Please provide behind-the-scenes footage of [A-Lin](keyword)'s latest MV shoot.
+      - Will [Wang Leehom](keyword) be performing in [Taichung](city) [next month](datetime)?
+      - What are the tour arrangements for [Jay Chou](keyword) in the [next year](datetime)?
+      - Does [Jolin Tsai](keyword) have plans to hold a concert in [Tainan](city)?
+      - What is the lead single of [Mayday](keyword)'s latest album?
+      - What are the starting time and ticket prices for the next concert of [Eason Chan](keyword)?
+      - Please show me the latest concert poster of [JJ Lin](keyword).
+      - Does [A-Lin](keyword) have plans to hold a concert in [Taichung](city)?
+      - Has [Wang Leehom](keyword) recently performed in [Taipei](city)?
+      - Will [Jay Chou](keyword) be performing in [Tainan](city) in the [next two months](datetime)?
+      - Will there be any special guest performances at [Jolin Tsai](keyword)'s next concert?
+      - Please inform me of the release date of [Mayday](keyword)'s new album.
+      - What are the ticket prices and seating arrangements for [G.E.M.](keyword)'s next concert?
+      - Has [Jacky Cheung](keyword) recently held a concert in [Taipei](city)?
+      - Will [Mavis Fan](keyword) be performing in [Hualien](city) [next month](datetime)?
+      - What is the release date of [Na Ying](keyword)'s latest single?
+      - Is [Andy Lau](keyword) planning to hold a concert in [Tainan](city)?
+      - Please provide a summary of [Tanya Chua](keyword)'s latest album.
+      - What are the concert arrangements for [Crowd Lu](keyword) in the [next six months](datetime)?
+      - Has [Cyndi Wang](keyword) recently performed in [Taichung](city)?
+      - Will [Wei Li-an](keyword) be performing in [Taitung](city) [next month](datetime)?
+      - Please inform me of [Chris Lee](keyword)'s tour schedule.
+      - Does [A-Mei](keyword) have plans to hold a concert in [Hualien](city)?
+      - Has [Na Ying](keyword) recently held a concert in [Taipei](city)?
+      - What are the concert dates and venues for [Jolin Tsai](keyword) in the [next month](datetime)?
+      - Please tell me the online release date of [Eason Chan](keyword)'s new song MV.
+      - Will [Mayday](keyword) be performing in [Tainan](city) [next month](datetime)?
+      - Has [JJ Lin](keyword) recently held a concert in [Taitung](city)?
+      - I want to know the release date of [Jam Hsiao](keyword)'s new song.
+      - Does [A-Lin](keyword) have plans to hold a concert in [Taichung](city)?
+      - Please provide the latest information on [Wang Leehom](keyword)'s new single release.
+      - Will [Jay Chou](keyword) be holding a concert in [Taipei](city) [next month](datetime)?
+      - Has [Jolin Tsai](keyword) recently performed in [Tainan](city)?
+      - What are the tour arrangements for [Jam Hsiao](keyword) in the [next year](datetime)?
+      - Please tell me the release date of [Mayday](keyword)'s new album.
+      - What are the ticket prices and seating arrangements for [Eason Chan](keyword)'s next concert?
+      - Has [JJ Lin](keyword) recently held a concert in [Taitung](city)?
+      - What are the concert dates and venues for [Jam Hsiao](keyword) in the [next month](datetime)?
+      - Please provide behind-the-scenes footage of [A-Lin](keyword)'s latest MV shoot.
+      - Will [Wang Leehom](keyword) be performing in [Taichung](city)
+
+
+  - intent: query_ticket_time
+    examples: |
+      - Please tell me the ticketing time for [next week](datetime).
+      - Please tell me the ticketing time for [tomorrow](datetime).
+      - Please tell me which concerts will start ticketing on [the day after tomorrow](datetime).
+      - Ticketing [tomorrow](datetime).
+      - Ticket sales [next week](datetime).
+      - The concert ticketing on [the day after tomorrow](datetime).
+      - Ticket sales for [next week](datetime).
+      - Please inform me of all upcoming ticketing times.
+      - Please inform me of all upcoming ticket sales times.
+      - May I ask which concerts will be open for ticket sales between [October 1st] and [October 5th](datetime)?
+      - May I ask which concerts will be open for ticketing between [October 1st](datetime) and [October 5th](datetime)?
+      - May I ask what time is the ticketing for [October 1st](datetime)?
+      - Is there a ticket sales event on [this Friday](datetime)?
+      - Please tell me which performances will start ticket sales after [7 pm tomorrow](datetime)?
+      - Ticketing for the concert on [next Saturday](datetime).
+      - Ticket sales for the music festival at the end of [this month](datetime).
+      - What time does the ticket sales for the stage play [tomorrow](datetime) start?
+      - Ticketing details for [next month](datetime).
+      - Please inform me of the schedule for purchasing tickets.
+      - May I ask which concerts will start ticket sales between [October 15th](datetime) and [October 20th](datetime)?
+      - May I ask which music festivals will be open for ticketing from [the end of this month to the beginning of next month](datetime)?
+      - What is the ticketing time for [the end of this month](datetime)?
+      - Is there a ticket sales event on [next Tuesday](datetime)?
+      - Please inform me of which performances will start ticket sales [after 10 am the day after tomorrow](datetime)?
+      - Ticketing for the concert on [the tenth of next month](datetime).
+      - Ticket sales for the drama performance [this Saturday](datetime).
+      - When does the sale of movie tickets start [tomorrow](datetime)?
+      - Ticketing details for the dance performance [next month](datetime).
+      - Please inform me of the schedule for purchasing tickets for upcoming programs.
+      - May I ask which exhibitions will be open for ticket sales between [October 12th](datetime) and [October 15th](datetime)?
+      - Which events will be open for ticketing from [today to November 5th](datetime)?
+      - What time is the ticketing for [September 20th](datetime)?
+      - Which music festivals will be open for ticket sales [next year](datetime)?
+      - Ticket sales time for the concert on [next Wednesday](datetime).
+      - What are the ticketing activities at [the end of October](datetime)?
+      - Which performances are open for ticket sales [this month](datetime)?
+      - What time is the ticketing for the music festival in [June](datetime)?
+      - Which dramas will start ticket sales [tomorrow night](datetime)?
+      - What is the ticketing time for [the first of next month](datetime)?
+      - What ticketing activities are there [this month](datetime)?
+      - Is there a ticket sales event at [9 am tomorrow](datetime)?
+      - Which concerts in [November](datetime) will be open for ticketing?
+      - Which drama performances in [September](datetime) will have ticket sales?
+      - Which exhibitions will be open for ticket sales from [next Monday to next Friday](datetime)?
+      - Which dance performances will start ticketing in [October](datetime)?
+      - Which events from [2 pm to 5 pm tomorrow afternoon](datetime) will open for ticket sales?
+      - What is the ticketing time for the music festival in [November](datetime)?
+      - Which performances will start ticket sales [tonight at 8 pm](datetime)?
+      - What is the ticketing time for [this Sunday](datetime)?
+      - Which concerts will start ticket sales [tomorrow](datetime)?
+      - Which drama performances in [October](datetime) will be open for ticketing?
+      - What ticketing activities are there [next Saturday](datetime)?
+      - Which performances will open for ticket sales at [12 pm tomorrow](datetime)?
+      - Which programs will open for ticketing from [the end of October to the beginning of November](datetime)?
+      - Which music festivals will start ticket sales [this year](datetime)?
+      - What are the ticketing activities in [the middle of next month](datetime)?
+      - Which events will start ticket sales at [3 pm today](datetime)?
+      - Which events from [this Thursday to this Sunday](datetime) will open for ticketing?
+      - What time is the ticketing for [tomorrow](datetime)?
+      - Which ticket sales events are there [this month](datetime)?
+      - Which concerts will start ticketing at [8 pm tomorrow night](datetime)?
+#      - Which drama performances from [early September to the end of September](datetime) will have ticket sales?

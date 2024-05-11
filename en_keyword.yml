@@ -1,0 +1,1725 @@
+version: "3.0"
+nlu:
+  - lookup: keyword
+    examples: |
+      - Rap
+      - Pop
+      - Jazz
+      - R&B
+      - Rock
+      - Classical
+      - Electronic
+      - Country
+      - Blues
+      - Metal
+      - Folk
+      - Reggae
+      - Latin
+      - EDM
+      - house
+      - trap
+      - boombap
+      - jersey
+      - Chang Wu
+      - Lo Ta You
+      - Justin Su
+      - Kelly Tsai
+      - Lil Pan
+      - Craig David
+      - Ricky Martin
+      - Bon Jovi
+      - Britney Spears
+      - Crazy Frog
+      - James Blunt
+      - Faith Hill
+      - Destiny's Child
+      - Avril Lavigne
+      - Backstreet Boys
+      - Alanis Morissette
+      - Maroon 5
+      - Sean Paul
+      - Daniel Powter
+      - Linkin Park
+      - Jennifer Lopez
+      - Ciara
+      - Ornella Vanoni
+      - Robbie Williams
+      - Savage Garden
+      - Madonna
+      - Simon Webbe
+      - Fort Minor
+      - Schnappi
+      - Westlife
+      - Enya
+      - Eminem
+      - t.A.T.u.
+      - The Pussycat Dolls
+      - Shakira
+      - Kylie Minogue
+      - Rod Stewart
+      - 50 Cent
+      - Green Day
+      - Lee Ryan
+      - Andrew Lloyd Webber
+      - Kelly Clarkson
+      - P.O.D.
+      - Celine Dion
+      - KT Tunstall
+      - Bananarama
+      - Cannonball Adderley
+      - Coldplay
+      - Gorillaz
+      - Norah Jones
+      - Chris Brown
+      - Corinne Bailey Rae
+      - Dionne Warwick
+      - The Flaming Lips
+      - Spice Girls
+      - Red Hot Chili Peppers
+      - The Streets
+      - Billy Joel
+      - Air Supply
+      - Mariah Carey
+      - Amel Larrieux
+      - Duncan James
+      - Jim Noir
+      - Paris Hilton
+      - Pet Shop Boys
+      - Damien Rice
+      - Amerie
+      - Jamelia
+      - Eliane Elias
+      - Maria Rita
+      - Macy Gray
+      - Laura Michelle Kelly
+      - Shayne Ward
+      - LeAnn Rimes
+      - John Legend
+      - Christina Aguilera
+      - Pharrell Williams
+      - Barbra Streisand
+      - Shakin' Stevens
+      - Justin Timberlake
+      - Jason Mraz
+      - The Lively Ones
+      - Gilberto Gil
+      - Atomic Kitten
+      - The Corrs
+      - Stacie Orrico
+      - Evanescence
+      - Beyoncé
+      - Nick Lachey
+      - LeToya
+      - Black Eyed Peas
+      - Nelly Furtado
+      - Snow Patrol
+      - Lindsay Lohan
+      - Ashlee Simpson
+      - Rihanna
+      - Gwen Stefani
+      - Lily Allen
+      - Missy Elliott
+      - Nelly
+      - Elton John
+      - Michael Bolton
+      - Bee Gees
+      - Lionel Richie
+      - Julio Iglesias
+      - Stevie Wonder
+      - Jessica Simpson
+      - Ne-Yo
+      - Janet Jackson
+      - Tony Bennett
+      - Kelis
+      - Jesse McCartney
+      - Patrizio Buanne
+      - The Cardigans
+      - Ronan Keating
+      - Jamie Cullum
+      - Jay-Z
+      - George Michael
+      - ABBA
+      - Paul Anka
+      - Snoop Dogg
+      - The Killers
+      - Josh Groban
+      - The Smiths
+      - My Chemical Romance
+      - Akon
+      - Daniel Bedingfield
+      - Will Young
+      - Take That
+      - Jane Birkin
+      - Sarah McLachlan
+      - Eric Clapton
+      - Keren Ann
+      - Mary J. Blige
+      - Phil Collins
+      - Diana Ross
+      - Harry Nilsson
+      - Amy Winehouse
+      - Michael Bublé
+      - Whitney Houston
+      - All-4-One
+      - Kenny Chesney
+      - Jane Monheit
+      - Doris Day
+      - Caetano Veloso
+      - Beastie Boys
+      - Lisa Stansfield
+      - Paul Simon
+      - Carrie Underwood
+      - Donavon Frankenreiter
+      - Natasha Bedingfield
+      - John Mayer
+      - Sheryl Crow
+      - Hilary Duff
+      - Katharine McPhee
+      - Ray Charles
+      - Saturday Night Fever
+      - Michelle Branch
+      - Joss Stone
+      - Fall Out Boy
+      - Ja Rule
+      - Vanessa Williams
+      - Olivia Newton-John
+      - Timbaland
+      - Dolores O'Riordan
+      - Enrique Iglesias
+      - Roxette
+      - R. Kelly
+      - Gareth Gates
+      - Paul Potts
+      - Lene Marlin
+      - The Police
+      - Wham!
+      - Katie Melua
+      - Minnie Riperton
+      - Kanye West
+      - Thomas Anders
+      - Natalie Imbruglia
+      - Sean Kingston
+      - The Click Five
+      - Vitas
+      - Juanes
+      - Alicia Keys
+      - Leona Lewis
+      - Emmy Rossum
+      - The Beach Boys
+      - Adele
+      - Yael Naim
+      - Andrea Bocelli
+      - OneRepublic
+      - Flo Rida
+      - Connie Talbot
+      - Sara Bareilles
+      - Dusty Springfield
+      - M. Pokora
+      - Krystal Meyers
+      - Jay Sean
+      - The Cranberries
+      - Miley Cyrus
+      - Jonas Brothers
+      - Hayley Westenra
+      - Katy Perry
+      - James Horner
+      - Carla Bruni
+      - The Script
+      - Elliott Yamin
+      - Sarah Brightman
+      - David Archuleta
+      - Lil Wayne
+      - Brandy
+      - Bread
+      - Three 6 Mafia
+      - Adam Lambert
+      - Kris Allen
+      - Chet Baker
+      - Kelly Key
+      - Lenka
+      - Weather Report
+      - Michael Jackson
+      - Jackson 5
+      - Melody Gardot
+      - Jordin Sparks
+      - Kesha
+      - Alexandra Burke
+      - Tokio Hotel
+      - Olivia Ong
+      - Owl City
+      - Justin Bieber
+      - B.o.B
+      - Toni Braxton
+      - Taio Cruz
+      - Kenny G
+      - Clay Aiken
+      - Far East Movement
+      - Jessie J
+      - Jennifer Hudson
+      - LMFAO
+      - Bad Meets Evil
+      - David Guetta
+      - The Asteroids Galaxy Tour
+      - Greyson Chance
+      - One Direction
+      - The Fray
+      - Carly Rae Jepsen
+      - Nicki Minaj
+      - Ingrid Michaelson
+      - James Arthur
+      - Selena Gomez
+      - Lana Del Rey
+      - Armin van Buuren
+      - Robin Thicke
+      - Lorde
+      - Tiësto
+      - Rita Ora
+      - Ariana Grande
+      - Avicii
+      - Clean Bandit
+      - Ed Sheeran
+      - 5 Seconds of Summer
+      - Che'Nelle
+      - Betty Who
+      - Sia
+      - Calvin Harris
+      - Lady A
+      - Sam Smith
+      - Trey Songz
+      - Meghan Trainor
+      - Ellie Goulding
+      - Zedd
+      - Wiz Khalifa
+      - Shawn Mendes
+      - Redfoo
+      - Jason Derulo
+      - John Lennon
+      - Fifth Harmony
+      - Hailee Steinfeld
+      - Jess Glynne
+      - Charlie Puth
+      - Gym Class Heroes
+      - The Weekend
+      - Robin Schulz
+      - Troye Sivan
+      - Kygo
+      - Rachel Platten
+      - Rick Price
+      - Salt-N-Pepa
+      - Mark Ronson
+      - Michael Giacchino
+      - The Beatles
+      - Alessia Cara
+      - Alan Walker
+      - Iggy Azalea
+      - Lukas Graham
+      - Martin Garrix
+      - Mike Posner
+      - Bebe Rexha
+      - Galantis
+      - Katy B
+      - The Chainsmokers
+      - Cash Cash
+      - Nick Jonas
+      - The 1975
+      - DNCE
+      - DJ Snake
+      - Desiigner
+      - Moby
+      - Jonas Blue
+      - Zara Larsson
+      - Alesso
+      - Tove Lo
+      - Little Mix
+      - The xx
+      - Marshmello
+      - Austin Mahone
+      - Dua Lipa
+      - Sampha
+      - DJ Khaled
+      - MØ
+      - Cashmere Cat
+      - Liam Payne
+      - Camila Cabello
+      - Hardwell
+      - Luis Fonsi
+      - Louis Tomlinson
+      - French Montana
+      - San Holo
+      - Post Malone
+      - Gryffin
+      - Niall Horan
+      - Danny Elfman
+      - Rudimental
+      - Julia Michaels
+      - Janelle Monáe
+      - Calum Scott
+      - Lauv
+      - Kaskade
+      - Lil Dicky
+      - Pentatonix
+      - Anne-Marie
+      - Nicky Jam
+      - The Carters
+      - Tiffany Young
+      - Why Don't We
+      - Deadmau5
+      - Sigala
+      - Steve Aoki
+      - Agnez Mo
+      - Kehlani
+      - Lauren Jauregui
+      - Drax Project
+      - Ally Brooke
+      - Maren Morris
+      - Ava Max
+      - Billie Eilish
+      - Lil Nas X
+      - Thomas Rhett
+      - Kelsea Ballerini
+      - Kacey Musgraves
+      - Clairo
+      - Normani
+      - Liam Gallagher
+      - Paulo Londra
+      - Lewis Capaldi
+      - Sam Fender
+      - Sasha Alex Sloan
+      - Harry Styles
+      - Travis Scott
+      - Lizzo
+      - Mike Shinoda
+      - Nina Nesbitt
+      - Tones and I
+      - Miss Li
+      - Kane Brown
+      - Idina Menzel
+      - Lea Michele
+      - Oh Wonder
+      - Kodaline
+      - Echosmith
+      - Mac Miller
+      - Sophie Zelmani
+      - Aerosmith
+      - Meek Mill
+      - Tyson Yoshi
+      - SZA
+      - Vanessa Carlton
+      - Jeremy Zucker
+      - Lennon Stella
+      - Doja Cat
+      - Megan Thee Stallion
+      - Caravan Palace
+      - Hayden James
+      - Hayley Williams
+      - Faouzia
+      - Maisie Peters
+      - Scott Storch
+      - Diplo
+      - Astrid S
+      - Ella Henderson
+      - Burna Boy
+      - Tinie Tempah
+      - Becky G
+      - Surf Mesa
+      - Cardi B
+      - London Grammar
+      - mxmtoon
+      - Keith Urban
+      - Lykke Li
+      - Tate McRae
+      - G-Eazy
+      - Pop Smoke
+      - Pale Waves
+      - Rina Sawayama
+      - Duncan Laurence
+      - Jack Harlow
+      - Brenda Lee
+      - Saweetie
+      - Olivia Rodrigo
+      - Joshua Bassett
+      - Tom Grennan
+      - Conan Gray
+      - 24kGoldn
+      - Amy Shark
+      - SG Lewis
+      - Madison Beer
+      - Tyler Shaw
+      - Dove Cameron
+      - Ardhito Pramono
+      - Cordae
+      - Bella Poarch
+      - PnB Rock
+      - Hayley Kiyoko
+      - Leon Bridges
+      - H.E.R.
+      - Daniel Schulz
+      - Luke Hemmings
+      - Maluma
+      - Conor Maynard
+      - Omar Apollo
+      - Adam Levine
+      - Cyn
+      - Yung Bae
+      - Matoma
+      - Gretta Ray
+      - Sam Hunt
+      - Sabrina Carpenter
+      - Noah Kahan
+      - Giveon
+      - Latto
+      - Mickey Guyton
+      - Ashnikko
+      - New Rules
+      - Jesy Nelson
+      - Gracie Abrams
+      - Phoebe Bridgers
+      - Tenille Arts
+      - The Wanted
+      - Mimi Webb
+      - Joel Corry
+      - Hunter Hayes
+      - Benson Boone
+      - Gabby Barrett
+      - Kim Petras
+      - Maya Hawke
+      - Andy Grammer
+      - Jhené Aiko
+      - Jimmy Fallon
+      - Gabrielle Aplin
+      - Roddy Ricch
+      - Miranda Lambert
+      - Eric Nam
+      - Armaan Malik
+      - Stephanie Poetri
+      - Stefflon Don
+      - Walker Hayes
+      - George Ezra
+      - A Great Big World
+      - Rex Orange County
+      - Lizzy McAlpine
+      - Cody Simpson
+      - Sofia Carson
+      - Sydney Rose
+      - Ella Mai
+      - Little Big Town
+      - Joy Oladokun
+      - Dylan Brady
+      - Kali Uchis
+      - Jacob Collier
+      - Måneskin
+      - Sam Fischer
+      - David J
+      - Stephen Sanchez
+      - CNCO
+      - Ingrid Andress
+      - Carly Pearce
+      - Harris J.
+      - Olly Murs
+      - Andy Williams
+      - Laura Marano
+      - Loren Gray
+      - Stormzy
+      - Tori Kelly
+      - Jeff Satur
+      - Leigh-Anne
+      - Metro Boomin
+      - Thomas Newman
+      - Katelyn Tarver
+      - Loud Luxury
+      - Alex Warren
+      - Jordan Chan
+      - Andy Lau
+      - DJ Tommy
+      - Ekin Cheng
+      - Hins Cheung
+      - Eason Chan
+      - Joey Yung
+      - Beyond
+      - Twins
+      - Anthony Wong
+      - Jason Chan
+      - William So
+      - Leo Ku
+      - Michael Wong
+      - Nicholas Tse
+      - Jacky Cheung
+      - Ronald Cheng
+      - Gigi Leung
+      - Ivana Wong
+      - Kay Tse
+      - Daniel Chan
+      - Kary Ng
+      - Stephy Tang
+      - Alex Fong
+      - JJ Lin
+      - Andy Hui
+      - Aaron
+      - Miriam Yeung
+      - Linda Wong
+      - Sammi Cheng
+      - Kelly Chen
+      - Faye Wong
+      - CoCo Lee
+      - Lui Fong
+      - Alan Tam
+      - Justin Lo
+      - Edmond Leung
+      - Ronald Ng
+      - Frances Yip
+      - Fama
+      - Jackie Chan
+      - Cecilia Cheung
+      - Mr.
+      - Vincy Chan
+      - Cilla Kung
+      - Leon Lai
+      - Jenny Tseng
+      - Hacken Lee
+      - Vivian Chow
+      - my little airport
+      - Priscilla Chan
+      - Leslie Cheung
+      - Eric Suen
+      - William Chan
+      - Big Four
+      - George Lam
+      - Ocean
+      - Yumiko Cheng
+      - Sherman Chung
+      - Alice Lau
+      - Gary Cheng
+      - Ken Hung
+      - Shirley Kwan
+      - Raymond Lam
+      - Jan Lamb
+      - Gillian Chung
+      - Alex Wu
+      - Michael Kwan
+      - Cally Kwong
+      - Eric Moo
+      - Edison Chen
+      - Charlene Choi
+      - Teresa Carpio
+      - Louis Cheung
+      - Theresa Fu
+      - Dave Wang
+      - The Wynners
+      - Venus Yiu
+      - KOLOR
+      - Miya
+      - Shawn Yue
+      - Mag Lam
+      - Ricksen  Tam
+      - Tony Leung
+      - Alex To
+      - Wendyz Zheng
+      - HOCC
+      - Samuel Tai
+      - HotCha
+      - Philip Wei
+      - Abella Leung
+      - William Hu
+      - Swing
+      - Richie Jen
+      - Terence Siufay
+      - RubberBand
+      - Jade Kwan
+      - Phil Lam
+      - Angela Au
+      - Kelvin Kwan
+      - KillerSoap
+      - DDDEALER
+      - Wallis Cho
+      - Wyman Wong
+      - Denis Ng
+      - Endy Chow
+      - Sita Chan
+      - Renee Lee
+      - Fiona Sit
+      - TIFF
+      - C AllStar
+      - Alex Lam
+      - Dear Jane
+      - Kellyjackie
+      - Pakho Chau
+      - Shiga Lin
+      - Alan Ho
+      - Lily Chen
+      - Soler
+      - I Love You Boyz
+      - Jay Fung
+      - Tieshulan
+      - Gin Lee
+      - A2A
+      - Adason Lo
+      - goldEN
+      - Bianca Wu
+      - As One
+      - Bosco Wong
+      - Closer
+      - Linda Chung
+      - Chet Lam
+      - Yellow!
+      - June Tang
+      - MastaMic
+      - Sun Boy'z
+      - Ella Koon
+      - Jinny Ng
+      - Corinna Chamberlain
+      - Issac Dang
+      - Mark Lui
+      - Alien Huang
+      - Fiona Fung
+      - Chita Yu
+      - Ellen Loo
+      - Crystal Cheung
+      - Chae Yeon
+      - ToNick
+      - Keeva Mak
+      - Cady Lam
+      - Alex Fung
+      - Alfred Hui
+      - Chilam Cheung
+      - Janice M. Vidal
+      - Calvert
+      - Hubert Wu
+      - Rainky
+      - Steven Cheung
+      - Stephanie Cheng
+      - Lori Chow
+      - Joyce Cheng
+      - CHOCO
+      - Charmaine Fong
+      - Steffi
+      - Pong Nan
+      - Supper Moment
+      - Softhard
+      - Anita Mui
+      - Dickson Chan
+      - Gentlemen
+      - Super Girls
+      - Sean Pang
+      - TikChi
+      - Sam Hui
+      - Wilfred Lau
+      - Terence Yin
+      - Ava Liu
+      - Kristal Tin
+      - Jonathan Wong
+      - Purple Lee
+      - Josie Ho
+      - Yuri
+      - Sheldon Lo
+      - J.Arie
+      - Grasshopper
+      - Barry Ip
+      - Shila Amzah
+      - Stephanie Ho
+      - Christopher Wong
+      - Grady Guan
+      - Michael Lai
+      - Paula Tsui
+      - Roman Tam
+      - TENMUXIC
+      - Emme Wong
+      - Kwan Gor
+      - Shay Liu
+      - Wallace Chung
+      - Charlie Young
+      - Elle Choi
+      - Teresa Teng
+      - Zhou Xun
+      - Joker Xue
+      - Kit Chan
+      - Kenny Bee
+      - Tarcy Su
+      - Paul Wong
+      - 831
+      - Emil Chau
+      - Tat Ming Pair
+      - Della
+      - Liza Wang
+      - Sukie Chung
+      - Jocelyn Chan
+      - Kayee Tam
+      - Cass Phang
+      - Louis Koo
+      - Vivian Koo
+      - HANA
+      - Wen Yin Liang
+      - Valen Hsu
+      - Mavis Hee
+      - Angus Tung
+      - Namewee
+      - Maggie Fu
+      - Cath Wong
+      - Ayen
+      - SUNSET OR RISE
+      - per se
+      - Nowhere Boys
+      - JUDE
+      - Joanna Wang
+      - Eman Lam
+      - Serrini
+      - Rainie Yang
+      - Lil’Ashes
+      - New Youth Barbershop
+      - R.O.O.T
+      - 3Think
+      - Vincent Wong
+      - Danny Chan
+      - Edmond Tong
+      - Terence Lam
+      - Joey Thye
+      - Aarif Lee
+      - Keung To
+      - Ian Chan
+      - Tyson Yoshi
+      - Mirror
+      - Panther Chan
+      - Fred Cheung
+      - Leung Chiu Fung
+      - Feng Ze
+      - Gary Chaw
+      - Subyub Lee
+      - MC Jin
+      - Sabrina Cheung
+      - Gigi Yim
+      - Yoga Lin
+      - Fish Leong
+      - Cheer Chen
+      - Will Pan
+      - Alan Kuo
+      - Matilda Tao
+      - Mayday
+      - Christine Fan
+      - Yanzi Sun
+      - 5566
+      - Fengie Wang
+      - Cyndi Wang
+      - Awaking
+      - Yida Huang
+      - Jolin Tsai
+      - Sam Lee
+      - Kenji Wu
+      - Shin
+      - Nicholas Teo
+      - Kang Kang
+      - Jay Chou
+      - Yummy
+      - 7 Flowers
+      - Evonne Hsu
+      - Kaira Gong
+      - S.H.E
+      - Alex Lee
+      - A-do
+      - Elva Hsiao
+      - Saya
+      - Dicky Cheung
+      - 2moro
+      - Leehom Wang
+      - Irene Luo
+      - Jocie Guo
+      - Kevin Lin
+      - Angela Chang
+      - Stanley Huang
+      - aMEI
+      - Rynn Lim
+      - A-Lin
+      - Deepwhite2
+      - Chris Yu
+      - Emil Chau
+      - David Tao
+      - i.n.g
+      - Karen Mok
+      - Jerry Huang
+      - Tiger Hu
+      - Shin Band
+      - Nicky Lee
+      - Alexis Ho
+      - Roger Yang
+      - Van Fan
+      - Z-Chen Chang
+      - RAIN
+      - Tanya Chua
+      - Steve Chou
+      - Sweety
+      - Winnie Hsin
+      - Sun Ho
+      - Cherry Boom
+      - Harlem Yu
+      - hei Girl
+      - 183Club
+      - Sandy Lam
+      - Khalil Fong
+      - Maggie Chiang
+      - Jeff Chang
+      - Vivian Hsu
+      - Princess Ai
+      - Biung Wang
+      - Energy
+      - Jerry Yan
+      - Fahrenheit
+      - Penny Tai
+      - sodagreen
+      - Evan Yo
+      - Genie Zhuo
+      - Shorty Yuan
+      - K ONE
+      - Victor Wong
+      - Joi Chua
+      - Naiwen Yang
+      - Dawei Huang
+      - Celest Zhang
+      - Annie Yi
+      - Debbie Hsiao
+      - Real Huang
+      - Kym Kum
+      - Walkie Talkie
+      - Yuki Hsu
+      - Ricky Hsiao
+      - Ayal Komod
+      - Mavis Fan
+      - Terry Lin
+      - Claire Kuo
+      - Landy Wen
+      - Danson Tang
+      - Ella Chen
+      - Tony Sun
+      - DA Mouth
+      - Olivia Yan
+      - Afalean Lu
+      - Amber Kuo
+      - Rene Liu
+      - Phil Chang
+      - waa wei
+      - Shadya Lan
+      - Jam Hsiao
+      - Crowd Lu
+      - Jeno liu
+      - BY2
+      - Y2J
+      - LaLa Hsu
+      - Yifeng Zhuo
+      - Peter Pan
+      - relax-One
+      - Judy Chou
+      - Queen
+      - Jing Wong
+      - Jessie Chiang
+      - Shunza
+      - BlueJ
+      - WeiBird
+      - Eric Lin
+      - Power Station
+      - A-Sun
+      - R-chord
+      - Jing Chang
+      - Peggy Hsu
+      - Alisa
+      - Yali Huang
+      - Nylon Chen
+      - COLOR
+      - yao kuo
+      - Cosmos People
+      - Julie Sue
+      - SUPER JUNIOR-M
+      - Cindy Yen
+      - Yisa Yu
+      - Jess Lee
+      - Andrew Tan
+      - Hebe
+      - Yen-j
+      - Aska Yang
+      - Jing Wen Tseng
+      - Selina
+      - Anthony Neely
+      - Tiger Huang
+      - Freya Lim
+      - Kimberley Chen
+      - Jane Huang
+      - Van Ness Wu
+      - NICKTHEREAL
+      - Wanting Qu
+      - Coke Lee
+      - Eve Ai
+      - Lara
+      - Dr. Soo Wincci
+      - Ann
+      - Magic Power
+      - Miu Chu
+      - Silence Wang
+      - Bii
+      - Olivia Ong
+      - Li Jian
+      - Jonathan Lee
+      - Diana Wang
+      - Aaron Yan
+      - Jeannie Hsieh
+      - Fang Wu
+      - Wing Lo
+      - Luantan Ascent
+      - Amber An
+      - Vchuan
+      - Nana Lee
+      - Ian Chen
+      - Kelly Pan
+      - Grady Guan
+      - Dino Lee
+      - George Hu
+      - Maggie Fu
+      - Pets Tseng
+      - Tracy Wang
+      - Julia Peng
+      - Lin Xin Yang
+      - Jane Zhang
+      - Popu Lady
+      - Rosie
+      - Hope Yang
+      - Tom Chang
+      - Patrick Brasca
+      - Joyce Chu
+      - Under Lover
+      - Nine Chen
+      - Shennio Lin
+      - Niko Sun
+      - LULU
+      - Eli Hsieh
+      - Starr Chen
+      - Daniel
+      - Shi Shi
+      - MISS KO
+      - SHINY
+      - PikA
+      - ponso
+      - Ariel Tsai
+      - J.Sheon
+      - Julia Wu
+      - No Party For Cao Dong
+      - Evangeline
+      - Priscilla Abby
+      - Boon Hui Lu
+      - Joanne Tseng
+      - Austin Lee
+      - Hwang Chi Yeul
+      - TIA RAY
+      - Kelly
+      - Renee Chen
+      - Vicky Chen
+      - Rose Liu
+      - Jason Zhang
+      - EggPlantEgg
+      - ØZI
+      - Tifa Chen
+      - Kris Wu
+      - NZBZ
+      - Annie
+      - Astro Bunny
+      - Vic Teo
+      - Kaia Lee
+      - Yo Lee
+      - PiA
+      - The Landlord's Cat
+      - Reyi Liu
+      - RuoFan
+      - HAOR
+      - Sammy
+      - YuJia Tseng
+      - Men Envy Children
+      - 9m88
+      - MDD
+      - TRASH
+      - CHING G SQUAD
+      - Timo Feng
+      - Ice Paper
+      - A Si
+      - Arrow Wei
+      - Kelly Cheng
+      - Flo
+      - Janice Yan
+      - Bestards
+      - Cai Zi
+      - Zooey Wonder
+      - KUN
+      - G5SH
+      - MIXER
+      - Wayne Huang
+      - TroutFresh
+      - Jacky Wu
+      - Edward Chen
+      - Sophie Chen
+      - Jackson Wang
+      - AccuseFive
+      - katncandix2
+      - HUSH
+      - JUNG YONG HWA
+      - HUR
+      - Olivia Tsao
+      - Hsu FuKai
+      - PANTHEPACK
+      - Amazing Show
+      - HowZ
+      - Kevin Liao
+      - Vash Hsu
+      - FEI
+      - Night Keepers
+      - anpu
+      - Faye
+      - Ozone
+      - FEniX
+      - U:NUS
+      - MAX
+      - Howard Lee
+      - Jesslyn
+      - Kuljelje
+      - DA PUMP
+      - SPEED
+      - TONY AN
+      - hitomi
+      - Jang Na Ra
+      - TRF
+      - misono
+      - Kim Jung Hoon
+      - I WiSH
+      - Son Ho Young
+      - YUI
+      - My Little Lover
+      - TOHOSHINKI
+      - Baek Z Young
+      - KOKIA
+      - YUKI
+      - Clazziquai Project
+      - Aqua Timez
+      - SUPER JUNIOR
+      - SS501
+      - SHINee
+      - Iris Lin
+      - JUJU
+      - GReeeeN
+      - Kana Nishino
+      - BIGBANG
+      - BENI
+      - May J.
+      - w-inds.
+      - 4MINUTE
+      - FTISLAND
+      - Wonder Girls
+      - F.cuz
+      - aiko
+      - 2PM
+      - CNBLUE
+      - SoulJa
+      - Brown Eyed Girls
+      - T-ARA
+      - After School
+      - 애프터스쿨
+      - Orange Caramel
+      - KARA
+      - 2AM
+      - G.NA
+      - JYJ
+      - SUPER JUNIOR-K.R.Y.
+      - Oh Won Bin
+      - S.M. THE BALLAD
+      - AKB48
+      - AAA
+      - MBLAQ
+      - miwa
+      - RAINBOW
+      - 레인보우
+      - T.M.Revolution
+      - FLOW
+      - Perfume
+      - ONE OK ROCK
+      - grram
+      - Kim Hyun Joong
+      - NS Yoon-G
+      - Buono!
+      - IU
+      - Che'Nelle
+      - Sowelu
+      - B.A.P
+      - 비에이피
+      - WEAVER
+      - LiSA
+      - E-girls
+      - GACKT
+      - EGOIST
+      - AOA
+      - Happiness
+      - Flower
+      - Giselle4
+      - Superfly
+      - Apink
+      - GRANRODEO
+      - GLIM SPANKY
+      - SPYAIR
+      - BLUE ENCOUNT
+      - [Alexandros]
+      - KANA-BOON
+      - GARNiDELiA
+      - Dream5
+      - Jung Hung
+      - MICHI
+      - KEYTALK
+      - GLAY
+      - Dream Ami
+      - JABBERLOOP
+      - SHISHAMO
+      - INFINITE
+      - 인피니트
+      - D-51
+      - Kiroro
+      - CAPSULE
+      - TANAKA ALICE
+      - King Cream Soda
+      - EXO
+      - VAMPS
+      - world's end girlfriend
+      - Mouse on The Keys
+      - bohemianvoodoo
+      - Silent Siren
+      - chay
+      - Ms.OOJA
+      - ℃-ute
+      - MINMI
+      - SOULHEAD
+      - Lee Hong Gi
+      - Dream
+      - THE BAWDIES
+      - INORAN
+      - Keishi Tanaka
+      - Aimer
+      - DEPAPEPE
+      - Dragon Ash
+      - X JAPAN
+      - jizue
+      - Re-Trick
+      - LILI LIMIT
+      - Mrs. GREEN APPLE
+      - RADWIMPS
+      - Homecomings
+      - BIGMAMA
+      - DECO*27
+      - Nissy
+      - WHITE JAM
+      - KEN THE 390
+      - KENTA HAYASHI
+      - the chef cooks me
+      - Leola
+      - Kalafina
+      - トクマルシューゴ
+      - DEEP
+      - Da-iCE
+      - BOYFRIEND
+      - 보이프렌드
+      - FAKE TYPE.
+      - supercell
+      - BTS
+      - X21
+      - CHiCO with HoneyWorks
+      - BRIGHT
+      - UVERworld
+      - チャオ ベッラ チンクエッティ
+      - Uru
+      - CV:KENN
+      - Rihwa
+      - WHY@DOLL
+      - HKT48
+      - HoneyWorks
+      - SUI
+      - ミツメ
+      - sleepy.ab
+      - OGRE YOU ASSHOLE
+      - WANIMA
+      - SOLIDEMO
+      - クリープハイプ
+      - TWICE
+      - SISTER JET
+      - LOCAL CONNECT
+      - シンリズム
+      - Block B
+      - 블락비
+      - THE CHARM PARK
+      - angela
+      - DAOKO
+      - BLACKPINK
+      - 블랙핑크
+      - クレイジーケンバンド
+      - Yogee New Waves
+      - DJ OKAWARI
+      - noovy
+      - Lead
+      - ハシグチカナデリヤ
+      - Robert de Boron
+      - THE SxPLAY
+      - BABYMETAL
+      - WINNER
+      - RAM WIRE
+      - EXO-CBX
+      - andymori
+      - I Don't Like Mondays.
+      - サニーデイ・サービス
+      - LAMP IN TERREN
+      - 10-FEET
+      - AAA
+      - May'n
+      - NCT
+      - Cö shu Nie
+      - ASCA
+      - iri
+      - SEVENTEEN
+      - 세븐틴
+      - さよならポニーテール
+      - BiSH
+      - Ron Monroe
+      - majiko
+      - VK Blanka
+      - ビッケブランカ
+      - Red Velvet
+      - SUPER☆GiRLS
+      - 8utterfly
+      - Mr.Children
+      - YOSHIKI feat. HYDE
+      - MAMAMOO
+      - 마마무
+      - GFRIEND
+      - 여자친구
+      - yonige
+      - IZ*ONE
+      - SPiCYSOL
+      - U-KISS
+      - Tulus
+      - Kang Min Hyuk
+      - YESUNG
+      - COLOR CREATION
+      - King Gnu
+      - THE YELLOW MONKEY
+      - RYEOWOOK
+      - ベリーグッドマン
+      - ビューティフルハミングバード
+      - Hey! Say! JUMP
+      - MAN WITH A MISSION
+      - milet
+      - Shinn Yamada
+      - THREE1989
+      - フィロソフィーのダンス
+      - back number
+      - Park Bo Gum
+      - ZOOCO
+      - sumika
+      - BOL4
+      - YOASOBI
+      - MOMOLAND
+      - 모모랜드
+      - Eve
+      - サイダーガール
+      - BUMP OF CHICKEN
+      - Omoinotake
+      - Novelbright
+      - yama
+      - eill
+      - SF9
+      - AYA a.k.a PANDA
+      - NiziU
+      - Tani Yuuki
+      - Reol
+      - BLOOM VASE
+      - ALI
+      - SUPER BEAVER
+      - Who-ya Extended
+      - Myuk
+      - Ado
+      - もさを。
+      - ロザリーナ
+      - Non Stop Rabbit
+      - THE BOYZ
+      - 더보이즈
+      - Lefty Hand Cream
+      - AiNA THE END
+      - KAT-TUN
+      - TREASURE
+      - FAKY
+      - KEIKO
+      - Amamiya Sora
+      - DJ RYOW
+      - B'z
+      - YONA YONA WEEKENDERS
+      - EDEN KAI
+      - Sano ibuki
+      - Anna
+      - Colorful
+      - Q-MHz
+      - あれくん
+      - Ayase
+      - ZARD
+      - TAIKING
+      - Vaundy
+      - SiM
+      - lily
+      - ITZY
+      - Deep Sea Diving Club
+      - あさぎーにょ
+      - ダズビー
+      - DUSTCELL
+      - BURNOUT SYNDROMES
+      - cadode
+      - ラックライフ
+      - imase
+      - BE:FIRST
+      - ano
+      - マルシィ
+      - WANDS
+      - SARD UNDERGROUND
+      - The Birthday
+      - IVE
+      - SUPER JUNIOR-L.S.S.
+      - MISAMO
+      - Stray Kids
+      - Furui Riho
+      - Creepy Nuts
+      - Son Dam Bi
+      - KAHI
+      - Heo Young Saeng
+      - 2NE1
+      - Jan Keun Suk TEAM H
+      - miss A
+      - Trouble Maker
+      - PSY
+      - G-DRAGON
+      - B1A4
+      - 비원에이포
+      - YANG YO SEOP
+      - NU'EST
+      - 뉴이스트
+      - Secret
+      - LeeHi
+      - ROY KIM
+      - TAEYEON
+      - CRAYON POP
+      - 크레용팝
+      - T.O.P
+      - Seo In Guk
+      - GARY
+      - 개리
+      - AKMU
+      - TAEMIN
+      - JUNIEL
+      - Lee Min Ho
+      - EPIK HIGH
+      - KYUHYUN
+      - Urban Zakapa
+      - EXID
+      - JONGHYUN
+      - DAVICHI
+      - 다비치
+      - K.Will
+      - Standing egg
+      - 스탠딩 에그
+      - SISTAR
+      - Wa$$up
+      - 와썹
+      - BTOB
+      - 비투비
+      - VIXX LR
+      - YU SEUNGWOO
+      - Jane Jang
+      - San E
+      - 산이
+      - MONSTA X
+      - Zion.T
+      - iKON
+      - HYUKOH
+      - Crush
+      - 크러쉬
+      - Jeong Eun Ji
+      - Tiffany Young
+      - 10CM
+      - Suzy
+      - Kim Na Young
+      - Hyolyn
+      - Kim Woobin
+      - Park Boram
+      - Jung Joon Young
+      - I.O.I
+      - 아이오아이
+      - KCM
+      - Taru
+      - 타루
+      - Jessi
+      - MOBB
+      - Baek A Yeon
+      - GEmma Wu
+      - Apink
+      - SG Wannabe
+      - SG워너비
+      - Jung Seung Hwan
+      - Ra.D
+      - 라디
+      - Suran
+      - 수란
+      - LYn
+      - 린
+      - HYOYEON
+      - Jung Yup
+      - SUNG SI KYUNG
+      - Lee Sunhee
+      - Sam Kim
+      - 샘김
+      - Eddy Kim
+      - 에디킴
+      - Soyou
+      - Jung Joonil
+      - NCT 127
+      - SEOHYUN
+      - Heize
+      - 헤이즈
+      - KIM SEJEONG
+      - NIEL
+      - 니엘
+      - KARD
+      - Highlight
+      - 하이라이트
+      - Girl's Day
+      - 걸스데이
+      - JOY
+      - VROMANCE
+      - 브로맨스
+      - PRISTIN
+      - Park Hyungsik
+      - YONG JUN HYUNG
+      - Triple H
+      - VIXX
+      - 빅스
+      - Yang Da Il
+      - Kassy
+      - 케이시
+      - Wanna One
+      - JJ Project
+      - MXM
+      - BRANDNEWBOYS
+      - JEONG SEWOON
+      - LEE GI KWANG
+      - BOBBY
+      - JBJ
+      - Bumkey
+      - MeloMance
+      - 멜로망스
+      - Gummy
+      - 거미
+      - CLC
+      - Kim Sung Kyu
+      - Weki Meki
+      - PENTAGON
+      - 펜타곤
+      - PRISTIN V
+      - ZICO
+      - 지코
+      - ASTRO
+      - BTOB-BLUE
+      - Cha Eun Woo
+      - OH MY GIRL
+      - 오마이걸
+      - HOYA
+      - YURI
+      - fromis_9
+      - CHEN
+      - 첸
+      - Jung Dong Ha
+      - WENDY
+      - 웬디
+      - JENNIE
+      - KEY
+      - Eric Nam
+      - 에릭남
+      - Cherry Bullet
+      - Hwa Sa
+      - Loco
+      - VERIVERY
+      - N.Flying
+      - J Rabbit
+      - 제이레빗
+      - Yoon Jisung
+      - Jus2
+      - Park Bom
+      - EVERGLOW
+      - PARK JI HOON
+      - KIM HEECHUL
+      - Hong Dae Kwang
+      - XIUMIN
+      - 시우민
+      - Ha Sung Woon
+      - AB6IX
+      - EUN JIWON
+      - EXO-SC
+      - KANGDANIEL
+      - Far East Movement
+      - NCT DREAM
+      - ONG SEONG WU
+      - Paul Kim
+      - 폴킴
+      - Punch
+      - 펀치
+      - Whee In
+      - The Rose
+      - 더 로즈
+      - SuperM
+      - VICTON
+      - 빅톤
+      - Jannabi
+      - 잔나비
+      - LABOUM
+      - 라붐
+      - YOON MI RAE
+      - ATEEZ
+      - Yerin Baek
+      - DONGHAE
+      - Gaho
+      - 가호
+      - SUHO
+      - 수호
+      - Cho Jung Seok
+      - CODE KUNST
+      - APRIL
+      - 에이프릴
+      - DAY6
+      - GRAY
+      - 그레이
+      - LEE SUHYUN
+      - CHEEZE
+      - 치즈
+      - YooA
+      - Lee Eun Sang
+      - ZELO
+      - aespa
+      - BTOB 4U
+      - STAYC
+      - KAI
+      - YUJU
+      - 유주
+      - TRI.BE
+      - BIG Naughty
+      - WEi
+      - ASH ISLAND
+      - PURPLE KISS
+      - DRIPPIN
+      - MIRAE
+      - KANG SEUNG YOON
+      - U SUNG EUN
+      - Giriboy
+      - 기리보이
+      - GSoul
+      - Mirani
+      - Lee Seung Hyub
+      - PENOMECO
+      - 페노메코
+      - BIBI
+      - ENHYPEN
+      - B.I
+      - LIGHTSUM
+      - Kim Dae Myeung
+      - MSG WANNABE
+      - Seori
+      - Minzy
+      - Colde
+      - Leellamarz
+      - 릴러말즈
+      - sunwoojunga
+      - DREAMCATCHER
+      - 드림캐쳐
+      - YOO YEONSEOK
+      - LISA
+      - Jung Kyung Ho
+      - SANDEUL
+      - HOT ISSUE
+      - EUNHYUK
+      - Stella Jang
+      - 스텔라장
+      - Hoody
+      - 후디
+      - Chancellor
+      - 챈슬러
+      - JIN
+      - Lee HyoRi
+      - BE'O
+      - GOT the beat
+      - Kep1er
+      - BamBam
+      - KANGTA
+      - VIVIZ
+      - TRADE L
+      - NMIXX
+      - TAEIL
+      - SECRET NUMBER
+      - wonstein
+      - ONEW
+      - LE SSERAFIM
+      - Shallow Levée
+      - WSG WANNABE
+      - ROSÉ
+      - Apink CHOBOM
+      - NewJeans
+      - JAEHYUN
+      - CHUU
+      - MIND U
+      - 마인드유
+      - John Park
+      - 존박
+      - Jimin
+      - JISOO
+      - BOYNEXTDOOR
+      - FIFTY FIFTY
+      - ZEROBASEONE
+      - Lim Kim
+      - KISS OF LIFE
+      - PLAVE
+      - RIIZE
+      - BABYMONSTER
+      - WINTER
+      - SISTAR19
+      - TWS
+      - ILLIT
+      - 아일릿
+      - Jody Jiang
+      - Michael Shih
+      - The Chairman
+      - Malas Kao
+      - Michelle Pan
+      - Christine Hsu
+      - Daniel Lo
+      - Delphine Tsai
+      - Lim Giong
+      - Stella Chang
+      - L.T.K.
+      - Freddie Huang
+      - Sarah Chen
+      - Monique Lin
+      - May sun
+      - Angie Lee
+      - Bondo
+      - Nana Chiang
+      - Lotus Wang
+      - Ric Jan
+      - New Formosa Band
+      - Sasha Li
+      - Gigi Wu
+      - Hsieh Ming-Yo
+      - Anita Chen
+      - Tsai Chin
+      - Chang and Lee
+      - Chang Jui-Chuan
+      - Bearbabes
+      - Edsion JV
+      - Elly
+      - Sorry Youth
+      - Dwagie
+      - Enno Cheng
+      - Lin Sheng Hsiang
+      - Hanya
+      - Wonfu
+      - Tien Du
+      - DJ Didilong
+      - Vera Yen
+      - Hui Chu Wang
+      - Tizzy Bac

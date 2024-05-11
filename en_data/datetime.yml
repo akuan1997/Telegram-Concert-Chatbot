@@ -1,0 +1,75 @@
+version: "3.0"
+nlu:
+  - lookup: datetime
+    examples: |
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - The day before yesterday
+      - Yesterday
+      - Today
+      - Tomorrow
+      - The day after tomorrow
+      - Weekend
+      - Weekdays
+      - Weekdays
+      - Morning
+      - Noon
+      - Afternoon
+      - Evening
+      - This year
+      - Next year
+      - Spring
+      - Summer
+      - Autumn
+      - Winter
+      - Spring
+      - Summer
+      - Autumn
+      - Winter
+      - Next week
+      - The week after next
+      - Last week
+      - The week before last
+      - This month
+      - Next month
+      - The month after next

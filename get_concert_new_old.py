@@ -118,7 +118,7 @@ def check_each_info(new_data, old_data, all_data):
                     revise = True
                     if len(new_data[i]['sdt']) > len(old_data[j]['sdt']):
                         print(f"{new_data[i]['tit']}")
-                        print(f"新增sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n{new_data[i]['pin']}\n---")
+                        print(f"新增sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n{new_data[i]['url']}\n---")
                         all_data[pin_index_in_all_data]['sdt'] = new_data[i]['sdt']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
@@ -130,23 +130,23 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n修改all_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n修改all_data\n{new_data[i]['url']}\n---")
                             all_data[pin_index_in_all_data]['sdt'] = new_data[i]['sdt']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的sdt，但是出現空白 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的sdt，但是出現空白 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"sdt減少 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['pin']}\n---")
+                            f"sdt減少 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
 
                 if new_data[i]['pdt'] != old_data[j]['pdt']:
                     revise = True
                     if len(new_data[i]['pdt']) > len(old_data[j]['pdt']):
                         print(f"{new_data[i]['tit']}")
-                        print(f"新增pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n{new_data[i]['pin']}\n---")
+                        print(f"新增pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n{new_data[i]['url']}\n---")
                         all_data[pin_index_in_all_data]['pdt'] = new_data[i]['pdt']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
@@ -158,23 +158,23 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n修改all_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n修改all_data\n{new_data[i]['url']}\n---")
                             all_data[pin_index_in_all_data]['pdt'] = new_data[i]['pdt']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的pdt，但是出現空白 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\nall_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的pdt，但是出現空白 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"pdt減少 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\n{new_data[i]['pin']}\n---")
+                            f"pdt減少 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
 
                 if new_data[i]['loc'] != old_data[j]['loc']:
                     revise = True
                     if len(new_data[i]['loc']) > len(old_data[j]['loc']):
                         print(f"{new_data[i]['tit']}")
-                        print(f"新增loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n{new_data[i]['pin']}\n---")
+                        print(f"新增loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n{new_data[i]['url']}\n---")
                         all_data[pin_index_in_all_data]['loc'] = new_data[i]['loc']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
@@ -186,31 +186,31 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n修改all_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n修改all_data\n{new_data[i]['url']}\n---")
                             all_data[pin_index_in_all_data]['loc'] = new_data[i]['loc']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的loc，但是出現空白 / {old_data[j]['loc']} -> {new_data[i]['loc']}\nall_data\n{new_data[i]['pin']}\n---")
+                                f"相同數量的loc，但是出現空白 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\n{new_data[i]['url']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"loc減少 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\n{new_data[i]['pin']}\n---")
+                            f"loc減少 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\n{new_data[i]['url']}\n---")
 
                 ''''''
 
                 if new_data[i]['prc'] != old_data[j]['prc']:
                     if len(new_data[i]['prc']) > len(old_data[j]['prc']):
                         print(f"{new_data[i]['tit']}")
-                        print(f"新增prc / {old_data[j]['prc']} -> {new_data[i]['prc']}\n{new_data[i]['pin']}\n---")
+                        print(f"新增prc / {old_data[j]['prc']} -> {new_data[i]['prc']}\n{new_data[i]['url']}\n---")
                         all_data[pin_index_in_all_data]['prc'] = new_data[i]['prc']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"prc減少 / {old_data[j]['prc']} -> {new_data[i]['prc']}\n不修改all_data\n{new_data[i]['pin']}\n---")
+                            f"prc減少 / {old_data[j]['prc']} -> {new_data[i]['prc']}\n不修改all_data\n{new_data[i]['url']}\n---")
                 ''''''
 
                 # Check 'int' field again for changes other than KKTIX
@@ -259,17 +259,17 @@ def check_each_info(new_data, old_data, all_data):
                 # with open('concert_zh.json', 'w', encoding='utf-8') as file:
                 #     json.dump(all_data, file, indent=4, ensure_ascii=False)
 
-    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-    #     lines = f.readlines()
-    # for pin in change_pins:
-    #     for i in range(len(all_data)):
-    #         if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
-    #             for line in lines:
-    #                 line_pin = line.split('|||')[1].replace('\n', '')
-    #                 if pin == line_pin:
-    #                     post_id = line.split('|||')[0]
-    #                     update_post_content(post_id, all_data[i])
-    # print(f"len(change_pins) = {len(change_pins)}")
+    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    for pin in change_pins:
+        for i in range(len(all_data)):
+            if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
+                for line in lines:
+                    line_pin = line.split('|||')[1].replace('\n', '')
+                    if pin == line_pin:
+                        post_id = line.split('|||')[0]
+                        update_post_content(post_id, all_data[i])
+    print(f"len(change_pins) = {len(change_pins)}")
 
     return plus_concerts, all_data
 
@@ -285,8 +285,8 @@ def new_concert_add(new_but_old_pins, new_data, all_data):
     # 記得不要使用pin，而是直接使用data
     print(f"len(new_data_filtered) = {len(new_data_filtered)}")
     print('-------------------------------------------------------------------------------------------------------')
-    # for i in range(len(new_data_filtered)):
-    #     post_concert(new_data_filtered[i])
+    for i in range(len(new_data_filtered)):
+        post_concert(new_data_filtered[i])
 
     return new_data_filtered, all_data
 
@@ -309,18 +309,18 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
     #             print(old_data[i]['tit'])
     """ test """
     print('-------------------------------------------------------------------------------------------------------')
-    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-    #     lines = f.readlines()
-    # new_lines = []
-    # for line in lines:
-    #     line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
-    #     post_id = line.split('|||')[0]
-    #     if line_pin not in old_but_new_pins:
-    #         new_lines.append(line)
-    #     else:
-    #         delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
-    # with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
-    #     f.writelines(new_lines)
+    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    new_lines = []
+    for line in lines:
+        line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
+        post_id = line.split('|||')[0]
+        if line_pin not in old_but_new_pins:
+            new_lines.append(line)
+        else:
+            delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
+    with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
+        f.writelines(new_lines)
 
     return all_data
 
@@ -486,10 +486,10 @@ def testing_for_small(start_index):
     json_in_order('concert_zh.json')
 
 
-def testing_for_large(start_index):
+def testing_for_large(start_index, json_filename, mode):
     # print(f"len(json_list) = {len(json_list)}")
 
-    shutil.copy(json_list[0], 'concert_zh.json')  # test
+    shutil.copy(json_list[0], json_filename)  # test
 
     # for i in range(len(json_list) - 1):
     for i in range(start_index, start_index + 1):
@@ -498,15 +498,13 @@ def testing_for_large(start_index):
         old_json = json_list[current_index]
         new_json = json_list[current_index + 1]
 
-        # shutil.copy(old_json, 'concert_zh.json')  # test
-
         print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
 
         with open(old_json, 'r', encoding='utf-8') as f:
             old_data = json.load(f)
         with open(new_json, 'r', encoding='utf-8') as f:
             new_data = json.load(f)
-        with open('concert_zh.json', 'r', encoding='utf-8') as f:
+        with open(json_filename, 'r', encoding='utf-8') as f:
             all_data = json.load(f)
 
         pins_new = [entry['pin'] for entry in new_data]
@@ -532,9 +530,9 @@ def testing_for_large(start_index):
             print(plus_concerts[i]['url'])
         print(f'運算結束 -> len(all_data) = {len(all_data)}')
         # 寫進json裡面
-        write_json = 1  # 0 not write, 1 write (for testing)
-        if write_json == 1:
-            with open('concert_zh.json', "w", encoding="utf-8") as f:
+        write_json = 0  # 0 not write, 1 write (for testing)
+        if write_json == mode:
+            with open(json_filename, "w", encoding="utf-8") as f:
                 json.dump(all_data, f, indent=4, ensure_ascii=False)
                 print('寫入成功')
         else:
@@ -543,7 +541,7 @@ def testing_for_large(start_index):
 
         print(f"len(all_data) = {len(all_data)}")
 
-    json_in_order('concert_zh.json')
+    json_in_order(json_filename)
 
 
 # to do, index 0的所有演唱會要先post
@@ -610,9 +608,12 @@ json_list = [
     "concert_jsons/concert_5_7_1.json",
     "concert_jsons/concert_5_7_21.json",
     "concert_jsons/concert_5_8_16.json",
-    "concert_5_9_14.json"
+    "concert_jsons/concert_5_9_14.json",
+    "concert_jsons/concert_5_10_9.json"
 ]
 
+# for i in range(10):
+#     testing_for_large(i, "concert_zh1.json", 0)  # 0 not write, 1 write
 # start_over(7226)
 
 # initialize()
