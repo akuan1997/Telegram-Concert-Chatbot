@@ -45,10 +45,27 @@
 # text = "post malone"
 # word_tokens = word_tokenize(text.lower())
 # print(word_tokens)
-import yaml
-with open('data/keyword.yml', 'r', encoding='utf-8') as f:
-    data = yaml.safe_load(f)
-    singers = data['nlu'][0]['examples'].replace('- ', '').split('\n')
-for i, singer in enumerate(singers):
-    if len(singer) <= 2:
-        print(i + 5, singer)
+""""""
+# import yaml
+# with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+#     data = yaml.safe_load(f)
+#     singers = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+# for i, singer in enumerate(singers):
+#     if len(singer) <= 2:
+#         print(i + 5, singer)
+""""""
+x = 1
+print(x)
+
+
+def hello():
+    global x
+    x = x + 1
+
+
+y = 2
+print(y)
+
+
+def metoo():
+    print('nothing to lose')

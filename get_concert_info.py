@@ -10,6 +10,7 @@ from googletrans import Translator
 from get_concert_new_old import *
 from get_data_from_text import *
 from fuzzywuzzy import process
+import time
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
@@ -37,24 +38,33 @@ with open(concert_today, 'w', encoding='utf-8') as f:
     json.dump([], f, indent=4, ensure_ascii=False)
 
 
-def get_old_json_filename(directory):
+def get_latest_json_filename(directory):
     # 檢查目錄是否存在
     if not os.path.exists(directory):
         print(f"目錄 '{directory}' 不存在。")
-        return
+        return None
 
     # 獲取目錄中的所有檔案名稱
     filenames = os.listdir(directory)
 
-    filenames = [filename for filename in filenames if ".json" in filename]
+    # 過濾出所有的 .json 檔案
+    json_files = [filename for filename in filenames if filename.endswith(".json")]
 
-    old_json = filenames[-1]
+    # 如果沒有找到 .json 檔案，返回 None
+    if not json_files:
+        print("沒有找到任何 .json 檔案。")
+        return None
 
-    return old_json
+    # 根據檔案的修改時間對 .json 檔案進行排序，最新的檔案在最後
+    json_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)))
+
+    # 返回最新的 .json 檔案
+    return json_files[-1]
 
 
-def get_new_old(json_filename):
-    old_json = get_old_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+def get_new_old(json_filename, json_folder):
+    old_json = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+    shutil.move(json_filename, json_folder)
     new_json = json_filename
     print(f"old_json = {old_json}")
     print(f"new_json = {new_json}")
@@ -87,6 +97,8 @@ def get_new_old(json_filename):
         print(plus_concerts[i]['tit'])
         print(plus_concerts[i]['url'])
     print(f'運算結束 -> len(all_data) = {len(all_data)}')
+
+    json_in_order(json_filename)
 
     # 寫進json裡面
     with open('concert_zh.json', "w", encoding="utf-8") as f:
@@ -193,7 +205,7 @@ def get_era(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # era
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # era
                 # browser = p.chromium.launch(headless=False)  # era
                 context = browser.new_context()
                 page = context.new_page()
@@ -373,7 +385,7 @@ def get_era_without_error_mechanism(website, json_filename, txt_filename):
         # 錯誤的網址
         fail_urls = []
 
-        browser = p.chromium.launch(headless=True)  # era
+        browser = p.chromium.launch(headless=True, slow_mo=200)  # era
         # browser = p.chromium.launch(headless=False)  # era
         context = browser.new_context()
         page = context.new_page()
@@ -532,7 +544,7 @@ def get_livenation(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # live nation
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # live nation
                 # browser = p.chromium.launch(headless=False)  # live nation
                 context = browser.new_context()
                 page = context.new_page()
@@ -689,7 +701,7 @@ def get_indievox(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # indievox
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # indievox
                 # browser = p.chromium.launch(headless=False)  # indievox
                 context = browser.new_context()
                 page = context.new_page()
@@ -1240,7 +1252,7 @@ def get_kktix_first(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # kktix first
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix first
                 # browser = p.chromium.launch(headless=False)  # kktix first
                 context = browser.new_context()
                 page = context.new_page()
@@ -1874,7 +1886,7 @@ def get_kktix_second(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # kktix second
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix second
                 # browser = p.chromium.launch(headless=False)  # kktix second
                 context = browser.new_context()
                 page = context.new_page()
@@ -2507,7 +2519,7 @@ def get_kktix_third(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True)  # kktix thrid
+                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix thrid
                 # browser = p.chromium.launch(headless=False)  # kktix thrid
                 context = browser.new_context()
                 page = context.new_page()
@@ -3457,7 +3469,7 @@ def stadium_city(stadium, lang, table):
 #     json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
 #     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
 #     with sync_playwright() as p:
-#         browser = p.chromium.launch(headless=True)  # city from search
+#         browser = p.chromium.launch(headless=True, slow_mo=200)  # city from search
 #         # browser = p.chromium.launch(headless=False)  # city from search
 #         context = browser.new_context()
 #         page = context.new_page()
@@ -3564,7 +3576,7 @@ def stadium_city(stadium, lang, table):
 def get_city_from_stadium(json_file):
     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)  # city from search
+        browser = p.chromium.launch(headless=True, slow_mo=200)  # city from search
         # browser = p.chromium.launch(headless=False)  # city from search
         context = browser.new_context()
         page = context.new_page()
@@ -3675,6 +3687,7 @@ def zh_to_en():
 
 
 def zh_en(zh_json, en_json):
+    time.sleep(5)
     city_mapping = dict(zip(zh_cities, en_cities))
     # Copying the original file to a new file for translated content
     shutil.copy(zh_json, en_json)
@@ -3743,14 +3756,14 @@ def extract_earliest_date(date_list):
     return min_date
 
 
-def json_in_order(json_file):
-    with open(json_file, 'r', encoding='utf-8') as f:
+def json_in_order(json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Sort the data by the earliest date found in the 'pdt' field
     sorted_data = sorted(data, key=lambda x: extract_earliest_date(x['pdt']))
 
-    with open(json_file, 'w', encoding='utf-8') as f:
+    with open(json_filename, 'w', encoding='utf-8') as f:
         json.dump(sorted_data, f, ensure_ascii=False, indent=4)
 
 
@@ -3785,6 +3798,7 @@ def get_latest_concert_info(json_filename):
     threads_start()  # start the threads
     threads_join()  # wait for all the threads finish
     print('--- Playwright finished ---')
+    """"""
     merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
     print('--- Json merged ---')
     move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
@@ -3799,17 +3813,18 @@ def get_latest_concert_info(json_filename):
     print('--- Replaced str with int for all str! ---')
     price_in_order(json_filename)  # price in order, start from the most highest price
     print('--- Price in order ---')
-    shutil.move(json_filename, "concert_jsons")
     print(f'\n------------------\nzh okay!\n------------------\n')
     # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
     # print('--- Delete all past ticketing time ---')
-    new_concerts, plus_concerts = get_new_old(json_filename)  # 要記得現在rest api, write_json都沒有開啟
+    """"""
+    new_concerts, plus_concerts = get_new_old(json_filename, "concert_jsons")
     print(f"new_concerts = {new_concerts}")
     print(f"plus_concerts = {plus_concerts}")
-    """ zh to en """
-    zh_en("concert_zh.json", "concert_en.json")  # 注意5_10_11的還沒有翻譯成英文
-    # ''' delete old json file and move new json file as old json file '''
-    # # to do with json_new_to_old()
+    """"""
+    zh_en("concert_zh.json", "concert_en.json")  # english version
+    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+
+
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -3822,7 +3837,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-get_latest_concert_info(concert_today)
+# get_latest_concert_info(concert_today)
 
 ''''''
 

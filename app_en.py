@@ -98,6 +98,104 @@ from get_city_date_indexes import *
 en_json = "concert_en.json"
 
 
+def run_cmdline(model_path: Text, user_input) -> None:
+    """Loops over CLI input, passing each message to a loaded NLU model."""
+    agent = Agent.load(model_path)
+
+    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+
+    names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
+    names = [name.replace(' ', '') for name in names]
+
+    print_success("NLU model loaded. Type a message and press enter to parse it.")
+    # message, find_singer = find_singer_name(word)
+    message = user_input.lower()
+    print(f'ori msg: {message}')
+    # print(d.parse_time(message))
+
+    result = asyncio.run(agent.parse_message(message))
+
+    '''
+    輸入句子: 你好
+    print(result['intent'])
+    >> {'name': 'greet', 'confidence': 0.9999651908874512}
+
+    print(result['intent']['name'])
+    >> greet 
+    '''
+
+    print(f'message: {message}')
+    # print(f'find singer?', find_singer)
+    print(f"intent: {result['intent']['name']}")
+    print(f"score: {result['intent']['confidence']}")
+    if result['intent']['confidence'] > 0.6:
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    print('--')
+    if len(result['entities']) == 0:
+        print('No Entities')
+    else:
+        if result['intent']['name'] == "query_ticket_time":
+            ticket_time_indexes = en_get_ticket_time(user_input, en_json)
+            print(f"ticket_time_indexes = {ticket_time_indexes}")
+            return ticket_time_indexes
+        elif result['intent']['name'] == "query_keyword":
+            keywords = []
+            found_datetime = False
+
+            for i in range(len(result['entities'])):
+                # if result['entities'][i]['entity'] != 'keyword' and result['entities'][i]['value']:
+                #     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+                if result['entities'][i]['entity'] == 'datetime':
+                    found_datetime = True
+                elif result['entities'][i]['entity'] == 'keyword':
+                    keywords.append(result['entities'][i]['value'])
+
+            if keywords:
+                keyword = max(keywords, key=len)
+
+                found_keyword = False
+                for j, name in enumerate(names):
+                    if name.lower() == keyword.lower():
+                        keyword = names[j]
+                        found_keyword = True
+                        break
+
+                if not found_keyword:
+                    print('沒有在keyword.yml當中找到keyword')
+                    keyword = keyword.title()
+                else:
+                    print('有在keyword.yml當中找到keyword')
+
+                print(f"keyword = {keyword}")
+                if found_datetime:
+                    print('有keyword，也有datetime，取集合')
+                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
+                    print(f"intersection = {intersection}")
+                    print(type(intersection))
+                    return intersection
+                else:
+                    print('有keyword，但是沒有datetime，直接顯示keyword indexes')
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    return get_keyword_indexes_en_indexes
+            else:
+                print('沒有keyword')
+                if found_datetime:
+                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                    return en_dates_cities_indexes
+                else:
+                    print('什麼都沒有')
+                    return []
+            # print(f"found_datetime = {found_datetime}")
+
+    print('-----------------------------------------------')
+
 
 def run_cmdline1(model_path: Text, words) -> None:
     """Loops over CLI input, passing each message to a loaded NLU model."""
@@ -140,6 +238,7 @@ def run_cmdline1(model_path: Text, words) -> None:
             if result['intent']['name'] == "query_ticket_time":
                 ticket_time_indexes = en_get_ticket_time(word, en_json)
                 print(f"ticket_time_indexes = {ticket_time_indexes}")
+                return ticket_time_indexes
             elif result['intent']['name'] == "query_keyword":
                 keywords = []
                 found_datetime = False
@@ -175,26 +274,30 @@ def run_cmdline1(model_path: Text, words) -> None:
                         print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                         get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
                         print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
-                        intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
+                        intersection = [item for item in get_keyword_indexes_en_indexes if
+                                        item in en_dates_cities_indexes]
                         print(f"intersection = {intersection}")
+                        return intersection
                     else:
                         print('有keyword，但是沒有datetime，直接顯示keyword indexes')
                         get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
                         print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                        return get_keyword_indexes_en_indexes
                 else:
                     print('沒有keyword')
                     if found_datetime:
                         en_dates_cities_indexes = en_dates_cities(word, en_json)
                         print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                        return en_dates_cities_indexes
                     else:
                         print('什麼都沒有')
+                        return []
                 # print(f"found_datetime = {found_datetime}")
 
         print('-----------------------------------------------')
 
 
 logger = logging.getLogger(__name__)
-
 
 words1 = [
     'IVE',
@@ -207,8 +310,12 @@ model_path = r'en_models\nlu-20240511-033142-brilliant-set.tar.gz'
 with open('z1.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 lines = [line.replace('\n', '') for line in lines]
-run_cmdline1(model_path, lines)
-
+# run_cmdline1(model_path, lines)
+print('ready!')
+while True:
+    user_input = input("請輸入: ")
+    matched_indexes = run_cmdline(model_path, user_input)
+    print(f"matched_indexes = {matched_indexes}")
 #
 # words1 = [
 #     'Post Malone',

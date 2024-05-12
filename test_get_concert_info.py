@@ -104,7 +104,44 @@ def check_all_cit(data):
 #         if old_all[i]['pin'] == old_all[j]['pin']:
 #             print('yes')
 # data = read_json("concert_5_9_14.json")
-data = read_json("concert_zh.json")
-for i in range(len(data)):
-    if "https" in data[i]['tit']:
-        print(data[i]['tit'])
+from googletrans import Translator
+import json, re
+# Copying the original file to a new file for translated content
+
+translator = Translator()
+
+with open("concert_zh1.json", 'r', encoding='utf-8') as f:
+    data = json.load(f)
+index = 231
+# print(data[index]['tit'])
+translated_title = translator.translate(data[index]['tit'], src="zh-TW", dest="en").text
+print(f"translated_title = {translated_title}")
+# print(data[index]['int'])
+translated_int = translator.translate(data[index]['int'], src="zh-TW", dest="en").text
+print(f"translated_int = {translated_int}")
+# for i in range(len(data)):
+#     if data[i]['int']:
+#         try:
+#             # 使用正則表達式移除非中文字符
+#             data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
+#             # Translate the text and update the 'int' field
+#             translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
+#             data[i]['int'] = translated_text
+#             print('Content Successful')
+#         except Exception as e:
+#             print(f'Inner Text Error translating: {e}')
+#             # print(data[i]['tit'])
+#             # print(data[i]['int'])
+#             print('Skipping this entry')
+#     else:
+#         print('inner text empty')
+
+print('------------------------------------')
+
+
+# data = read_json("concert_zh1.json")
+# print(len(data))
+# for i in range(len(data)):
+#     if "2025國際沈文程日" in data[i]['tit']:
+#         print(data[i]['tit'])
+#         print(data[i]['pdt'])

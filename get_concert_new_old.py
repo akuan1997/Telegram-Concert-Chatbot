@@ -30,14 +30,14 @@ def extract_earliest_date(date_list):
     return min_date
 
 
-def json_in_order(json_file):
-    with open(json_file, 'r', encoding='utf-8') as f:
+def json_in_order(json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Sort the data by the earliest date found in the 'pdt' field
     sorted_data = sorted(data, key=lambda x: extract_earliest_date(x['pdt']))
 
-    with open(json_file, 'w', encoding='utf-8') as f:
+    with open(json_filename, 'w', encoding='utf-8') as f:
         json.dump(sorted_data, f, ensure_ascii=False, indent=4)
 
 
@@ -224,6 +224,7 @@ def check_each_info(new_data, old_data, all_data):
                         print('重要資訊！通知使用者')
                         plus_concerts.append(new_data[i])
                         all_data[pin_index_in_all_data]['int'] = new_data[i]['int']
+                        print(new_data[i]['url'])
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
                     else:
@@ -525,23 +526,25 @@ def testing_for_large(start_index, json_filename, mode):
                                                                                      new_data, old_data, all_data)
         print(f"len(new_data_filtered) = {len(new_data_filtered)}")
         print(f"len(plus_concerts) = {len(plus_concerts)}")
-        for i in range(len(plus_concerts)):
-            print(plus_concerts[i]['tit'])
-            print(plus_concerts[i]['url'])
+        for j in range(len(plus_concerts)):
+            print(plus_concerts[j]['tit'])
+            print(plus_concerts[j]['url'])
         print(f'運算結束 -> len(all_data) = {len(all_data)}')
+
+        json_in_order(json_filename)
+
         # 寫進json裡面
-        write_json = 0  # 0 not write, 1 write (for testing)
-        if write_json == mode:
+        if mode == 1:  # 0 not write, 1 write (for testing)
             with open(json_filename, "w", encoding="utf-8") as f:
                 json.dump(all_data, f, indent=4, ensure_ascii=False)
                 print('寫入成功')
-        else:
+        elif mode == 0:
             print('設定為未寫入')
         print(f"current_index = {current_index}")
 
         print(f"len(all_data) = {len(all_data)}")
 
-    json_in_order(json_filename)
+
 
 
 # to do, index 0的所有演唱會要先post
@@ -553,11 +556,11 @@ def initialize():
         post_concert(data[i])
 
 
-def start_over(start_index):
-    with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
-        f.write('')
+def delete_post(start_index, end_index):
+    # with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
+    #     f.write('')
 
-    for i in range(start_index, start_index + 350):
+    for i in range(start_index, end_index):
         try:
             print(i)
             delete_article(i)
@@ -595,7 +598,6 @@ json_list = [
     "concert_jsons/concert_3_30_20.json",
     "concert_jsons/concert_3_31_14.json",
     "concert_jsons/concert_3_31_18.json",
-    "concert_jsons/concert_4_15_1.json",
     "concert_jsons/concert_4_2_0.json",
     "concert_jsons/concert_4_3_10.json",
     "concert_jsons/concert_4_3_22.json",
@@ -603,34 +605,42 @@ json_list = [
     "concert_jsons/concert_4_4_3.json",
     "concert_jsons/concert_4_5_16.json",
     "concert_jsons/concert_4_7_17.json",
+    "concert_jsons/concert_4_15_1.json",
     "concert_jsons/concert_5_2_14.json",
     "concert_jsons/concert_5_4_20.json",
     "concert_jsons/concert_5_7_1.json",
     "concert_jsons/concert_5_7_21.json",
-    "concert_jsons/concert_5_8_16.json",
     "concert_jsons/concert_5_9_14.json",
-    "concert_jsons/concert_5_10_9.json"
+    "concert_jsons/concert_5_10_11.json",
+    "concert_jsons/concert_5_11_23.json",
+    "concert_jsons/concert_5_12_11.json",
+    "concert_jsons/concert_5_12_21.json"
 ]
 
-# for i in range(10):
-#     testing_for_large(i, "concert_zh1.json", 0)  # 0 not write, 1 write
-# start_over(7226)
+def for_testing():
+    while True:
+        answer = input('是否執行get_concert_new_old.py?\n')
+        if answer == "y":
+            """"""
+            # for i in range(len(json_list) - 1):
+            #     testing_for_large(i, "concert_zh.json", 1)
+            """"""
+            # data = read_json("concert_zh.json")
+            # print(len(data))
+            # data = read_json("singer_info.json")
+            # print(len(data))
+            """"""
+            # data = read_json("concert_zh.json")
+            # for i in range(len(data)):
+            #     post_concert(data[i])
+            """"""
+            # delete_post(10978, 11079)
 
-# initialize()
+            # initialize()
 
-# testing_for_whole()
-# testing_for_small(1)
-
-# for i in range(len(json_list) - 1):
-#     testing_for_large(i)
-
-# data = read_json("concert_zh.json")
-# for i in range(len(data)):
-#     post_concert(data[i])
-# print(len(data))
-
-# check_duplicate()
-# print(len(json_list))
-# with open('concert_zh.json', 'r', encoding='utf-8') as f:
-#     data = json.load(f)
-
+            # check_duplicate()
+            # print(len(json_list))
+            # with open('concert_zh.json', 'r', encoding='utf-8') as f:
+            #     data = json.load(f)
+            break
+# for_testing()

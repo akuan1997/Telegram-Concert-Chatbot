@@ -24,7 +24,7 @@ def get_user_language(id):
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     txt = f"""
 歡迎！ 請選擇你偏好的語言。
-輸入 (中文)
+輸入1 (中文)
 輸入2 (英文)
 語言可以隨時在左下角的menu當中選擇切換。
 如果沒有輸入我們將使用預設語言: 中文
