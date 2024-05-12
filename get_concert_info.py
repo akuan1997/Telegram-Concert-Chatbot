@@ -7,10 +7,11 @@ import re
 import sys
 from datetime import datetime, time
 from googletrans import Translator
-from get_concert_new_old import *
-from get_data_from_text import *
 from fuzzywuzzy import process
 import time
+
+from get_concert_new_old import *
+from get_data_from_text import *
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
@@ -19,11 +20,11 @@ en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung
              "Lienchiang"]
 concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
 
-with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
-    new_data = json.load(f)
-
-with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
-    old_data = json.load(f)
+# with open('0_useless/concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+#     new_data = json.load(f)
+#
+# with open('0_useless/concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+#     old_data = json.load(f)
 
 with open('concert_zh.json', 'r', encoding='utf-8') as f:
     all_data = json.load(f)
@@ -62,16 +63,16 @@ def get_latest_json_filename(directory):
     return json_files[-1]
 
 
-def get_new_old(json_filename, json_folder):
+def get_new_old(json_filename):
     old_json = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
-    shutil.move(json_filename, json_folder)
+
     new_json = json_filename
     print(f"old_json = {old_json}")
     print(f"new_json = {new_json}")
 
     with open(f"concert_jsons/{old_json}", 'r', encoding='utf-8') as f:
         old_data = json.load(f)
-    with open(f"concert_jsons/{new_json}", 'r', encoding='utf-8') as f:
+    with open(f"{new_json}", 'r', encoding='utf-8') as f:
         new_data = json.load(f)
     with open('concert_zh.json', 'r', encoding='utf-8') as f:
         all_data = json.load(f)
@@ -98,12 +99,14 @@ def get_new_old(json_filename, json_folder):
         print(plus_concerts[i]['url'])
     print(f'運算結束 -> len(all_data) = {len(all_data)}')
 
-    json_in_order(json_filename)
-
     # 寫進json裡面
     with open('concert_zh.json', "w", encoding="utf-8") as f:
         json.dump(all_data, f, indent=4, ensure_ascii=False)
         print('寫入成功')
+
+    # json_in_order(json_filename)
+    json_in_order("concert_zh.json")
+    print('concert_zh.json 成功更改表演順序')
 
     return new_data_filtered, plus_concerts
 
@@ -3208,11 +3211,11 @@ def load_data(file_name):
         return json.load(file)
 
 
-def compare_concerts(new_concert, old_concerts):
-    for old_concert in old_concerts:
-        if new_concert['url'] == old_concert['url']:
-            return old_concert
-    return None
+# def compare_concerts(new_concert, old_concerts):
+#     for old_concert in old_concerts:
+#         if new_concert['url'] == old_concert['url']:
+#             return old_concert
+#     return None
 
 
 # def new_concerts():
@@ -3353,73 +3356,73 @@ def compare_concerts(new_concert, old_concerts):
 #         print()
 
 
-def delete_files(json_file):
-    with open(json_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    # 1. 刪除kktix那三個不需要的資料
-    # delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
-    #                  "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
-    #                  "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
-    # new_data = [item for item in data if item['tit'] not in delete_titles]
-
-    with open(json_file, 'w', encoding='utf-8') as f:
-        json.dump(new_data, f, indent=4, ensure_ascii=False)
-
-
-def json_new_to_old():
-    # # 打开旧的中文数据文件，读取内容并加载到 old_data 变量中
-    # with open('concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
-    #     old_data = json.load(old_file)
-
-    # 打开新的中文数据文件，读取内容并加载到 new_data 变量中
-    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
-        new_data = json.load(new_file)
-
-    # 将新的中文数据写入旧的中文数据文件，格式化并确保不使用 ASCII 编码
-    with open('concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
-        json.dump(new_data, old_file, indent=4, ensure_ascii=False)
-
-    # 打开新的中文数据文件，以写入模式清空文件内容
-    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as new_file:
-        new_file.write('[]')
-
-    # # 打开旧的英文数据文件，读取内容并加载到 old_data 变量中
-    # with open('concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
-    #     old_data = json.load(old_file)
-
-    # 打开新的英文数据文件，读取内容并加载到 new_data 变量中
-    with open('concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
-        new_data = json.load(new_file)
-
-    # 将新的英文数据写入旧的英文数据文件，格式化并确保不使用 ASCII 编码
-    with open('concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
-        json.dump(new_data, old_file, indent=4, ensure_ascii=False)
-
-    # 打开新的英文数据文件，以写入模式清空文件内容
-    with open('concert_data_new_en.json', 'w', encoding='utf-8') as new_file:
-        new_file.write('[]')
+# def delete_files(json_file):
+#     with open(json_file, 'r', encoding='utf-8') as f:
+#         data = json.load(f)
+#
+#     # 1. 刪除kktix那三個不需要的資料
+#     # delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
+#     #                  "【免費索票體驗】KKTIX Live，一站式售票、觀賞活動超流暢",
+#     #                  "【免費體驗】KKTIX Live，外部售票系統，輸入兌換碼馬上開播"]
+#     # new_data = [item for item in data if item['tit'] not in delete_titles]
+#
+#     with open(json_file, 'w', encoding='utf-8') as f:
+#         json.dump(new_data, f, indent=4, ensure_ascii=False)
 
 
-def each_concert_number():  # 驗算用
-    with open('era.json', 'r', encoding='utf-8') as f:
-        era_data = json.load(f)
-    with open('indievox.json', 'r', encoding='utf-8') as f:
-        indievox_data = json.load(f)
-    with open('kktix.json', 'r', encoding='utf-8') as f:
-        kktix_data = json.load(f)
-    with open('livenation.json', 'r', encoding='utf-8') as f:
-        livenation_data = json.load(f)
-    with open('ticketplus.json', 'r', encoding='utf-8') as f:
-        ticketplus_data = json.load(f)
-    print(f'era\t\t\t\t{len(era_data)}')
-    print(f'indievox\t\t{len(indievox_data)}')
-    print(f'kktixt\t\t\t{len(kktix_data)}')
-    print(f'Live nation\t\t{len(livenation_data)}')
-    print(f'ticketplus\t\t{len(ticketplus_data)}')
-    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
-        concert_data = json.load(f)
-    print(f'concert data\t{len(concert_data)}')
+# def json_new_to_old():
+#     # # 打开旧的中文数据文件，读取内容并加载到 old_data 变量中
+#     # with open('concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
+#     #     old_data = json.load(old_file)
+#
+#     # 打开新的中文数据文件，读取内容并加载到 new_data 变量中
+#     with open('0_useless/concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
+#         new_data = json.load(new_file)
+#
+#     # 将新的中文数据写入旧的中文数据文件，格式化并确保不使用 ASCII 编码
+#     with open('0_useless/concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
+#         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
+#
+#     # 打开新的中文数据文件，以写入模式清空文件内容
+#     with open('0_useless/concert_data_new_zh.json', 'w', encoding='utf-8') as new_file:
+#         new_file.write('[]')
+#
+#     # # 打开旧的英文数据文件，读取内容并加载到 old_data 变量中
+#     # with open('concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
+#     #     old_data = json.load(old_file)
+#
+#     # 打开新的英文数据文件，读取内容并加载到 new_data 变量中
+#     with open('0_useless/concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
+#         new_data = json.load(new_file)
+#
+#     # 将新的英文数据写入旧的英文数据文件，格式化并确保不使用 ASCII 编码
+#     with open('0_useless/concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
+#         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
+#
+#     # 打开新的英文数据文件，以写入模式清空文件内容
+#     with open('0_useless/concert_data_new_en.json', 'w', encoding='utf-8') as new_file:
+#         new_file.write('[]')
+
+
+# def each_concert_number():  # 驗算用
+#     with open('era.json', 'r', encoding='utf-8') as f:
+#         era_data = json.load(f)
+#     with open('indievox.json', 'r', encoding='utf-8') as f:
+#         indievox_data = json.load(f)
+#     with open('kktix.json', 'r', encoding='utf-8') as f:
+#         kktix_data = json.load(f)
+#     with open('livenation.json', 'r', encoding='utf-8') as f:
+#         livenation_data = json.load(f)
+#     with open('ticketplus.json', 'r', encoding='utf-8') as f:
+#         ticketplus_data = json.load(f)
+#     print(f'era\t\t\t\t{len(era_data)}')
+#     print(f'indievox\t\t{len(indievox_data)}')
+#     print(f'kktixt\t\t\t{len(kktix_data)}')
+#     print(f'Live nation\t\t{len(livenation_data)}')
+#     print(f'ticketplus\t\t{len(ticketplus_data)}')
+#     with open('0_useless/concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+#         concert_data = json.load(f)
+#     print(f'concert data\t{len(concert_data)}')
 
 
 def reset_failure_log():
@@ -3682,10 +3685,6 @@ def get_city_from_stadium(json_file):
                 print('---')
 
 
-def zh_to_en():
-    pass
-
-
 def zh_en(zh_json, en_json):
     time.sleep(5)
     city_mapping = dict(zip(zh_cities, en_cities))
@@ -3794,37 +3793,36 @@ def price_in_order(json_filename):
 
 
 def get_latest_concert_info(json_filename):
-    reset_failure_log()
-    threads_start()  # start the threads
-    threads_join()  # wait for all the threads finish
-    print('--- Playwright finished ---')
-    """"""
-    merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
-    print('--- Json merged ---')
-    move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
-    print('--- Json moved ---')
-    # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
-    # print('--- Files deleted ---')
-    get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
-    print('--- Get all city ---')
-    json_in_order(json_filename)  # sort the json file according performance time
-    print('--- Json in order ---')
-    price_str_to_int(json_filename)  # price, if str -> int
-    print('--- Replaced str with int for all str! ---')
-    price_in_order(json_filename)  # price in order, start from the most highest price
-    print('--- Price in order ---')
-    print(f'\n------------------\nzh okay!\n------------------\n')
-    # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
-    # print('--- Delete all past ticketing time ---')
-    """"""
-    new_concerts, plus_concerts = get_new_old(json_filename, "concert_jsons")
+    # reset_failure_log()
+    # threads_start()  # start the threads
+    # threads_join()  # wait for all the threads finish
+    # print('--- Playwright finished ---')
+    # """"""
+    # merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
+    # print('--- Json merged ---')
+    # move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
+    # print('--- Json moved ---')
+    # # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
+    # # print('--- Files deleted ---')
+    # get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
+    # print('--- Get all city ---')
+    # json_in_order(json_filename)  # sort the json file according performance time
+    # print('--- Json in order ---')
+    # price_str_to_int(json_filename)  # price, if str -> int
+    # print('--- Replaced str with int for all str! ---')
+    # price_in_order(json_filename)  # price in order, start from the most highest price
+    # print('--- Price in order ---')
+    # print(f'\n------------------\nzh okay!\n------------------\n')
+    # # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
+    # # print('--- Delete all past ticketing time ---')
+    # """"""
+    new_concerts, plus_concerts = get_new_old(json_filename)
     print(f"new_concerts = {new_concerts}")
     print(f"plus_concerts = {plus_concerts}")
-    """"""
-    zh_en("concert_zh.json", "concert_en.json")  # english version
-    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
-
-
+    # shutil.move(json_filename, "concert_jsons")
+    # """"""
+    # zh_en("concert_zh.json", "concert_en.json")  # english version
+    # shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -3838,6 +3836,8 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 ''''''
 
 # get_latest_concert_info(concert_today)
+get_latest_concert_info("concert_5_13_3.json")
+
 
 ''''''
 

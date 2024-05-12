@@ -1,8 +1,8 @@
 from datetime import datetime
 from y_example_read_json import read_json
 
-new_all = read_json('concert_data_new_zh.json')
-old_all = read_json('concert_data_old_zh.json')
+new_all = read_json('0_useless/concert_data_new_zh.json')
+old_all = read_json('0_useless/concert_data_old_zh.json')
 
 era = read_json('website_jsons/era.json')
 indievox = read_json('website_jsons/indievox.json')
@@ -110,7 +110,7 @@ import json, re
 
 translator = Translator()
 
-with open("concert_zh1.json", 'r', encoding='utf-8') as f:
+with open("0_useless/concert_zh1.json", 'r', encoding='utf-8') as f:
     data = json.load(f)
 index = 231
 # print(data[index]['tit'])

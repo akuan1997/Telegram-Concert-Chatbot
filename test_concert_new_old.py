@@ -1,9 +1,9 @@
 import json
 
-with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+with open('0_useless/concert_data_new_zh.json', 'r', encoding='utf-8') as f:
     new_data = json.load(f)
 
-with open('concert_data_old_zh.json', 'r', encoding='utf-8') as f:
+with open('0_useless/concert_data_old_zh.json', 'r', encoding='utf-8') as f:
     old_data = json.load(f)
 
 with open('concert_zh.json', 'r', encoding='utf-8') as f:

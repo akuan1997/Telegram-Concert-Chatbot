@@ -14,8 +14,8 @@ def compare_concerts(new_concert, old_concerts):
 
 
 # 加载数据
-old_concerts = load_data('concert_data_old_zh.json')
-new_concerts = load_data('concert_data_new_zh.json')
+old_concerts = load_data('0_useless/concert_data_old_zh.json')
+new_concerts = load_data('0_useless/concert_data_new_zh.json')
 
 new_concert_list = []
 

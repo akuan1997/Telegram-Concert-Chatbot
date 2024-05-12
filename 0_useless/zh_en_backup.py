@@ -5,12 +5,12 @@ import time
 import re
 
 # Copying the original file to a new file for translated content
-shutil.copy('../concert_data_new_zh.json', 'concert_data_new_en.json')
+shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
 
 translator = Translator()
 
 # Open the copied file for reading and translation
-with open('../concert_data_new_en.json', 'r', encoding='utf-8') as f:
+with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 start_time = time.time()
@@ -37,7 +37,7 @@ for i in range(len(data)):
     print('------------------------------------')
 
 # Write the translated data back to the file
-with open('../concert_data_new_en.json', 'w', encoding='utf-8') as f:
+with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=4, ensure_ascii=False)
 
 end_time = time.time()

@@ -39,7 +39,7 @@ with open(old_json, 'r', encoding='utf-8') as f:
 with open('concert_zh.json', 'r', encoding='utf-8') as f:
     all_data = json.load(f)
 
-with open('concert_zh1.json', "w", encoding="utf-8") as f:
+with open('0_useless/concert_zh1.json', "w", encoding="utf-8") as f:
     json.dump(all_data, f, indent=4, ensure_ascii=False)
 
 pins_new = [entry['pin'] for entry in new_data]

@@ -228,3 +228,63 @@ for index, line in enumerate(lines):
 # for i in range(len(data)):
 #     if len(data[i]['singer_name']) == 2:
 #         print(data[i]['singer_name'])
+from y_example_read_json import *
+json_list = [
+    "concert_jsons/concert_3_14_23.json",
+    "concert_jsons/concert_3_17_16.json",
+    "concert_jsons/concert_3_17_19.json",
+    "concert_jsons/concert_3_18_13.json",
+    "concert_jsons/concert_3_20_16.json",
+    "concert_jsons/concert_3_22_0.json",
+    "concert_jsons/concert_3_23_14.json",
+    "concert_jsons/concert_3_24_8.json",
+    "concert_jsons/concert_3_25_0.json",
+    "concert_jsons/concert_3_25_17.json",
+    "concert_jsons/concert_3_26_0.json",
+    "concert_jsons/concert_3_27_3.json",
+    "concert_jsons/concert_3_29_0.json",
+    "concert_jsons/concert_3_30_13.json",
+    "concert_jsons/concert_3_30_20.json",
+    "concert_jsons/concert_3_31_14.json",
+    "concert_jsons/concert_3_31_18.json",
+    "concert_jsons/concert_4_2_0.json",
+    "concert_jsons/concert_4_3_10.json",
+    "concert_jsons/concert_4_3_22.json",
+    "concert_jsons/concert_4_4_14.json",
+    "concert_jsons/concert_4_4_3.json",
+    "concert_jsons/concert_4_5_16.json",
+    "concert_jsons/concert_4_7_17.json",
+    "concert_jsons/concert_4_15_1.json",
+    "concert_jsons/concert_5_2_14.json",
+    "concert_jsons/concert_5_4_20.json",
+    "concert_jsons/concert_5_7_1.json",
+    "concert_jsons/concert_5_7_21.json",
+    "concert_jsons/concert_5_9_14.json",
+    "concert_jsons/concert_5_10_11.json",
+    "concert_jsons/concert_5_11_23.json",
+    "concert_jsons/concert_5_12_11.json",
+    "concert_jsons/concert_5_12_21.json"
+]
+# data = read_json("concert_jsons/concert_5_13_3.json")
+# print(len(data))
+change_pins = ['https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw0', 'https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw0', 'https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw0', 'https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw0', 'https://www.livenation.com.tw/show/1468089/elijah-woods-ilu-24-7-365-tour/taipei/2024-05-24/tw1', 'https://studpa.kktix.cc/events/ourstories2340', 'https://cohesionmusic.kktix.cc/events/0529-09110', 'https://cohesionmusic.kktix.cc/events/0529-09110', 'https://theuumouth.kktix.cc/events/uu2405290', 'https://theuumouth.kktix.cc/events/uu2405290', 'https://youngteam.kktix.cc/events/thefin20240', 'https://youngteam.kktix.cc/events/thefin20240', 'https://welcome-music.kktix.cc/events/asjfklj0', 'https://welcome-music.kktix.cc/events/asjfklj0', 'https://romanticoffice.kktix.cc/events/2406020', 'https://romanticoffice.kktix.cc/events/2406020', 'https://www.livenation.com.tw/show/1482266/gryffin-asia-tour-2024/taipei/2024-06-11/tw2', 'https://www.livenation.com.tw/show/1482266/gryffin-asia-tour-2024/taipei/2024-06-11/tw2', 'https://www.livenation.com.tw/show/1482266/gryffin-asia-tour-2024/taipei/2024-06-11/tw2', 'https://gorgeousettm.kktix.cc/events/kgrethj-030', 'https://gorgeousettm.kktix.cc/events/kgrethj-030', 'https://kklivetw.kktix.cc/events/2024riizefancontour-tp0', 'https://kklivetw.kktix.cc/events/2024riizefancontour-tp0', 'https://willmusic.kktix.cc/events/fesf5a0', 'https://willmusic.kktix.cc/events/fesf5a0', 'https://reasonbrothers.kktix.cc/events/ukllef-030', 'https://reasonbrothers.kktix.cc/events/ukllef-030', 'https://www.livenation.com.tw/show/1474356/%e6%bb%85%e7%81%ab%e5%99%a8-fire-ex-%e4%b8%80%e7%94%9f%e5%88%b0%e5%ba%95-one-life-one-shot-%e6%bc%94%e5%94%b1%e6%9c%83-%e5%8f%b0%e5%8c%97%e5%a0%b4/taipei/2024-06-15/tw3', 'https://www.livenation.com.tw/show/1474356/%e6%bb%85%e7%81%ab%e5%99%a8-fire-ex-%e4%b8%80%e7%94%9f%e5%88%b0%e5%ba%95-one-life-one-shot-%e6%bc%94%e5%94%b1%e6%9c%83-%e5%8f%b0%e5%8c%97%e5%a0%b4/taipei/2024-06-15/tw3', 'https://www.livenation.com.tw/show/1474356/%e6%bb%85%e7%81%ab%e5%99%a8-fire-ex-%e4%b8%80%e7%94%9f%e5%88%b0%e5%ba%95-one-life-one-shot-%e6%bc%94%e5%94%b1%e6%9c%83-%e5%8f%b0%e5%8c%97%e5%a0%b4/taipei/2024-06-15/tw3', 'https://www.livenation.com.tw/show/1474353/alexander-23-american-boy-in-asia/taipei/2024-06-16/tw4', 'https://reasonbrothers.kktix.cc/events/ukllef-060', 'https://reasonbrothers.kktix.cc/events/ukllef-060', 'https://theuumouth.kktix.cc/events/uu240623noon0', 'https://theuumouth.kktix.cc/events/uu240623noon0', 'https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw5', 'https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw5', 'https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw5', 'https://www.livenation.com.tw/show/1478141/atarashii-gakko-world-tour-/taipei/2024-06-27/tw6', 'https://www.livenation.com.tw/show/1478141/atarashii-gakko-world-tour-/taipei/2024-06-27/tw6', 'https://spaceport.kktix.cc/events/erdye50', 'https://spaceport.kktix.cc/events/erdye50', 'https://omni.kktix.cc/events/pcewg0', 'https://omni.kktix.cc/events/pcewg0', 'https://www.livenation.com.tw/show/1484004/alec-benjamin-12-notes-tour/taipei/2024-07-24/tw8', 'https://www.livenation.com.tw/show/1484004/alec-benjamin-12-notes-tour/taipei/2024-07-24/tw8', 'https://www.livenation.com.tw/show/1484004/alec-benjamin-12-notes-tour/taipei/2024-07-24/tw8', 'https://www.livenation.com.tw/show/1480300/%e8%a1%80%e8%82%89%e6%9e%9c%e6%b1%81%e6%a9%9f-2024%e5%bb%ba%e5%ae%ae%e8%93%8b%e5%bb%9f-%e5%ae%87%e5%ae%99%e9%a0%90%e8%a8%80/taipei/2024-07-27/tw9', 'https://www.livenation.com.tw/show/1480300/%e8%a1%80%e8%82%89%e6%9e%9c%e6%b1%81%e6%a9%9f-2024%e5%bb%ba%e5%ae%ae%e8%93%8b%e5%bb%9f-%e5%ae%87%e5%ae%99%e9%a0%90%e8%a8%80/taipei/2024-07-27/tw9', 'https://www.livenation.com.tw/show/1480300/%e8%a1%80%e8%82%89%e6%9e%9c%e6%b1%81%e6%a9%9f-2024%e5%bb%ba%e5%ae%ae%e8%93%8b%e5%bb%9f-%e5%ae%87%e5%ae%99%e9%a0%90%e8%a8%80/taipei/2024-07-27/tw9', 'https://www.livenation.com.tw/show/1483048/chris-james-dopamine-overload-asia-tour-2024/taipei/2024-08-22/tw10', 'https://www.livenation.com.tw/show/1483048/chris-james-dopamine-overload-asia-tour-2024/taipei/2024-08-22/tw10', 'https://www.livenation.com.tw/show/1483048/chris-james-dopamine-overload-asia-tour-2024/taipei/2024-08-22/tw10', 'https://www.livenation.com.tw/show/1485152/conan-gray-found-heaven-on-tour/taipei/2024-08-30/tw11', 'https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw12', 'https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw12', 'https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw13', 'https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw13', 'https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw13', 'https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw14', 'https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw14', 'https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw14', 'https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw15', 'https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw15', 'https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw15']
+data = read_json("concert_zh.json")
+for i in range(len(data)):
+    for pin in change_pins:
+        if data[i]['pin'] == pin:
+            print(data[i]['pin'])
+# index = 30
+# for k in range(index, index + 1):
+#     # data1 = read_json("concert_jsons/concert_5_11_23.json")
+#     # data2 = read_json("concert_jsons/concert_5_12_11.json")
+#     data1 = read_json(json_list[k])
+#     data2 = read_json(json_list[k+1])
+#     for i in range(len(data1)):
+#         for j in range(len(data2)):
+#             if data1[i]['pin'] == data2[j]['pin']:
+#                 if data1[i]['tit'] != data2[j]['tit']:
+#                     print(data1[i]['tit'])
+#                     print(data1[i]['url'])
+#                     print(data2[i]['tit'])
+#                     print(data2[i]['url'])
+#                     print('---')

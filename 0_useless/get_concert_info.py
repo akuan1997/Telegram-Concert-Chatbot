@@ -46,7 +46,7 @@ def threads_integration():
         with open(json_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             merged_data.extend(data)
-    with open('../concert_data_new_zh.json', 'w', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
         json.dump(merged_data, f, indent=4, ensure_ascii=False)
 
 
@@ -64,8 +64,8 @@ def compare_concerts(new_concert, old_concerts):
 
 def new_concerts():
     # 加载数据
-    old_concerts = load_data('../concert_data_old_zh.json')
-    new_concerts = load_data('../concert_data_new_zh.json')
+    old_concerts = load_data('concert_data_old_zh.json')
+    new_concerts = load_data('concert_data_new_zh.json')
 
     new_concert_list = []
 
@@ -202,7 +202,7 @@ def new_concerts():
 
 def delete_files():
     # 1. 刪除kktix那三個不需要的資料
-    with open('../concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     delete_titles = ["【免費索票體驗】KKTIX 虛擬活動票務系統，搭配外部串流平台",
@@ -211,42 +211,42 @@ def delete_files():
 
     new_data = [item for item in data if item['tit'] not in delete_titles]
 
-    with open('../concert_data_new_zh.json', 'w', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as f:
         json.dump(new_data, f, indent=4, ensure_ascii=False)
     print('Successfully Deleted!')
 
 
 def json_new_to_old():
     # 打开旧的中文数据文件，读取内容并加载到 old_data 变量中
-    with open('../concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
+    with open('concert_data_old_zh.json', 'r', encoding='utf-8') as old_file:
         old_data = json.load(old_file)
 
     # 打开新的中文数据文件，读取内容并加载到 new_data 变量中
-    with open('../concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as new_file:
         new_data = json.load(new_file)
 
     # 将新的中文数据写入旧的中文数据文件，格式化并确保不使用 ASCII 编码
-    with open('../concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
+    with open('concert_data_old_zh.json', 'w', encoding='utf-8') as old_file:
         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
 
     # 打开新的中文数据文件，以写入模式清空文件内容
-    with open('../concert_data_new_zh.json', 'w', encoding='utf-8') as new_file:
+    with open('concert_data_new_zh.json', 'w', encoding='utf-8') as new_file:
         new_file.write('[]')
 
     # 打开旧的英文数据文件，读取内容并加载到 old_data 变量中
-    with open('../concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
+    with open('concert_data_old_en.json', 'r', encoding='utf-8') as old_file:
         old_data = json.load(old_file)
 
     # 打开新的英文数据文件，读取内容并加载到 new_data 变量中
-    with open('../concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
+    with open('concert_data_new_en.json', 'r', encoding='utf-8') as new_file:
         new_data = json.load(new_file)
 
     # 将新的英文数据写入旧的英文数据文件，格式化并确保不使用 ASCII 编码
-    with open('../concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
+    with open('concert_data_old_en.json', 'w', encoding='utf-8') as old_file:
         json.dump(new_data, old_file, indent=4, ensure_ascii=False)
 
     # 打开新的英文数据文件，以写入模式清空文件内容
-    with open('../concert_data_new_en.json', 'w', encoding='utf-8') as new_file:
+    with open('concert_data_new_en.json', 'w', encoding='utf-8') as new_file:
         new_file.write('[]')
 
 
@@ -266,19 +266,19 @@ def each_concert_number():
     print(f'kktixt\t\t\t{len(kktix_data)}')
     print(f'Live nation\t\t{len(livenation_data)}')
     print(f'ticketplus\t\t{len(ticketplus_data)}')
-    with open('../concert_data_new_zh.json', 'r', encoding='utf-8') as f:
+    with open('concert_data_new_zh.json', 'r', encoding='utf-8') as f:
         concert_data = json.load(f)
     print(f'concert data\t{len(concert_data)}')
 
 
 def zh_en():
     # Copying the original file to a new file for translated content
-    shutil.copy('../concert_data_new_zh.json', 'concert_data_new_en.json')
+    shutil.copy('concert_data_new_zh.json', 'concert_data_new_en.json')
 
     translator = Translator()
 
     # Open the copied file for reading and translation
-    with open('../concert_data_new_en.json', 'r', encoding='utf-8') as f:
+    with open('concert_data_new_en.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     for i in range(len(data)):
@@ -302,7 +302,7 @@ def zh_en():
         print('------------------------------------')
 
     # Write the translated data back to the file
-    with open('../concert_data_new_en.json', 'w', encoding='utf-8') as f:
+    with open('concert_data_new_en.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
