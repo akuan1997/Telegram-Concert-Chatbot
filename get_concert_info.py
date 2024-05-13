@@ -39,6 +39,20 @@ with open(concert_today, 'w', encoding='utf-8') as f:
     json.dump([], f, indent=4, ensure_ascii=False)
 
 
+def validate_pin(json_filename):
+    data = read_json(json_filename)
+
+    for i in range(len(data)):
+        if data[i]['web'] == 'KKTIX':
+            data[i]['pin'] = data[i]['url']
+        else:
+            data[i]['pin'] = create_pin(data[i]['url'], data[i]['pdt'][0])
+            print(data[i]['pin'])
+
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+
 def create_pin(url, txt):
     if '~' not in txt:
         pattern = r'\d{4}/(\d{1,2})/(\d{1,2}) (\d{1,2}):\d{1,2}'
@@ -3546,6 +3560,7 @@ def get_latest_concert_info(json_filename):
     print('--- Replaced str with int for all str! ---')
     price_in_order(json_filename)  # price in order, start from the most highest price
     print('--- Price in order ---')
+    validate_pin(json_filename)
     print(f'\n------------------\nzh okay!\n------------------\n')
     # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
     # print('--- Delete all past ticketing time ---')
