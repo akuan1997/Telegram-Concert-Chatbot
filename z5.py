@@ -66,6 +66,10 @@ def hello():
 y = 2
 print(y)
 
+from read_json_function import *
+data = read_json("concert_zh.json")
+print(len(data))
+
 
 def metoo():
     print('nothing to lose')

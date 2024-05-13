@@ -228,7 +228,7 @@ for index, line in enumerate(lines):
 # for i in range(len(data)):
 #     if len(data[i]['singer_name']) == 2:
 #         print(data[i]['singer_name'])
-from y_example_read_json import *
+from read_json_function import *
 json_list = [
     "concert_jsons/concert_3_14_23.json",
     "concert_jsons/concert_3_17_16.json",
