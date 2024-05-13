@@ -3565,8 +3565,8 @@ def get_latest_concert_info(json_filename):
     get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
     success_msg("Get city from loc")
     # print('--- Get all city ---')
-    json_in_order(json_filename)  # sort the json file according performance time
-    success_msg("Json in order")
+    # json_in_order(json_filename)  # sort the json file according performance time
+    # success_msg("Json in order")
     # print('--- Json in order ---')
     price_str_to_int(json_filename)  # price, if str -> int
     success_msg("Replaced str with int for all str")
