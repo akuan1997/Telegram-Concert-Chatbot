@@ -424,6 +424,8 @@ json_list = [
 #     print('---------------------------------')
 
 """"""
+data = read_json("concert_zh.json")
+print(len(data))
 # print(json_list[-1])
 # data = read_json(json_list[-1])
 # print(len(data))
