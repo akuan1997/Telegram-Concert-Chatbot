@@ -216,45 +216,171 @@ json_list = [
     "testing_concert_jsons/concert_5_10_11.json",
     "testing_concert_jsons/concert_5_11_23.json",
     "testing_concert_jsons/concert_5_12_11.json",
-    "testing_concert_jsons/concert_5_12_21.json"
-]
+    "testing_concert_jsons/concert_5_12_21.json",
+    "testing_concert_jsons/concert_5_13_14.json",
+    "testing_concert_jsons/concert_5_13_15.json",
+    "testing_concert_jsons/concert_5_13_17.json",
+    "testing_concert_jsons/concert_5_13_18.json",
+    "testing_concert_jsons/concert_5_13_19.json",
 
+]
+""""""
+for i in range(len(json_list)):
+    data = read_json(json_list[i])
+    print(f"{len(data)} -> ", end='')
+    data = [item for item in data if item['tit'] != '']
+    print(f"{len(data)}")
+    with open(json_list[i], 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+    print('---')
+""""""
+# print(json_list[-1])
+# data = read_json(json_list[-1])
+# print(len(data))
+# for i in range(len(data)):
+#     for j in range(i + 1, len(data)):
+#         if data[i]['url'] == data[j]['url']:
+#                 print(f"{data[i]['tit']}")
+#                 print(f"{data[j]['tit']}")
+#                 print(f"{data[i]['pdt']} / {data[j]['pdt']}")
+#                 print(f"{data[j]['web']}")
+#                 print(data[i]['url'])
+#                 print('---')
+""""""
 # for json_file in json_list:
+#     print(json_file)
 #     data = read_json(json_file)
 #     for i in range(len(data)):
-#         for j in range(i + 1, len(data)):
-#             if data[i]['web'] != 'KKTIX':
-#                 if data[i]['url'] == data[j]['url']:
-#                     print(json_file)
-#                     print(f"{data[i]['tit']}")
-#                     print(f"{data[j]['tit']}")
-#                     print(f"{data[i]['pdt']} / {data[j]['pdt']}")
-#                     print(data[i]['url'])
-#                     print('---')
+#         print(f"{data[i]['pdt']}")
+# for j in range(i + 1, len(data)):
+#     if data[i]['url'] == data[j]['url']:
+#         print(json_file)
+#         print(f"{data[i]['tit']}")
+#         print(f"{data[j]['tit']}")
+#         print(f"{data[i]['pdt']} / {data[j]['pdt']}")
+#         print(f"{data[j]['web']}")
+#         print(data[i]['url'])
+#         print('---')
 """"""
+# if data[i]['web'] == 'KKTIX':
+#     if data[i]['url'] == data[j]['url']:
+#         pass
+#         # print(json_file)
+#         # print(f"{data[i]['tit']}")
+#         # print(f"{data[j]['tit']}")
+#         # print(f"{data[i]['pdt']} / {data[j]['pdt']}")
+#         # print(data[i]['url'])
+#         # print('---')
+# else:
+#     if data[i]['url'] == data[j]['url']:
+#         print(json_file)
+#         print(f"{data[i]['tit']}")
+#         print(f"{data[j]['tit']}")
+#         print(f"{data[i]['pdt']} / {data[j]['pdt']}")
+#         print(f"{data[j]['web']}")
+#         print(data[i]['url'])
+#         print('---')
+#     print('------------------------------')
+""""""
+import re
+
+
+def create_pin(txt):
+    if '~' not in data[i]['pdt'][0]:
+        pattern = r'\d{4}/(\d{1,2})/(\d{1,2}) (\d{1,2}):\d{1,2}'
+        match = re.search(pattern, txt)
+        month = match.group(1)
+        day = match.group(2)
+        hour = match.group(3)
+        # print(f"month = {month}")
+        # print(f"day = {day}")
+        # print(f"hour = {hour}")
+        pin = f"{data[i]['url']}_{month}_{day}_{hour}"
+        # print(f"pin = {pin}")
+        return pin
+    else:
+        print(data[i]['pdt'])
+        pattern = r'\d{4}/(\d{2})/(\d{2}).*?~.*?\d{4}/(\d{2})/(\d{2})'
+        match = re.search(pattern, txt)
+        month1 = match.group(1)
+        day1 = match.group(2)
+        month2 = match.group(3)
+        day2 = match.group(4)
+        # print(f"month1 = {month1}")
+        # print(f"day1 = {day1}")
+        # print(f"month2 = {month2}")
+        # print(f"day2 = {day2}")
+        pin = f"{data[i]['url']}_{month1}_{day1}_{month2}_{day2}"
+        # print(f"pin = {pin}")
+        return pin
+
+
+print(json_list[-1])
 data = read_json(json_list[-1])
+print(len(data))
 for i in range(len(data)):
+    # if data[i]['web'] == 'KKTIX':
+    #
     if not data[i]['pdt']:
         print(data[i]['tit'])
-        print(data[i]['url'])
+        print(data[i]['web'])
+    else:
+        print(data[i]['web'])
+        print(data[i]['pin'])
+        # print(data[i]['pdt'])
+        # if len(data[i]['pdt']) > 1:
+        #     print(data[i]['tit'])
+        # pin = create_pin(data[i]['pdt'][0])
+        # print(f"pin = {pin}")
+        # if '~' not in data[i]['pdt'][0]:
+        #     pattern = r'\d{4}/(\d{1,2})/(\d{1,2}) (\d{1,2}):\d{1,2}'
+        #     match = re.search(pattern, data[i]['pdt'][0])
+        #     month = match.group(1)
+        #     day = match.group(2)
+        #     hour = match.group(3)
+        #     print(f"month = {month}")
+        #     print(f"day = {day}")
+        #     print(f"hour = {hour}")
+        #     print(f"{data[i]['url']}_{month}_{day}_{hour}")
+        # else:
+        #     print(data[i]['pdt'])
+        #     pattern = r'\d{4}/(\d{2})/(\d{2}).*?~.*?\d{4}/(\d{2})/(\d{2})'
+        #     match = re.search(pattern, data[i]['pdt'][0])
+        #     month1 = match.group(1)
+        #     day1 = match.group(2)
+        #     month2 = match.group(3)
+        #     day2 = match.group(4)
+        #     print(f"month1 = {month1}")
+        #     print(f"day1 = {day1}")
+        #     print(f"month2 = {month2}")
+        #     print(f"day2 = {day2}")
+        #     print(f"{data[i]['url']}_{month1}_{day1}_{month2}_{day2}")
+        print('---')
+        # print(data[i]['tit'])
+        # print(data[i]['pdt'])
+        # print(data[i]['url'])
+        # pass
+        # else:
+        #     print(data[i]['pdt'])
 print('--------------------')
-            # if not data[i]['pdt'] or len(data[i]['pdt']) != 1:
-            #     print(json_file)
-            #     print(data[i]['tit'])
-            #     print(data[i]['pdt'])
-            #     print(data[i]['url'])
-            #     print('---')
+""""""
+# if not data[i]['pdt'] or len(data[i]['pdt']) != 1:
+#     print(json_file)
+#     print(data[i]['tit'])
+#     print(data[i]['pdt'])
+#     print(data[i]['url'])
+#     print('---')
 
-            # if data[i]['pdt']:
-            #     print(data[i]['tit'])
-            #     print(data[i]['pdt'])
-            #     print(data[i]['url'])
-            #     print('---')
-            # if data[i]['pdt']:
-            #     print(data[i]['tit'])
-            #     print(data[i]['pdt'])
-            #     print(data[i]['url'])
-            #     print('---')
+# if data[i]['pdt']:
+#     print(data[i]['tit'])
+#     print(data[i]['pdt'])
+#     print(data[i]['url'])
+#     print('---')
+# if data[i]['pdt']:
+#     print(data[i]['tit'])
+#     print(data[i]['pdt'])
+#     print(data[i]['url'])
+#     print('---')
 
 
 # data = read_json(json_list[0])
@@ -269,4 +395,3 @@ print('--------------------')
 #     # print(data[i]['pdt'])
 #     if len(data[i]['pdt']) != 1:
 #         print(data[i]['tit'])
-

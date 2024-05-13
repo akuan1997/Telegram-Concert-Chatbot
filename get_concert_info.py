@@ -39,6 +39,35 @@ with open(concert_today, 'w', encoding='utf-8') as f:
     json.dump([], f, indent=4, ensure_ascii=False)
 
 
+def create_pin(url, txt):
+    if '~' not in txt:
+        pattern = r'\d{4}/(\d{1,2})/(\d{1,2}) (\d{1,2}):\d{1,2}'
+        match = re.search(pattern, txt)
+        month = match.group(1)
+        day = match.group(2)
+        hour = match.group(3)
+        # print(f"month = {month}")
+        # print(f"day = {day}")
+        # print(f"hour = {hour}")
+        pin = f"{url}_{month}_{day}_{hour}"
+        # print(f"pin = {pin}")
+        return pin
+    else:
+        pattern = r'\d{4}/(\d{2})/(\d{2}).*?~.*?\d{4}/(\d{2})/(\d{2})'
+        match = re.search(pattern, txt)
+        month1 = match.group(1)
+        day1 = match.group(2)
+        month2 = match.group(3)
+        day2 = match.group(4)
+        # print(f"month1 = {month1}")
+        # print(f"day1 = {day1}")
+        # print(f"month2 = {month2}")
+        # print(f"day2 = {day2}")
+        pin = f"{url}_{month1}_{day1}_{month2}_{day2}"
+        # print(f"pin = {pin}")
+        return pin
+
+
 def get_latest_json_filename(directory):
     # 檢查目錄是否存在
     if not os.path.exists(directory):
@@ -308,29 +337,30 @@ def get_era(website, json_filename, txt_filename):
 
                         ''''''
 
-                        print('tit', title)
-                        print('sdt', sell_datetime)  # str
-                        print('prc', prices)  # list
-                        print('pdt', performance_datetime)  # str
-                        print('loc', location)  # str
-
-                        # 新的一筆資料
-                        new_data = {
-                            'tit': title,
-                            'sdt': [sell_datetime],
-                            'prc': prices,
-                            'pdt': [performance_datetime],
-                            'loc': [location],
-                            'cit': "",
-                            'int': inner_text,
-                            'web': f'{website}',
-                            'url': page.url,
-                            'pin': page.url + str(j),
-                            'tim': str(datetime.now())
-                        }
-
                         if [performance_datetime]:
+                            print('tit', title)
+                            print('sdt', sell_datetime)  # str
+                            print('prc', prices)  # list
+                            print('pdt', performance_datetime)  # str
+                            print('loc', location)  # str
+
+                            # 新的一筆資料
+                            new_data = {
+                                'tit': title,
+                                'sdt': [sell_datetime],
+                                'prc': prices,
+                                'pdt': [performance_datetime],
+                                'loc': [location],
+                                'cit': "",
+                                'int': inner_text,
+                                'web': f'{website}',
+                                'url': page.url,
+                                'pin': create_pin(page.url, performance_datetime),
+                                'tim': str(datetime.now())
+                            }
+
                             print('\n--- write new data ---\n')
+
                             write_data_json(json_filename, new_data)
 
                         last_finished_index = i
@@ -619,30 +649,30 @@ def get_livenation(website, json_filename, txt_filename):
 
                     ''''''
 
-                    print('tit', title)
-                    print('sel', sell_datetimes_str)  # list
-                    print('pri', prices)  # list
-                    print('pdt', performance_datetime)  # str
-                    print('lcs', location)  # str
-                    print('web', f'{website}')
-                    print('url', page.url)
-
-                    new_data = {
-                        'tit': title,
-                        'sdt': sell_datetimes_str,
-                        'prc': prices,
-                        'pdt': [performance_datetime],
-                        'loc': [location],
-                        'cit': "",
-                        'int': inner_text,
-                        'web': f'{website}',
-                        'url': page.url,
-                        'pin': page.url + str(i),
-                        'tim': str(datetime.now())
-                    }
-
                     if [performance_datetime]:
+                        print('tit', title)
+                        print('sel', sell_datetimes_str)  # list
+                        print('pri', prices)  # list
+                        print('pdt', performance_datetime)  # str
+                        print('lcs', location)  # str
+                        print('web', f'{website}')
+                        print('url', page.url)
+
+                        new_data = {
+                            'tit': title,
+                            'sdt': sell_datetimes_str,
+                            'prc': prices,
+                            'pdt': [performance_datetime],
+                            'loc': [location],
+                            'cit': "",
+                            'int': inner_text,
+                            'web': f'{website}',
+                            'url': page.url,
+                            'pin': create_pin(page.url, performance_datetime),
+                            'tim': str(datetime.now())
+                        }
                         print('\n--- write new data ---\n')
+
                         write_data_json(json_filename, new_data)
 
                     last_finished_index = i
@@ -830,34 +860,34 @@ def get_indievox(website, json_filename, txt_filename):
 
                             ''''''
 
-                            print('tit', title)  # str
-                            print('sdt', sell_datetimes_str)  # list
-                            print('prc', prices)  # list
-                            print('pdt', performance_datetime)  # str
-                            print('loc', location)  # str
-                            print('web', f'{website}')
-                            print('url', page.url)
-
-                            new_data = {
-                                'tit': title,
-                                'sdt': sell_datetimes_str,
-                                'prc': prices,
-                                'pdt': [performance_datetime],
-                                'loc': [location],
-                                'cit': "",
-                                'int': inner_text,
-                                'web': f'{website}',
-                                'url': page.url,
-                                'pin': page.url + str(j),
-                                'tim': str(datetime.now())
-                            }
-
-                            print('\n--- write new data ---\n')
-
                             if no_price:
                                 prices = []
 
                             if [performance_datetime]:
+                                print('tit', title)  # str
+                                print('sdt', sell_datetimes_str)  # list
+                                print('prc', prices)  # list
+                                print('pdt', performance_datetime)  # str
+                                print('loc', location)  # str
+                                print('web', f'{website}')
+                                print('url', page.url)
+
+                                new_data = {
+                                    'tit': title,
+                                    'sdt': sell_datetimes_str,
+                                    'prc': prices,
+                                    'pdt': [performance_datetime],
+                                    'loc': [location],
+                                    'cit': "",
+                                    'int': inner_text,
+                                    'web': f'{website}',
+                                    'url': page.url,
+                                    'pin': create_pin(page.url, performance_datetime),
+                                    'tim': str(datetime.now())
+                                }
+
+                                print('\n--- write new data ---\n')
+
                                 write_data_json(json_filename, new_data)
 
                             last_finished_index = i
@@ -870,30 +900,31 @@ def get_indievox(website, json_filename, txt_filename):
                         # 表演時間, 地點
                         performance_datetimes, locations = get_performance_location(without_sell_time_lines)
 
-                        print('tit', title)  # str
-                        print('sdt', sell_datetimes_str)  # list
-                        print('prc', prices)  # list
-                        print('pdt', performance_datetimes)  # list
-                        print('loc', locations)  # list
-                        print('web', f'{website}')
-                        print('url', page.url)
-
-                        new_data = {
-                            'tit': title,
-                            'sdt': sell_datetimes_str,
-                            'prc': prices,
-                            'pdt': performance_datetimes,
-                            'loc': locations,
-                            'cit': "",
-                            'int': inner_text,
-                            'web': f'{website}',
-                            'url': page.url,
-                            'pin': page.url + str(0),
-                            'tim': str(datetime.now())
-                        }
-
                         if performance_datetimes:
+                            print('tit', title)  # str
+                            print('sdt', sell_datetimes_str)  # list
+                            print('prc', prices)  # list
+                            print('pdt', performance_datetimes)  # list
+                            print('loc', locations)  # list
+                            print('web', f'{website}')
+                            print('url', page.url)
+
+                            new_data = {
+                                'tit': title,
+                                'sdt': sell_datetimes_str,
+                                'prc': prices,
+                                'pdt': performance_datetimes,
+                                'loc': locations,
+                                'cit': "",
+                                'int': inner_text,
+                                'web': f'{website}',
+                                'url': page.url,
+                                'pin': performance_datetimes[0],
+                                'tim': str(datetime.now())
+                            }
+
                             print('\n--- write new data ---\n')
+
                             write_data_json(json_filename, new_data)
 
                         last_finished_index = i
@@ -1055,30 +1086,31 @@ def get_ticketplus(website, json_filename, txt_filename):
                         if f"{title}_{pdt}_{concert_place}" not in unique_id:
                             unique_id.append(f"{title}_{pdt}_{concert_place}")
 
-                            print('tit', title)
-                            print('sdt', sell_datetimes_str)
-                            print('prc', prices)
-                            print('pdt', pdt)
-                            print('loc', concert_place)
-                            print('web', f'{website}')
-                            print('url', page.url)
-
-                            new_data = {
-                                'tit': title,
-                                'sdt': sell_datetimes_str,
-                                'prc': prices,
-                                'pdt': [pdt],
-                                'loc': [concert_place],
-                                'cit': "",
-                                'int': inner_text,
-                                'web': f'{website}',
-                                'url': page.url,
-                                'pin': page.url + str(j),
-                                'tim': str(datetime.now())
-                            }
-
                             if [pdt]:
+                                print('tit', title)
+                                print('sdt', sell_datetimes_str)
+                                print('prc', prices)
+                                print('pdt', pdt)
+                                print('loc', concert_place)
+                                print('web', f'{website}')
+                                print('url', page.url)
+
+                                new_data = {
+                                    'tit': title,
+                                    'sdt': sell_datetimes_str,
+                                    'prc': prices,
+                                    'pdt': [pdt],
+                                    'loc': [concert_place],
+                                    'cit': "",
+                                    'int': inner_text,
+                                    'web': f'{website}',
+                                    'url': page.url,
+                                    'pin': create_pin(page.url, pdt),
+                                    'tim': str(datetime.now())
+                                }
+
                                 print('\n--- write new data ---\n')
+
                                 write_data_json(json_filename, new_data)
 
                             last_finished_index = i
@@ -1379,7 +1411,7 @@ def get_kktix_first(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -1400,44 +1432,7 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_selling_index = i
-                                            print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
-
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
@@ -1445,12 +1440,11 @@ def get_kktix_first(website, json_filename, txt_filename):
 
                                             print('\n--- write new data ---\n')
 
-                                            if performance_datetimes_str_list:
-                                                write_data_json(json_filename, new_data)
+                                            write_data_json(json_filename, new_data)
 
-                                            last_finished_selling_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
+                                        last_finished_selling_index = i
+                                        print(f'finished {page_index}-{last_finished_selling_index + 1}')
+                                        print('\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_selling_index = i
@@ -1557,7 +1551,7 @@ def get_kktix_first(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -1578,56 +1572,19 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_view_index = i
-                                            print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_view_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
+                                        last_finished_view_index = i
+                                        print(f'finished {page_index}-{last_finished_view_index + 1}\n')
+                                        print('\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_view_index = i
@@ -1735,7 +1692,7 @@ def get_kktix_first(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -1756,57 +1713,20 @@ def get_kktix_first(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
+                                            print('\n--- write new data ---\n')
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            write_data_json(json_filename, new_data)
 
-                                            last_finished_counter_index = i
-                                            print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                        last_finished_counter_index = i
+                                        print(f'finished {page_index}-{last_finished_counter_index + 1}')
+                                        print('\n----------------------\n')
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_counter_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_counter_index = i
@@ -2015,7 +1935,7 @@ def get_kktix_second(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -2036,56 +1956,20 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_selling_index = i
-                                            print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
+                                        last_finished_selling_index = i
+                                        print(f'finished {page_index}-{last_finished_selling_index + 1}')
+                                        print('\n----------------------\n')
 
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_selling_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_selling_index = i
@@ -2192,7 +2076,7 @@ def get_kktix_second(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -2213,56 +2097,20 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_view_index = i
-                                            print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
+                                        last_finished_view_index = i
+                                        print(f'finished {page_index}-{last_finished_view_index + 1}\n')
+                                        print('\n----------------------\n')
 
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_view_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_view_index = i
@@ -2369,7 +2217,7 @@ def get_kktix_second(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -2390,55 +2238,20 @@ def get_kktix_second(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_counter_index = i
-                                            print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
-
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
-
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_counter_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
+                                            write_data_json(json_filename, new_data)
+
+                                        last_finished_counter_index = i
+                                        print(f'finished {page_index}-{last_finished_counter_index + 1}')
+                                        print('\n----------------------\n')
+
                                     else:
                                         print('hk activity, skip')
                                         last_finished_counter_index = i
@@ -2647,7 +2460,7 @@ def get_kktix_third(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -2668,56 +2481,20 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_selling_index = i
-                                            print(f'finished {page_index}-{last_finished_selling_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
+                                        last_finished_selling_index = i
+                                        print(f'finished {page_index}-{last_finished_selling_index + 1}')
+                                        print('\n----------------------\n')
 
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_selling_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_selling_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_selling_index = i
@@ -2824,7 +2601,7 @@ def get_kktix_third(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -2845,56 +2622,20 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_view_index = i
-                                            print(f'finished {page_index}-{last_finished_view_index + 1}\n')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
+                                        last_finished_view_index = i
+                                        print(f'finished {page_index}-{last_finished_view_index + 1}\n')
+                                        print('\n----------------------\n')
 
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_view_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_view_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_view_index = i
@@ -3001,7 +2742,7 @@ def get_kktix_third(website, json_filename, txt_filename):
 
                                         page.go_back()
 
-                                        if title or performance_datetimes_str_list or location:
+                                        if performance_datetimes_str_list:
                                             print('title', title)  # str
                                             print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
                                             print('prices', prices)  # list
@@ -3022,56 +2763,20 @@ def get_kktix_third(website, json_filename, txt_filename):
                                                 'int': inner_text,
                                                 'web': f'{website}',
                                                 'url': page.url,
-                                                'pin': page.url + str(0),
+                                                'pin': page.url,
                                                 'tim': str(datetime.now())
                                             }
 
                                             ''''''
 
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
+                                            print('\n--- write new data ---\n')
 
-                                            last_finished_counter_index = i
-                                            print(f'finished {page_index}-{last_finished_counter_index + 1}')
-                                            print('\n----------------------\n')
-                                        else:
-                                            # with open('sold_out.txt', 'a', encoding='utf-*') as f:
-                                            #     f.write(page.url + '\n')
+                                            write_data_json(json_filename, new_data)
 
-                                            print('title', title)  # str
-                                            print('sell_datetimes_str_list', sell_datetimes_str_list)  # list
-                                            print('prices', prices)  # list
-                                            print('performance_datetimes_str_list',
-                                                  performance_datetimes_str_list)  # list
-                                            print('location', location)  # str
+                                        last_finished_counter_index = i
+                                        print(f'finished {page_index}-{last_finished_counter_index + 1}')
+                                        print('\n----------------------\n')
 
-                                            ''''''
-
-                                            # 新的一筆資料
-                                            new_data = {
-                                                'tit': title,
-                                                'sdt': sell_datetimes_str_list,
-                                                'prc': prices,
-                                                'pdt': performance_datetimes_str_list,
-                                                'loc': [location],
-                                                'cit': "",
-                                                'int': inner_text,
-                                                'web': f'{website}',
-                                                'url': page.url,
-                                                'pin': page.url + str(0),
-                                                'tim': str(datetime.now())
-                                            }
-
-                                            ''''''
-
-                                            if performance_datetimes_str_list:
-                                                print('\n--- write new data ---\n')
-                                                write_data_json(json_filename, new_data)
-
-                                            last_finished_counter_index = i
-                                            print(
-                                                f'no tit, no pdt, no loc, skip\nfinished {page_index}-{last_finished_counter_index + 1}\n\n----------------------\n')
                                     else:
                                         print('hk activity, skip')
                                         last_finished_counter_index = i
