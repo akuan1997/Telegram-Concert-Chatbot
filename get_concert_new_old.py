@@ -264,16 +264,16 @@ def check_each_info(new_data, old_data, all_data):
                 # with open('concert_zh.json', 'w', encoding='utf-8') as file:
                 #     json.dump(all_data, file, indent=4, ensure_ascii=False)
     """"""
-    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    for pin in change_pins:
-        for i in range(len(all_data)):
-            if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
-                for line in lines:
-                    line_pin = line.split('|||')[1].replace('\n', '')
-                    if pin == line_pin:
-                        post_id = line.split('|||')[0]
-                        update_post_content(post_id, all_data[i])
+    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+    #     lines = f.readlines()
+    # for pin in change_pins:
+    #     for i in range(len(all_data)):
+    #         if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
+    #             for line in lines:
+    #                 line_pin = line.split('|||')[1].replace('\n', '')
+    #                 if pin == line_pin:
+    #                     post_id = line.split('|||')[0]
+    #                     update_post_content(post_id, all_data[i])
     """"""
     print(f"len(change_pins) = {len(change_pins)}")
     print(f"change_pins = {change_pins}")
@@ -293,8 +293,8 @@ def new_concert_add(new_but_old_pins, new_data, all_data):
     print(f"len(new_data_filtered) = {len(new_data_filtered)}")
     print('-------------------------------------------------------------------------------------------------------')
     """"""
-    for i in range(len(new_data_filtered)):
-        post_concert(new_data_filtered[i])
+    # for i in range(len(new_data_filtered)):
+    #     post_concert(new_data_filtered[i])
     """"""
     return new_data_filtered, all_data
 
@@ -319,18 +319,18 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
     print('-------------------------------------------------------------------------------------------------------')
     print(f"old_but_new_pins = {old_but_new_pins}")
     """"""
-    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    new_lines = []
-    for line in lines:
-        line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
-        post_id = line.split('|||')[0]
-        if line_pin not in old_but_new_pins:
-            new_lines.append(line)
-        else:
-            delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
-    with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
-        f.writelines(new_lines)
+    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+    #     lines = f.readlines()
+    # new_lines = []
+    # for line in lines:
+    #     line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
+    #     post_id = line.split('|||')[0]
+    #     if line_pin not in old_but_new_pins:
+    #         new_lines.append(line)
+    #     else:
+    #         delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
+    # with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
+    #     f.writelines(new_lines)
     """"""
     return all_data
 
