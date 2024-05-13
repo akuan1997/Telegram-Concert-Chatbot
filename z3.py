@@ -228,7 +228,7 @@ json_list = [
 for i in range(len(json_list)):
     data = read_json(json_list[i])
     print(f"{len(data)} -> ", end='')
-    data = [item for item in data if item['tit'] != '']
+    data = [item for item in data if item['pdt']]
     print(f"{len(data)}")
     with open(json_list[i], 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
@@ -315,18 +315,18 @@ def create_pin(txt):
         return pin
 
 
-print(json_list[-1])
-data = read_json(json_list[-1])
-print(len(data))
-for i in range(len(data)):
-    # if data[i]['web'] == 'KKTIX':
-    #
-    if not data[i]['pdt']:
-        print(data[i]['tit'])
-        print(data[i]['web'])
-    else:
-        print(data[i]['web'])
-        print(data[i]['pin'])
+# print(json_list[-1])
+# data = read_json(json_list[-1])
+# print(len(data))
+# for i in range(len(data)):
+#     # if data[i]['web'] == 'KKTIX':
+#     #
+#     if not data[i]['pdt']:
+#         print(data[i]['tit'])
+#         print(data[i]['web'])
+#     else:
+#         print(data[i]['web'])
+#         print(data[i]['pin'])
         # print(data[i]['pdt'])
         # if len(data[i]['pdt']) > 1:
         #     print(data[i]['tit'])
