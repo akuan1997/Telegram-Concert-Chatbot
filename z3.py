@@ -182,49 +182,9 @@ from y_example_read_json import *
 #     "concert_jsons/concert_5_12_11.json",
 #     "concert_jsons/concert_5_12_21.json"
 # ]
-json_list = [
-    "testing_concert_jsons/concert_3_14_23.json",
-    "testing_concert_jsons/concert_3_17_16.json",
-    "testing_concert_jsons/concert_3_17_19.json",
-    "testing_concert_jsons/concert_3_18_13.json",
-    "testing_concert_jsons/concert_3_20_16.json",
-    "testing_concert_jsons/concert_3_22_0.json",
-    "testing_concert_jsons/concert_3_23_14.json",
-    "testing_concert_jsons/concert_3_24_8.json",
-    "testing_concert_jsons/concert_3_25_0.json",
-    "testing_concert_jsons/concert_3_25_17.json",
-    "testing_concert_jsons/concert_3_26_0.json",
-    "testing_concert_jsons/concert_3_27_3.json",
-    "testing_concert_jsons/concert_3_29_0.json",
-    "testing_concert_jsons/concert_3_30_13.json",
-    "testing_concert_jsons/concert_3_30_20.json",
-    "testing_concert_jsons/concert_3_31_14.json",
-    "testing_concert_jsons/concert_3_31_18.json",
-    "testing_concert_jsons/concert_4_2_0.json",
-    "testing_concert_jsons/concert_4_3_10.json",
-    "testing_concert_jsons/concert_4_3_22.json",
-    "testing_concert_jsons/concert_4_4_14.json",
-    "testing_concert_jsons/concert_4_4_3.json",
-    "testing_concert_jsons/concert_4_5_16.json",
-    "testing_concert_jsons/concert_4_7_17.json",
-    "testing_concert_jsons/concert_4_15_1.json",
-    "testing_concert_jsons/concert_5_2_14.json",
-    "testing_concert_jsons/concert_5_4_20.json",
-    "testing_concert_jsons/concert_5_7_1.json",
-    "testing_concert_jsons/concert_5_7_21.json",
-    "testing_concert_jsons/concert_5_9_14.json",
-    "testing_concert_jsons/concert_5_10_11.json",
-    "testing_concert_jsons/concert_5_11_23.json",
-    "testing_concert_jsons/concert_5_12_11.json",
-    "testing_concert_jsons/concert_5_12_21.json",
-    "testing_concert_jsons/concert_5_13_14.json",
-    "testing_concert_jsons/concert_5_13_15.json",
-    "testing_concert_jsons/concert_5_13_17.json",
-    "testing_concert_jsons/concert_5_13_18.json",
-    "testing_concert_jsons/concert_5_13_19.json",
 
-]
 import re
+from get_concert_new_old import *
 
 
 def create_pin(url, txt):
@@ -304,6 +264,114 @@ def create_pin(url, txt):
         #     print(data[i]['pdt'])
 
 
+def testing_for_large(start_index, json_filename, mode):
+    # print(f"len(json_list) = {len(json_list)}")
+    # for i in range(len(json_list) - 1):
+    for i in range(start_index, start_index + 1):
+        current_index = i
+        print(f"current_index = {current_index}")
+        old_json = json_list[current_index]
+        new_json = json_list[current_index + 1]
+
+        print(f"old_json: {json_list[current_index]}\nnew_json: {json_list[current_index + 1]}\n---")
+
+        with open(old_json, 'r', encoding='utf-8') as f:
+            old_data = json.load(f)
+        with open(new_json, 'r', encoding='utf-8') as f:
+            new_data = json.load(f)
+        with open(json_filename, 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+
+        pins_new = [entry['pin'] for entry in new_data]
+        pins_old = [entry['pin'] for entry in old_data]
+
+        new_but_old_pins = [pin for pin in pins_new if pin not in pins_old]
+        old_but_new_pins = [pin for pin in pins_old if pin not in pins_new]
+
+        print(f'current_index = {current_index}')
+        print(f'len(new_data) = {len(new_data)}')
+        print(f'len(old_data) = {len(old_data)}')
+        print(f'len(all_data) = {len(all_data)}')
+        print(f'len(new_but_old_pins) = {len(new_but_old_pins)}')
+        print(f'len(old_but_new_pins) = {len(old_but_new_pins)}')
+
+        # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
+        new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
+                                                                                     new_data, old_data, all_data)
+        print(f"len(new_data_filtered) = {len(new_data_filtered)}")
+        print(f"len(plus_concerts) = {len(plus_concerts)}")
+        for j in range(len(plus_concerts)):
+            print(plus_concerts[j]['tit'])
+            print(plus_concerts[j]['url'])
+        print(f'運算結束 -> len(all_data) = {len(all_data)}')
+
+        # json_in_order(json_filename)
+
+        # 寫進json裡面
+        if mode == 1:  # 0 not write, 1 write (for testing)
+            with open(json_filename, "w", encoding="utf-8") as f:
+                json.dump(all_data, f, indent=4, ensure_ascii=False)
+                print('寫入成功')
+        elif mode == 0:
+            print('設定為未寫入')
+
+        print(f"current_index = {current_index}")
+        print(f"len(all_data) = {len(all_data)}")
+        print('----------------------------- Next ----------------------------------------------')
+
+
+def price_in_order(json_filename):
+    with open(json_filename, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+        for i in range(len(data)):
+            data[i]['prc'] = sorted(data[i]['prc'], reverse=True)
+            with open(json_filename, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+
+
+json_list = [
+    "testing_concert_jsons/concert_3_14_23.json",
+    "testing_concert_jsons/concert_3_17_16.json",
+    "testing_concert_jsons/concert_3_17_19.json",
+    "testing_concert_jsons/concert_3_18_13.json",
+    "testing_concert_jsons/concert_3_20_16.json",
+    "testing_concert_jsons/concert_3_22_0.json",
+    "testing_concert_jsons/concert_3_23_14.json",
+    "testing_concert_jsons/concert_3_24_8.json",
+    "testing_concert_jsons/concert_3_25_0.json",
+    "testing_concert_jsons/concert_3_25_17.json",
+    "testing_concert_jsons/concert_3_26_0.json",
+    "testing_concert_jsons/concert_3_27_3.json",
+    "testing_concert_jsons/concert_3_29_0.json",
+    "testing_concert_jsons/concert_3_30_13.json",
+    "testing_concert_jsons/concert_3_30_20.json",
+    "testing_concert_jsons/concert_3_31_14.json",
+    "testing_concert_jsons/concert_3_31_18.json",
+    "testing_concert_jsons/concert_4_2_0.json",
+    "testing_concert_jsons/concert_4_3_10.json",
+    "testing_concert_jsons/concert_4_3_22.json",
+    "testing_concert_jsons/concert_4_4_3.json",
+    "testing_concert_jsons/concert_4_4_14.json",
+    "testing_concert_jsons/concert_4_5_16.json",
+    "testing_concert_jsons/concert_4_7_17.json",
+    "testing_concert_jsons/concert_4_15_1.json",
+    "testing_concert_jsons/concert_5_2_14.json",
+    "testing_concert_jsons/concert_5_4_20.json",
+    "testing_concert_jsons/concert_5_7_1.json",
+    "testing_concert_jsons/concert_5_7_21.json",
+    "testing_concert_jsons/concert_5_9_14.json",
+    "testing_concert_jsons/concert_5_10_11.json",
+    "testing_concert_jsons/concert_5_11_23.json",
+    "testing_concert_jsons/concert_5_12_11.json",
+    "testing_concert_jsons/concert_5_12_21.json",
+    "testing_concert_jsons/concert_5_13_14.json",
+    "testing_concert_jsons/concert_5_13_15.json",
+    "testing_concert_jsons/concert_5_13_17.json",
+    "testing_concert_jsons/concert_5_13_18.json",
+    "testing_concert_jsons/concert_5_13_19.json",
+
+]
 """ 刪除沒有pdt的資料 """
 # for i in range(len(json_list)):
 #     data = read_json(json_list[i])
@@ -328,15 +396,6 @@ def create_pin(url, txt):
 #             print(data[i]['pin'])
 #         with open(json_file, 'w', encoding='utf-8') as f:
 #             json.dump(data, f, indent=4, ensure_ascii=False)
-""""""
-
-# for index, json_file in enumerate(json_list):
-#     data = read_json(json_file)
-#     for i in range(len(data)):
-#         data[i]['pin'] = create_pin(data[i]['url'], data[i]['pdt'][0])
-#         print(data[i]['pin'])
-#         with open(json_list[index], 'w', encoding='utf-8') as f:
-#             json.dump(data, f, indent=4, ensure_ascii=False)
 
 """ 檢查pin有沒有重複的"""
 # for json_file in json_list:
@@ -344,8 +403,27 @@ def create_pin(url, txt):
 #     for i in range(len(data)):
 #        for j in range(i + 1, len(data)):
 #            if data[i]['pin'] == data[j]['pin']:
-#                print()
+#                print(data[i]['tit'])
 
+""" 新舊對比 """
+shutil.copy(json_list[0], "concert_zh.json")  # test
+data = read_json("concert_zh.json")
+print(len(data))
+for i in range(len(json_list) - 1):
+    testing_for_large(i, "concert_zh.json", 1)
+# testing_for_large(1, "concert_zh.json", 1)
+# testing_for_large(2, "concert_zh.json", 1)
+
+""" 顯示一下url以及pin """
+# for i in range(len(json_list)):
+#     data = read_json(json_list[i])
+#     for j in range(len(data)):
+#         print(data[j]['url'])
+#         print(data[j]['pin'])
+#         print('---')
+#     print('---------------------------------')
+
+""""""
 # print(json_list[-1])
 # data = read_json(json_list[-1])
 # print(len(data))

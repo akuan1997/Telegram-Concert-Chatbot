@@ -130,17 +130,17 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n準備修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的sdt / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n準備修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['sdt'] = new_data[i]['sdt']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的sdt，但是出現空白 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的sdt，但是出現空白 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"sdt減少 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                            f"sdt減少 / {old_data[j]['sdt']} -> {new_data[i]['sdt']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
 
                 if new_data[i]['pdt'] != old_data[j]['pdt']:
                     revise = True
@@ -158,17 +158,17 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n準備修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的pdt / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n準備修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['pdt'] = new_data[i]['pdt']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的pdt，但是出現空白 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的pdt，但是出現空白 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"pdt減少 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                            f"pdt減少 / {old_data[j]['pdt']} -> {new_data[i]['pdt']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
 
                 if new_data[i]['loc'] != old_data[j]['loc']:
                     revise = True
@@ -186,17 +186,17 @@ def check_each_info(new_data, old_data, all_data):
                                 break
                         if revise:
                             print(
-                                f"相同數量的loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n準備修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的loc / {old_data[j]['loc']} -> {new_data[i]['loc']}\n準備修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                             all_data[pin_index_in_all_data]['loc'] = new_data[i]['loc']
                             # to do, website
                             change_pins.append(new_data[i]['pin'])
                         else:
                             print(
-                                f"相同數量的loc，但是出現空白 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                                f"相同數量的loc，但是出現空白 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"loc減少 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                            f"loc減少 / {old_data[j]['loc']} -> {new_data[i]['loc']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
 
                 ''''''
 
@@ -207,10 +207,14 @@ def check_each_info(new_data, old_data, all_data):
                         all_data[pin_index_in_all_data]['prc'] = new_data[i]['prc']
                         # to do, website
                         change_pins.append(new_data[i]['pin'])
+                    elif len(new_data[i]['prc']) == len(old_data[j]['prc']):
+                        print(f"{new_data[i]['tit']}")
+                        print(
+                            f"prc持平 / {old_data[j]['prc']} -> {new_data[i]['prc']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                     else:
                         print(f"{new_data[i]['tit']}")
                         print(
-                            f"prc減少 / {old_data[j]['prc']} -> {new_data[i]['prc']}\n不修改all_data\n{new_data[i]['url']}\n---")
+                            f"prc減少 / {old_data[j]['prc']} -> {new_data[i]['prc']}\n不修改all_data\nurl: {new_data[i]['url']}\npin: {new_data[i]['pin']}\n---")
                 ''''''
 
                 # Check 'int' field again for changes other than KKTIX
@@ -313,6 +317,7 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
     #             print(old_data[i]['tit'])
     """ test """
     print('-------------------------------------------------------------------------------------------------------')
+    print(f"old_but_new_pins = {old_but_new_pins}")
     """"""
     # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
     #     lines = f.readlines()
@@ -344,39 +349,39 @@ def get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins, new_data
 
 
 def testing_for_whole():
-    json_list = [
-        "concert_jsons/concert_3_14_23.json",
-        "concert_jsons/concert_3_17_16.json",
-        "concert_jsons/concert_3_17_19.json",
-        "concert_jsons/concert_3_18_13.json",
-        "concert_jsons/concert_3_20_16.json",
-        "concert_jsons/concert_3_22_0.json",
-        "concert_jsons/concert_3_23_14.json",
-        "concert_jsons/concert_3_24_8.json",
-        "concert_jsons/concert_3_25_0.json",
-        "concert_jsons/concert_3_25_17.json",
-        "concert_jsons/concert_3_26_0.json",
-        "concert_jsons/concert_3_27_3.json",
-        "concert_jsons/concert_3_29_0.json",
-        "concert_jsons/concert_3_30_13.json",
-        "concert_jsons/concert_3_30_20.json",
-        "concert_jsons/concert_3_31_14.json",
-        "concert_jsons/concert_3_31_18.json",
-        "concert_jsons/concert_4_15_1.json",
-        "concert_jsons/concert_4_2_0.json",
-        "concert_jsons/concert_4_3_10.json",
-        "concert_jsons/concert_4_3_22.json",
-        "concert_jsons/concert_4_4_14.json",
-        "concert_jsons/concert_4_4_3.json",
-        "concert_jsons/concert_4_5_16.json",
-        "concert_jsons/concert_4_7_17.json",
-        "concert_jsons/concert_5_2_14.json",
-        "concert_jsons/concert_5_4_20.json",
-        "concert_jsons/concert_5_7_1.json",
-        "concert_jsons/concert_5_7_21.json",
-        "concert_jsons/concert_5_8_16.json",
-        "concert_5_8_20.json"
-    ]
+    # json_list = [
+    #     "concert_jsons/concert_3_14_23.json",
+    #     "concert_jsons/concert_3_17_16.json",
+    #     "concert_jsons/concert_3_17_19.json",
+    #     "concert_jsons/concert_3_18_13.json",
+    #     "concert_jsons/concert_3_20_16.json",
+    #     "concert_jsons/concert_3_22_0.json",
+    #     "concert_jsons/concert_3_23_14.json",
+    #     "concert_jsons/concert_3_24_8.json",
+    #     "concert_jsons/concert_3_25_0.json",
+    #     "concert_jsons/concert_3_25_17.json",
+    #     "concert_jsons/concert_3_26_0.json",
+    #     "concert_jsons/concert_3_27_3.json",
+    #     "concert_jsons/concert_3_29_0.json",
+    #     "concert_jsons/concert_3_30_13.json",
+    #     "concert_jsons/concert_3_30_20.json",
+    #     "concert_jsons/concert_3_31_14.json",
+    #     "concert_jsons/concert_3_31_18.json",
+    #     "concert_jsons/concert_4_15_1.json",
+    #     "concert_jsons/concert_4_2_0.json",
+    #     "concert_jsons/concert_4_3_10.json",
+    #     "concert_jsons/concert_4_3_22.json",
+    #     "concert_jsons/concert_4_4_14.json",
+    #     "concert_jsons/concert_4_4_3.json",
+    #     "concert_jsons/concert_4_5_16.json",
+    #     "concert_jsons/concert_4_7_17.json",
+    #     "concert_jsons/concert_5_2_14.json",
+    #     "concert_jsons/concert_5_4_20.json",
+    #     "concert_jsons/concert_5_7_1.json",
+    #     "concert_jsons/concert_5_7_21.json",
+    #     "concert_jsons/concert_5_8_16.json",
+    #     "concert_5_8_20.json"
+    # ]
     print(f"len(json_list) = {len(json_list)}")
 
     for i in range(1, len(json_list) - 1):
