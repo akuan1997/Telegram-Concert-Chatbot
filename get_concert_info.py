@@ -34,11 +34,11 @@ day = datetime.now().day
 hour = datetime.now().hour
 
 concert_today = f'concert_{month}_{day}_{hour}.json'
-print(concert_today)
 
 
 def success_msg(txt):
-    print(f"\033[32m{txt}\033[0m\033[1m")
+    # print(f"\033[32m{txt}\033[0m\033[1m")  # 白色，但是變成粗體字
+    print(f"\033[32m{txt}\033[0m")  # 绿色文本，重置所有格式
 
 
 def validate_pin(json_filename):
@@ -3550,30 +3550,23 @@ def get_latest_concert_info(json_filename):
     reset_failure_log()
     threads_start()
     success_msg("Playwright")
-    # print('--- Playwright finished ---')
     """"""
+    print(f"json_filename = {json_filename}")
     with open(json_filename, 'w', encoding='utf-8') as f:
         json.dump([], f, indent=4, ensure_ascii=False)
     merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
     success_msg("Website jsons merged")
-    # print('--- Json merged ---')
     move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
     success_msg("Website jsons moved")
-    # print('--- Json moved ---')
     # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
-    # print('--- Files deleted ---')
     get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
     success_msg("Get city from loc")
-    # print('--- Get all city ---')
     # json_in_order(json_filename)  # sort the json file according performance time
     # success_msg("Json in order")
-    # print('--- Json in order ---')
     price_str_to_int(json_filename)  # price, if str -> int
     success_msg("Replaced str with int for all str")
-    # print('--- Replaced str with int for all str! ---')
     price_in_order(json_filename)  # price in order, start from the most highest price
     success_msg("Price in order")
-    # print('--- Price in order ---')
     validate_pin(json_filename)
     success_msg("Pin validated")
     success_msg("--- zh okay ---")
@@ -3601,7 +3594,8 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 ''''''
 
 get_latest_concert_info(concert_today)
-
+# last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+# print(last_file)
 ''''''
 
 # get_era('era', 'era.json', 'era_temp.txt')
