@@ -1266,8 +1266,8 @@ def get_kktix_first(website, json_filename, txt_filename):
 
         while True:
             try:
-                # browser = p.chromium.launch(headless=True)  # kktix first
-                browser = p.chromium.launch(headless=False)  # kktix first
+                browser = p.chromium.launch(headless=True)  # kktix first
+                # browser = p.chromium.launch(headless=False)  # kktix first
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -1900,8 +1900,8 @@ def get_kktix_second(website, json_filename, txt_filename):
 
         while True:
             try:
-                # browser = p.chromium.launch(headless=True)  # kktix second
-                browser = p.chromium.launch(headless=False)  # kktix second
+                browser = p.chromium.launch(headless=True)  # kktix second
+                # browser = p.chromium.launch(headless=False)  # kktix second
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -2533,8 +2533,8 @@ def get_kktix_third(website, json_filename, txt_filename):
 
         while True:
             try:
-                # browser = p.chromium.launch(headless=True)  # kktix thrid
-                browser = p.chromium.launch(headless=False)  # kktix thrid
+                browser = p.chromium.launch(headless=True)  # kktix thrid
+                # browser = p.chromium.launch(headless=False)  # kktix thrid
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -3846,7 +3846,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-# get_latest_concert_info(concert_today)
+get_latest_concert_info(concert_today)
 
 
 ''''''
@@ -3856,7 +3856,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 # get_livenation('Live Nation', 'livenation.json', 'livenation_temp.txt')
 # get_indievox('Indievox', 'indievox.json', 'indievox_temp.txt')
 # get_ticketplus('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt')
-get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
+# get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
 
 ''''''
 
