@@ -3835,8 +3835,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-# get_latest_concert_info(concert_today)
-get_latest_concert_info("concert_5_13_3.json")
+get_latest_concert_info(concert_today)
 
 
 ''''''

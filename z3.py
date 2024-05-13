@@ -99,7 +99,7 @@
 # a, b = keyword_adjustment_optimized("is post malone going to have a concert?")
 # print(a)
 # print(b)
-from get_keyword_indexes_en import *
+# from get_keyword_indexes_en import *
 import time
 import os
 
@@ -144,7 +144,129 @@ import os
 # for file in json_files:
 #     print(f"\"concert_jsons/{file}\",")
 """"""
+from y_example_read_json import *
+
+# json_list = [
+#     "concert_jsons/concert_3_14_23.json",
+#     "concert_jsons/concert_3_17_16.json",
+#     "concert_jsons/concert_3_17_19.json",
+#     "concert_jsons/concert_3_18_13.json",
+#     "concert_jsons/concert_3_20_16.json",
+#     "concert_jsons/concert_3_22_0.json",
+#     "concert_jsons/concert_3_23_14.json",
+#     "concert_jsons/concert_3_24_8.json",
+#     "concert_jsons/concert_3_25_0.json",
+#     "concert_jsons/concert_3_25_17.json",
+#     "concert_jsons/concert_3_26_0.json",
+#     "concert_jsons/concert_3_27_3.json",
+#     "concert_jsons/concert_3_29_0.json",
+#     "concert_jsons/concert_3_30_13.json",
+#     "concert_jsons/concert_3_30_20.json",
+#     "concert_jsons/concert_3_31_14.json",
+#     "concert_jsons/concert_3_31_18.json",
+#     "concert_jsons/concert_4_2_0.json",
+#     "concert_jsons/concert_4_3_10.json",
+#     "concert_jsons/concert_4_3_22.json",
+#     "concert_jsons/concert_4_4_14.json",
+#     "concert_jsons/concert_4_4_3.json",
+#     "concert_jsons/concert_4_5_16.json",
+#     "concert_jsons/concert_4_7_17.json",
+#     "concert_jsons/concert_4_15_1.json",
+#     "concert_jsons/concert_5_2_14.json",
+#     "concert_jsons/concert_5_4_20.json",
+#     "concert_jsons/concert_5_7_1.json",
+#     "concert_jsons/concert_5_7_21.json",
+#     "concert_jsons/concert_5_9_14.json",
+#     "concert_jsons/concert_5_10_11.json",
+#     "concert_jsons/concert_5_11_23.json",
+#     "concert_jsons/concert_5_12_11.json",
+#     "concert_jsons/concert_5_12_21.json"
+# ]
+json_list = [
+    "testing_concert_jsons/concert_3_14_23.json",
+    "testing_concert_jsons/concert_3_17_16.json",
+    "testing_concert_jsons/concert_3_17_19.json",
+    "testing_concert_jsons/concert_3_18_13.json",
+    "testing_concert_jsons/concert_3_20_16.json",
+    "testing_concert_jsons/concert_3_22_0.json",
+    "testing_concert_jsons/concert_3_23_14.json",
+    "testing_concert_jsons/concert_3_24_8.json",
+    "testing_concert_jsons/concert_3_25_0.json",
+    "testing_concert_jsons/concert_3_25_17.json",
+    "testing_concert_jsons/concert_3_26_0.json",
+    "testing_concert_jsons/concert_3_27_3.json",
+    "testing_concert_jsons/concert_3_29_0.json",
+    "testing_concert_jsons/concert_3_30_13.json",
+    "testing_concert_jsons/concert_3_30_20.json",
+    "testing_concert_jsons/concert_3_31_14.json",
+    "testing_concert_jsons/concert_3_31_18.json",
+    "testing_concert_jsons/concert_4_2_0.json",
+    "testing_concert_jsons/concert_4_3_10.json",
+    "testing_concert_jsons/concert_4_3_22.json",
+    "testing_concert_jsons/concert_4_4_14.json",
+    "testing_concert_jsons/concert_4_4_3.json",
+    "testing_concert_jsons/concert_4_5_16.json",
+    "testing_concert_jsons/concert_4_7_17.json",
+    "testing_concert_jsons/concert_4_15_1.json",
+    "testing_concert_jsons/concert_5_2_14.json",
+    "testing_concert_jsons/concert_5_4_20.json",
+    "testing_concert_jsons/concert_5_7_1.json",
+    "testing_concert_jsons/concert_5_7_21.json",
+    "testing_concert_jsons/concert_5_9_14.json",
+    "testing_concert_jsons/concert_5_10_11.json",
+    "testing_concert_jsons/concert_5_11_23.json",
+    "testing_concert_jsons/concert_5_12_11.json",
+    "testing_concert_jsons/concert_5_12_21.json"
+]
+
+# for json_file in json_list:
+#     data = read_json(json_file)
+#     for i in range(len(data)):
+#         for j in range(i + 1, len(data)):
+#             if data[i]['web'] != 'KKTIX':
+#                 if data[i]['url'] == data[j]['url']:
+#                     print(json_file)
+#                     print(f"{data[i]['tit']}")
+#                     print(f"{data[j]['tit']}")
+#                     print(f"{data[i]['pdt']} / {data[j]['pdt']}")
+#                     print(data[i]['url'])
+#                     print('---')
+""""""
+data = read_json(json_list[-1])
+for i in range(len(data)):
+    if not data[i]['pdt']:
+        print(data[i]['tit'])
+        print(data[i]['url'])
+print('--------------------')
+            # if not data[i]['pdt'] or len(data[i]['pdt']) != 1:
+            #     print(json_file)
+            #     print(data[i]['tit'])
+            #     print(data[i]['pdt'])
+            #     print(data[i]['url'])
+            #     print('---')
+
+            # if data[i]['pdt']:
+            #     print(data[i]['tit'])
+            #     print(data[i]['pdt'])
+            #     print(data[i]['url'])
+            #     print('---')
+            # if data[i]['pdt']:
+            #     print(data[i]['tit'])
+            #     print(data[i]['pdt'])
+            #     print(data[i]['url'])
+            #     print('---')
 
 
-
+# data = read_json(json_list[0])
+# for i in range(len(data)):
+#     if not data[i]['pdt']:
+#         print(data[i]['tit'])
+#         print(data[i]['url'])
+#         print('---')
+#     print('--------------------')
+# data = read_json(json_list[0])
+# for i in range(len(data)):
+#     # print(data[i]['pdt'])
+#     if len(data[i]['pdt']) != 1:
+#         print(data[i]['tit'])
 
