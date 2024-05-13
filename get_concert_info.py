@@ -1,4 +1,4 @@
-from playwright.sync_api import sync_playwright, Playwright, expect, Page
+from playwright.sync_api import sync_playwright, Playwright, expect, Page, TimeoutError
 import json
 import os
 import threading
@@ -208,7 +208,7 @@ def get_era(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # era
+                browser = p.chromium.launch(headless=True)  # era
                 # browser = p.chromium.launch(headless=False)  # era
                 context = browser.new_context()
                 page = context.new_page()
@@ -388,7 +388,7 @@ def get_era_without_error_mechanism(website, json_filename, txt_filename):
         # 錯誤的網址
         fail_urls = []
 
-        browser = p.chromium.launch(headless=True, slow_mo=200)  # era
+        browser = p.chromium.launch(headless=True)  # era
         # browser = p.chromium.launch(headless=False)  # era
         context = browser.new_context()
         page = context.new_page()
@@ -547,7 +547,7 @@ def get_livenation(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # live nation
+                browser = p.chromium.launch(headless=True)  # live nation
                 # browser = p.chromium.launch(headless=False)  # live nation
                 context = browser.new_context()
                 page = context.new_page()
@@ -704,7 +704,7 @@ def get_indievox(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # indievox
+                browser = p.chromium.launch(headless=True)  # indievox
                 # browser = p.chromium.launch(headless=False)  # indievox
                 context = browser.new_context()
                 page = context.new_page()
@@ -1140,14 +1140,18 @@ def kktix_get_ticketing_time_list(page, index, sell_datetimes_str_list):
 
 
 def kktix_get_title_str(page, title):
-    # 標題 str
-    if page.locator(
-            "#registrationsNewApp > div > div:nth-child(2) > div.narrow-wrapper.ng-scope > div > h1").is_visible():
-        title = page.locator(
-            "#registrationsNewApp > div > div:nth-child(2) > div.narrow-wrapper.ng-scope > div > h1").inner_text().replace(
-            '\n', '').strip()
-    else:
-        print('title no')
+    try:
+        page.wait_for_selector("#registrationsNewApp > div > div:nth-child(2) > div.narrow-wrapper.ng-scope > div > h1", timeout=5000)
+        # 標題 str
+        if page.locator(
+                "#registrationsNewApp > div > div:nth-child(2) > div.narrow-wrapper.ng-scope > div > h1").is_visible():
+            title = page.locator(
+                "#registrationsNewApp > div > div:nth-child(2) > div.narrow-wrapper.ng-scope > div > h1").inner_text().replace(
+                '\n', '').strip()
+        else:
+            print('title no')
+    except TimeoutError:
+        print('等不到title')
 
     return title
 
@@ -1172,19 +1176,23 @@ def kktix_get_prices_list(page, index, prices):
 
 
 def kktix_get_location_str(page, location):
-    # 地點 str
-    if page.locator("tbody > tr").nth(1).locator("th").is_visible():
-        if page.locator("tbody > tr").nth(1).locator(
-                "th").inner_text() == '活動地點':
-            location_address = \
-                page.locator("tbody > tr").nth(1).locator(
-                    "td").inner_text().split(
-                    '檢視地圖')[
-                    0].strip().split(' / ')
-            location = location_address[0]
-            # locations.append(concert_place)
-    else:
-        print('locations no')
+    try:
+        page.wait_for_selector("tbody > tr:nth-child(2) > th", timeout=5000)
+        # 地點 str
+        if page.locator("tbody > tr").nth(1).locator("th").is_visible():
+            if page.locator("tbody > tr").nth(1).locator(
+                    "th").inner_text() == '活動地點':
+                location_address = \
+                    page.locator("tbody > tr").nth(1).locator(
+                        "td").inner_text().split(
+                        '檢視地圖')[
+                        0].strip().split(' / ')
+                location = location_address[0]
+                # locations.append(concert_place)
+        else:
+            print('locations no')
+    except TimeoutError:
+        print('等不到location')
 
     return location
 
@@ -1211,26 +1219,29 @@ def kktix_get_location_str1(page, location, address):
 
 
 def kktix_get_performance_list(page, performance_datetimes_str_list):
-    if page.locator("tbody > tr").nth(0).locator("td").is_visible():
-        pdt = \
-            page.locator("tbody > tr").nth(0).locator(
-                "td").inner_text().split(
-                '加入行事曆')[
-                0].strip()
-        pdt = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", pdt)
-        if '~' in pdt:
-            start_time_date = re.findall(r'\d{4}/\d{1,2}/\d{1,2}',
-                                         pdt.split('~')[0])
-            finish_time_date = re.findall(r'\d{4}/\d{1,2}/\d{1,2}',
-                                          pdt.split('~')[1])
-            if start_time_date[0] == finish_time_date[0]:
-                pdt = pdt.split('~')[0].strip()
-        pdt = re.sub(r"\s{2,}", " ", pdt)
-        pdt = pdt.strip()
-        performance_datetimes_str_list.append(pdt)
-    else:
-        print('performance_datetimes no')
-
+    try:
+        page.wait_for_selector("tbody > tr:nth-child(1) > td", timeout=5000)
+        if page.locator("tbody > tr").nth(0).locator("td").is_visible():
+            pdt = \
+                page.locator("tbody > tr").nth(0).locator(
+                    "td").inner_text().split(
+                    '加入行事曆')[
+                    0].strip()
+            pdt = re.sub(r"[\(（【［<][^)）】］>]+[\)）】］>]", " ", pdt)
+            if '~' in pdt:
+                start_time_date = re.findall(r'\d{4}/\d{1,2}/\d{1,2}',
+                                             pdt.split('~')[0])
+                finish_time_date = re.findall(r'\d{4}/\d{1,2}/\d{1,2}',
+                                              pdt.split('~')[1])
+                if start_time_date[0] == finish_time_date[0]:
+                    pdt = pdt.split('~')[0].strip()
+            pdt = re.sub(r"\s{2,}", " ", pdt)
+            pdt = pdt.strip()
+            performance_datetimes_str_list.append(pdt)
+        else:
+            print('performance_datetimes no')
+    except TimeoutError:
+        print('等不到datetime')
     return performance_datetimes_str_list
 
 
@@ -1255,8 +1266,8 @@ def get_kktix_first(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix first
-                # browser = p.chromium.launch(headless=False)  # kktix first
+                # browser = p.chromium.launch(headless=True)  # kktix first
+                browser = p.chromium.launch(headless=False)  # kktix first
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -1889,8 +1900,8 @@ def get_kktix_second(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix second
-                # browser = p.chromium.launch(headless=False)  # kktix second
+                # browser = p.chromium.launch(headless=True)  # kktix second
+                browser = p.chromium.launch(headless=False)  # kktix second
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -2522,8 +2533,8 @@ def get_kktix_third(website, json_filename, txt_filename):
 
         while True:
             try:
-                browser = p.chromium.launch(headless=True, slow_mo=200)  # kktix thrid
-                # browser = p.chromium.launch(headless=False)  # kktix thrid
+                # browser = p.chromium.launch(headless=True)  # kktix thrid
+                browser = p.chromium.launch(headless=False)  # kktix thrid
                 context = browser.new_context()
                 page = context.new_page()
                 # page.set_default_timeout(60000)
@@ -3472,7 +3483,7 @@ def stadium_city(stadium, lang, table):
 #     json_file = 'concert_data_new_zh.json'  # 最新獲得的演唱會json
 #     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
 #     with sync_playwright() as p:
-#         browser = p.chromium.launch(headless=True, slow_mo=200)  # city from search
+#         browser = p.chromium.launch(headless=True)  # city from search
 #         # browser = p.chromium.launch(headless=False)  # city from search
 #         context = browser.new_context()
 #         page = context.new_page()
@@ -3579,7 +3590,7 @@ def stadium_city(stadium, lang, table):
 def get_city_from_stadium(json_file):
     zh_table = "zh_stadium_table.txt"  # 使用中文對照表
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, slow_mo=200)  # city from search
+        browser = p.chromium.launch(headless=True)  # city from search
         # browser = p.chromium.launch(headless=False)  # city from search
         context = browser.new_context()
         page = context.new_page()
@@ -3835,7 +3846,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-get_latest_concert_info(concert_today)
+# get_latest_concert_info(concert_today)
 
 
 ''''''
@@ -3845,7 +3856,7 @@ get_latest_concert_info(concert_today)
 # get_livenation('Live Nation', 'livenation.json', 'livenation_temp.txt')
 # get_indievox('Indievox', 'indievox.json', 'indievox_temp.txt')
 # get_ticketplus('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt')
-# get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
+get_kktix('KKTIX', 'kktix.json', "kktix_temp.txt")
 
 ''''''
 
