@@ -406,13 +406,13 @@ json_list = [
 #                print(data[i]['tit'])
 
 """ 新舊對比 """
-shutil.copy(json_list[0], "concert_zh.json")  # test
-data = read_json("concert_zh.json")
-print(len(data))
-for i in range(len(json_list) - 1):
-    testing_for_large(i, "concert_zh.json", 1)
-# testing_for_large(1, "concert_zh.json", 1)
-# testing_for_large(2, "concert_zh.json", 1)
+# shutil.copy(json_list[0], "concert_zh.json")  # test
+# data = read_json("concert_zh.json")
+# print(len(data))
+# for i in range(len(json_list) - 1):
+#     testing_for_large(i, "concert_zh.json", 1)
+# # testing_for_large(1, "concert_zh.json", 1)
+# # testing_for_large(2, "concert_zh.json", 1)
 
 """ 顯示一下url以及pin """
 # for i in range(len(json_list)):
