@@ -39,6 +39,10 @@ with open(concert_today, 'w', encoding='utf-8') as f:
     json.dump([], f, indent=4, ensure_ascii=False)
 
 
+def success_msg(txt):
+    print(f"\033[32m{txt}\033[1m")
+
+
 def validate_pin(json_filename):
     data = read_json(json_filename)
 
@@ -3531,10 +3535,14 @@ def get_latest_concert_info(json_filename):
     thread_kktix.start()
     thread_kktix.join()
 
+    success_msg("KKTIX")
+
     thread_era.start()
     thread_livenation.start()
     thread_era.join()
     thread_livenation.join()
+
+    success_msg("Era, Livenation")
 
     thread_indievox.start()
     threading_ticketplus.start()
@@ -3542,26 +3550,45 @@ def get_latest_concert_info(json_filename):
     thread_indievox.join()
     threading_ticketplus.join()
 
+    success_msg("Indievox, Ticketplus")
+    success_msg("Playwright")
     # threads_start()  # start the threads
     # threads_join()  # wait for all the threads finish
-    print('--- Playwright finished ---')
+    # print('--- Playwright finished ---')
+
     """"""
     merge_json_data(concert_json_filenames, json_filename)  # combine all the website json file into the second argument
-    print('--- Json merged ---')
+    success_msg("Website jsons merged")
+    # print('--- Json merged ---')
+
     move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
-    print('--- Json moved ---')
+    success_msg("Website jsons moved")
+    # print('--- Json moved ---')
+
     # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
     # print('--- Files deleted ---')
+
     get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
-    print('--- Get all city ---')
+    success_msg("Get city from loc")
+    # print('--- Get all city ---')
+
     json_in_order(json_filename)  # sort the json file according performance time
-    print('--- Json in order ---')
+    success_msg("Json in order")
+    # print('--- Json in order ---')
+
     price_str_to_int(json_filename)  # price, if str -> int
-    print('--- Replaced str with int for all str! ---')
+    success_msg("Replaced str with int for all str")
+    # print('--- Replaced str with int for all str! ---')
+
     price_in_order(json_filename)  # price in order, start from the most highest price
-    print('--- Price in order ---')
+    success_msg("Price in order")
+    # print('--- Price in order ---')
+
     validate_pin(json_filename)
-    print(f'\n------------------\nzh okay!\n------------------\n')
+    success_msg("Pin validated")
+
+    success_msg("--- zh okay ---")
+    # print(f'\n------------------\nzh okay!\n------------------\n')
     # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
     # print('--- Delete all past ticketing time ---')
     # """"""

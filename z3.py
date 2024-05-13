@@ -317,17 +317,19 @@ def create_pin(url, txt):
 """ 根據url還有pdt重新寫入pin"""
 # print(json_list[0])
 # data = read_json(json_list[0])
-for json_file in json_list:
-    print(json_file)
-    data = read_json(json_file)
-    for i in range(len(data)):
-        if data[i]['web'] == 'KKTIX':
-            data[i]['pin'] = data[i]['url']
-        else:
-            data[i]['pin'] = create_pin(data[i]['url'], data[i]['pdt'][0])
-            print(data[i]['pin'])
-        with open(json_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+# for json_file in json_list:
+#     print(json_file)
+#     data = read_json(json_file)
+#     for i in range(len(data)):
+#         if data[i]['web'] == 'KKTIX':
+#             data[i]['pin'] = data[i]['url']
+#         else:
+#             data[i]['pin'] = create_pin(data[i]['url'], data[i]['pdt'][0])
+#             print(data[i]['pin'])
+#         with open(json_file, 'w', encoding='utf-8') as f:
+#             json.dump(data, f, indent=4, ensure_ascii=False)
+""""""
+
 # for index, json_file in enumerate(json_list):
 #     data = read_json(json_file)
 #     for i in range(len(data)):
