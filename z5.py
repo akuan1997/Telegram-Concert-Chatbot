@@ -69,3 +69,9 @@ print(y)
 
 def metoo():
     print('nothing to lose')
+
+import pyautogui
+
+# 获取当前鼠标位置
+current_mouse_position = pyautogui.position()
+print("当前鼠标位置：", current_mouse_position)

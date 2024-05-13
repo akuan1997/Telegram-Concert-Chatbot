@@ -12,6 +12,6 @@ def merge_json_data(json_filenames, final_json_file):
 
 # concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
 # merge_json_data(concert_json_filenames, "concert_5_13_3.json")  # combine all the website json file into the second argument
-with open('../concert_5_13_3.json', 'r', encoding='utf-8') as f:
+with open('../concert_jsons/concert_5_13_3.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 print(len(data))
