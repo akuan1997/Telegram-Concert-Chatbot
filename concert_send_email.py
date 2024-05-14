@@ -6,7 +6,7 @@ import datetime
 import time
 
 
-def send_mail_for_me(title, content, receiver):
+def send_email(title, content, receiver):
     send_gmail_user = 'cckuan10@gmail.com'
     # send_gmail_password = 'zcdgjpgnnkcgyizj'
     send_gmail_password = 'ghlc uvmx vkrl swgz'
@@ -23,4 +23,4 @@ def send_mail_for_me(title, content, receiver):
     server.send_message(msg)
     server.quit()
 
-send_mail_for_me('你好呀旅行者', '狩獵開始了')
+# send_mail_for_me('你好呀旅行者', '狩獵開始了')
