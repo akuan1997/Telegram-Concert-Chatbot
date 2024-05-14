@@ -1,9 +1,7 @@
 # https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1183s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
-import threading  # 引入threading模組
-import queue
 
-from telegram import Update  # 從telegram模組引入Update類
+from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
 
 import asyncio
@@ -393,15 +391,20 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
-def update_concert_info(concert_today):
-    new_concerts, plus_concerts = get_latest_concert_info(concert_today)
-    # to do, send info to all users
-    # open "user_preferred_language.txt" and get all the users' id
-    emails = get_enews_emails()
-    # to do, send info to all users by email
-    # send email to all subscribers
-    # send_mail_for_me(title, content, receiver)
-
+# async def schedule_update():
+#     while True:
+#         now = dt.now()
+#         target_time = dt.combine(now.date(), dt.min.time()) + timedelta(hours=4, minutes=59, seconds=30)
+#         if now > target_time:
+#             target_time += timedelta(days=1)  # If it's already past 04:37 today, schedule for 04:37 tomorrow
+#
+#         time_to_wait = (target_time - now).total_seconds()
+#         print(f"Waiting for {time_to_wait} seconds until the next update.")
+#         await asyncio.sleep(time_to_wait)
+#
+#         concert_today = f'concert_{target_time.month}_{target_time.day}_{target_time.hour}.json'
+#         await update_concert_info(concert_today)
+#         print(f"Updated concert info for {concert_today}")
 
 
 if __name__ == '__main__':
@@ -417,13 +420,39 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)
 
-    # Create a queue to receive the result from the thread
-    return_queue = queue.Queue()
-
-    # Create and start the thread
-    concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
-    info_thread = threading.Thread(target=update_concert_info, args=(concert_today,))
-    info_thread.start()
-
     print('Go!')
     app.run_polling(poll_interval=3)
+
+""""""
+
+# if __name__ == '__main__':
+#     print('Starting bot...')
+#     app = Application.builder().token(TOKEN).build()
+#
+#     app.add_handler(CommandHandler('start', start_command))
+#     app.add_handler(CommandHandler('help', help_command))
+#     app.add_handler(CommandHandler('custom', custom_command))
+#     app.add_handler(CommandHandler('switch_language', switch_language_command))
+#
+#     app.add_handler(MessageHandler(filters.TEXT, handle_message))
+#
+#     app.add_error_handler(error)
+#
+#     # # # Create and start the thread
+#     # concert_today = f'concert_{dt.now().month}_{dt.now().day}_{dt.now().hour}.json'
+#     # print(f"concert_today = {concert_today}")
+#     # # info_thread = threading.Thread(target=update_concert_info, args=(concert_today,))
+#     # # info_thread.start()
+#     #
+#     # update_thread = threading.Thread(target=update_concert_info, daemon=True)
+#     # update_thread.start()
+#
+#     # Start the scheduling thread
+#     # schedule_thread = threading.Thread(target=schedule_update, daemon=True)
+#     # schedule_thread.start()
+#
+#     # Start the scheduling task
+#     asyncio.create_task(schedule_update())
+#
+#     print('Go!')
+#     app.run_polling(poll_interval=3)
