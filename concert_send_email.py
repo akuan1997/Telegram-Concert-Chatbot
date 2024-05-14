@@ -6,12 +6,11 @@ import datetime
 import time
 
 
-def send_mail_for_me(title, content):
+def send_mail_for_me(title, content, receiver):
     send_gmail_user = 'cckuan10@gmail.com'
     # send_gmail_password = 'zcdgjpgnnkcgyizj'
-    # ghlc uvmx vkrl swgz
     send_gmail_password = 'ghlc uvmx vkrl swgz'
-    rece_gmail_user = 'pfii1997119@gmail.com'
+    rece_gmail_user = receiver
 
     msg = MIMEText(content, 'plain', 'utf-8')  # 內文
     msg['Subject'] = f'{title}' # 標題

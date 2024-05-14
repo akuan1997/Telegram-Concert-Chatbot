@@ -3591,6 +3591,8 @@ def get_latest_concert_info(json_filename):
     zh_en_cit("concert_en.json")
     shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
 
+    return new_concerts, plus_concerts
+
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
 thread_livenation = threading.Thread(target=get_livenation,
@@ -3602,7 +3604,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-get_latest_concert_info(concert_today)
+# get_latest_concert_info(concert_today)
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
 # zh_en("concert_zh.json", "concert_en.json")  # english version

@@ -26,15 +26,15 @@ BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使
 
 user_language_preferences = {}
 user_status = {}
-user_language_file = "user_preferred_language.txt"
+user_language_file = "../user_preferred_language.txt"
 
 """ zh config """
-zh_model_path = r'models\nlu-20240501-165733-frayed-acre.tar.gz'  # zh model
+zh_model_path = r'../models/nlu-20240501-165733-frayed-acre.tar.gz'  # zh model
 zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
-en_model_path = r'en_models\nlu-20240511-033142-brilliant-set.tar.gz'
+en_model_path = r'../en_models/nlu-20240511-033142-brilliant-set.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
@@ -156,7 +156,7 @@ def show_concert_info(indexes, language):
     return final_str
 
 def keyword_adjustment_optimized(user_input):
-    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -277,7 +277,7 @@ async def get_zh_indexes(user_input, json_filename):
 
 
 async def get_en_indexes(user_input, json_filename):
-    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')

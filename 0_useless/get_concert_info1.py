@@ -26,7 +26,7 @@ concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation
 # with open('0_useless/concert_data_old_zh.json', 'r', encoding='utf-8') as f:
 #     old_data = json.load(f)
 
-with open('concert_zh.json', 'r', encoding='utf-8') as f:
+with open('../concert_zh.json', 'r', encoding='utf-8') as f:
     all_data = json.load(f)
 
 month = datetime.now().month
@@ -74,7 +74,7 @@ def get_new_old(json_filename):
         old_data = json.load(f)
     with open(f"{new_json}", 'r', encoding='utf-8') as f:
         new_data = json.load(f)
-    with open('concert_zh.json', 'r', encoding='utf-8') as f:
+    with open('../concert_zh.json', 'r', encoding='utf-8') as f:
         all_data = json.load(f)
 
     pins_new = [entry['pin'] for entry in new_data]
@@ -100,12 +100,12 @@ def get_new_old(json_filename):
     print(f'運算結束 -> len(all_data) = {len(all_data)}')
 
     # 寫進json裡面
-    with open('concert_zh.json', "w", encoding="utf-8") as f:
+    with open('../concert_zh.json', "w", encoding="utf-8") as f:
         json.dump(all_data, f, indent=4, ensure_ascii=False)
         print('寫入成功')
 
     # json_in_order(json_filename)
-    json_in_order("concert_zh.json")
+    json_in_order("../concert_zh.json")
     print('concert_zh.json 成功更改表演順序')
 
     return new_data_filtered, plus_concerts
@@ -130,19 +130,19 @@ def write_data_json(json_name, new_data):
 
 
 def write_error(website, url, error):
-    with open('failure_log.txt', "r", encoding="utf-8") as f:
+    with open('../failure_log.txt', "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     if url + '\n' not in lines:
         # txt檔案不存在或是裡面沒資料
-        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+        if not os.path.exists('../failure_log.txt') or os.path.getsize('../failure_log.txt') <= 4:
             # 直接寫入第一筆資料
-            with open('failure_log.txt', "w", encoding="utf-8") as f:
+            with open('../failure_log.txt', "w", encoding="utf-8") as f:
                 f.write(f'{website}\n{error}\n{url}\n')
         # txt檔案存在且裡面已經有一筆以上的資料
         else:
             # 讀取現在有的檔案
-            with open('failure_log.txt', "a", encoding="utf-8") as f:
+            with open('../failure_log.txt', "a", encoding="utf-8") as f:
                 f.write(f'\n{website}\n{error}\n{url}\n')
     else:
         print('已經寫進錯誤裡面了!')
@@ -3440,7 +3440,7 @@ def load_data(file_name):
 
 
 def reset_failure_log():
-    with open('failure_log.txt', 'w', encoding='utf-8') as f:
+    with open('../failure_log.txt', 'w', encoding='utf-8') as f:
         f.write('')
 
 

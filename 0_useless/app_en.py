@@ -102,7 +102,7 @@ def run_cmdline(model_path: Text, user_input) -> None:
     """Loops over CLI input, passing each message to a loaded NLU model."""
     agent = Agent.load(model_path)
 
-    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -201,7 +201,7 @@ def run_cmdline1(model_path: Text, words) -> None:
     """Loops over CLI input, passing each message to a loaded NLU model."""
     agent = Agent.load(model_path)
 
-    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -305,9 +305,9 @@ words1 = [
     'could you tell me any boombap concerts in taipei?'
 ]
 
-model_path = r'en_models\nlu-20240511-033142-brilliant-set.tar.gz'
+model_path = r'../en_models/nlu-20240511-033142-brilliant-set.tar.gz'
 
-with open('z1.txt', 'r', encoding='utf-8') as f:
+with open('../z1.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 lines = [line.replace('\n', '') for line in lines]
 # run_cmdline1(model_path, lines)

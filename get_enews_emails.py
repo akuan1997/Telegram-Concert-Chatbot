@@ -39,4 +39,4 @@ def get_enews_emails():
         print(enews_emails)
         return set(enews_emails)
 
-get_enews_emails()
+# get_enews_emails()
