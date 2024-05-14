@@ -611,6 +611,10 @@ def get_livenation(website, json_filename, txt_filename):
                     # 下載內文
                     # inner_text = page.locator(
                     #     "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div").inner_text()
+
+                    page.wait_for_selector(
+                        "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div > p")
+
                     inner_text = ''
                     inner_texts = page.query_selector_all(
                         "#top > main > div > div.layout__container > div.accordion__accordion > div > div > div > p")
@@ -623,10 +627,12 @@ def get_livenation(website, json_filename, txt_filename):
                     # 讀取內文
                     with open(txt_filename, 'r', encoding='utf-8') as f:
                         lines = f.readlines()
-
                     # 演唱會標題
                     title = page.locator(".eventblurb__title[data-ln='EventName']").inner_text().replace(
                         '\n', '').strip()
+
+                    if lines != []:
+                        print(f'lines = {lines}')
 
                     # 票價 (一定得從內文當中獲得)
                     prices = get_prices(lines)
@@ -3595,7 +3601,7 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-# get_latest_concert_info(concert_today)
+get_latest_concert_info(concert_today)
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
 # zh_en("concert_zh.json", "concert_en.json")  # english version
