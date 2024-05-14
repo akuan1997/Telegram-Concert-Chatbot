@@ -261,11 +261,23 @@
 # #     # contain_number = re.findall(r"\d{3,}", line)
 # #     # if prcs and contain_number:
 # #     #     prices_lines.append(line)
-import re
-from googletrans import Translator
-translator = Translator()
-txt = "《hello 你好 這個世界!！》"
-txt = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9 ,。．、？！；：「」（）《》“”‘’]+', '', txt)
-translated_text = translator.translate(txt, src="zh-TW", dest="en").text
-print(txt)
-print(translated_text)
+from function_read_json import *
+import json
+from concert_translation import *
+zh_en_cit("concert_en1.json")
+# zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
+#              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
+# en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Miaoli",
+#              "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
+#              "Lienchiang"]
+# data = read_json("concert_en1.json")
+# city_mapping = dict(zip(zh_cities, en_cities))
+# for i in range(len(data)):
+#     if 'cit' in data[i]:
+#         if 'cit' in data[i]:
+#             if data[i]['cit'] in city_mapping:
+#                 print(f"{data[i]['cit']} -> ", end='')
+#                 data[i]['cit'] = city_mapping[data[i]['cit']]
+#                 print(data[i]['cit'])
+#                 with open("concert_en1.json", 'w', encoding='utf-8') as f:
+#                     json.dump(data, f, indent=4, ensure_ascii=False)

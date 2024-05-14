@@ -3587,7 +3587,8 @@ def get_latest_concert_info(json_filename):
     print(f"plus_concerts = {plus_concerts}")
     shutil.move(json_filename, "concert_jsons")
     # """"""
-    zh_en("concert_zh.json", "concert_en.json")  # english version
+    zh_en_tit_int("concert_zh.json", "concert_en.json")  # english version
+    zh_en_cit("concert_en.json")
     shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
 
 

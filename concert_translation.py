@@ -10,7 +10,6 @@ en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung
              "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
              "Lienchiang"]
 
-
 # def zh_en(zh_json, en_json):
 #     city_mapping = dict(zip(zh_cities, en_cities))
 #     # Copying the original file to a new file for translated content
@@ -124,9 +123,24 @@ en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung
 #     # Write the translated data back to the file
 #     with open(en_json, 'w', encoding='utf-8') as f:
 #         json.dump(data, f, indent=4, ensure_ascii=False)
+from function_read_json import *
 
-def zh_en(zh_json, en_json):
+
+def zh_en_cit(en_json):
+    data = read_json(en_json)
     city_mapping = dict(zip(zh_cities, en_cities))
+    for i in range(len(data)):
+        if 'cit' in data[i]:
+            if 'cit' in data[i]:
+                if data[i]['cit'] in city_mapping:
+                    print(f"{data[i]['cit']} -> ", end='')
+                    data[i]['cit'] = city_mapping[data[i]['cit']]
+                    print(data[i]['cit'])
+                    with open(en_json, 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=4, ensure_ascii=False)
+
+
+def zh_en_tit_int(zh_json, en_json):
     # Copying the original file to a new file for translated content
     shutil.copy(zh_json, en_json)
 
@@ -173,11 +187,6 @@ def zh_en(zh_json, en_json):
                 with open('trans_error.txt', 'a', encoding='utf-8') as f:
                     f.write(f"{i}|||inner text\n")
 
-        if 'cit' in data[i]:
-            if data[i]['cit'] in city_mapping:
-                data[i]['cit'] = city_mapping[data[i]['cit']]
-                print(data[i]['cit'])
-
         print('------------------------------------')
 
         time.sleep(3)
@@ -185,3 +194,4 @@ def zh_en(zh_json, en_json):
     # Write the translated data back to the file
     with open(en_json, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
