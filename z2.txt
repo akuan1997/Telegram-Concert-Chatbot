@@ -1,0 +1,455 @@
+
+------------------------------------
+current progress 4/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 5/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 8/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 10/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 25/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+----------
+current progress 37/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+---------------
+current progress 45/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 50/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 51/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 52/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 53/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+---------------
+current progress 60/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 63/275
+Error translating inner text: the JSON object must be str, bytes or bytearray, not NoneType
+---------------------------
+current progress 87/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 92/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+-------------
+current progress 100/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 107/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 110/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 112/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 119/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 121/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 149/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 152/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 160/275
+Error translating inner text: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 161/275
+Error translating inner text: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 162/275
+Error translating inner text: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 164/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 167/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 168/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 170/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 172/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 173/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 174/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 186/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 190/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 191/275
+------------------------------------
+current progress 192/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 194/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 196/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+New Taipei
+------------------------------------
+current progress 197/275
+Successful
+Taichung
+------------------------------------
+current progress 198/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+New Taipei
+------------------------------------
+current progress 199/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 200/275
+Successful
+New Taipei
+------------------------------------
+current progress 201/275
+Successful
+Taichung
+------------------------------------
+current progress 202/275
+Successful
+New Taipei
+------------------------------------
+current progress 203/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 204/275
+Successful
+New Taipei
+------------------------------------
+current progress 205/275
+Successful
+Taichung
+------------------------------------
+current progress 206/275
+Successful
+Taichung
+------------------------------------
+current progress 207/275
+Successful
+New Taipei
+------------------------------------
+current progress 208/275
+Successful
+Taipei
+------------------------------------
+current progress 209/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 210/275
+Successful
+Taichung
+------------------------------------
+current progress 211/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 212/275
+Successful
+Taipei
+------------------------------------
+current progress 213/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 214/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 215/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 216/275
+Successful
+Taipei
+------------------------------------
+current progress 217/275
+Successful
+------------------------------------
+current progress 218/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 219/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 220/275
+Successful
+New Taipei
+------------------------------------
+current progress 221/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 222/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 223/275
+Successful
+New Taipei
+------------------------------------
+current progress 224/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 225/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 226/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 227/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 228/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+
+New Taipei
+------------------------------------
+current progress 229/275
+Successful
+Taoyuan
+------------------------------------
+current progress 230/275
+Successful
+Taipei
+------------------------------------
+current progress 231/275
+Successful
+New Taipei
+------------------------------------
+current progress 232/275
+Successful
+Hsinchu
+------------------------------------
+current progress 233/275
+Successful
+------------------------------------
+current progress 234/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 235/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 236/275
+Successful
+Taipei
+------------------------------------
+current progress 237/275
+Successful
+Taipei
+------------------------------------
+current progress 238/275
+Successful
+Taitung
+------------------------------------
+current progress 239/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+
+Taipei
+------------------------------------
+current progress 240/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 241/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 242/275
+
+Taipei
+------------------------------------
+current progress 243/275
+Successful
+Taichung
+------------------------------------
+current progress 244/275
+Successful
+New Taipei
+------------------------------------
+current progress 245/275
+Successful
+New Taipei
+------------------------------------
+current progress 246/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 247/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 248/275
+Successful
+New Taipei
+------------------------------------
+current progress 249/275
+Successful
+Kaohsiung
+------------------------------------
+current progress 250/275
+Successful
+Taichung
+------------------------------------
+current progress 251/275
+Successful
+Taichung
+------------------------------------
+current progress 252/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 253/275
+Successful
+New Taipei
+------------------------------------
+current progress 254/275
+Successful
+Taichung
+------------------------------------
+current progress 255/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 256/275
+Successful
+Taipei
+------------------------------------
+current progress 257/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+Taipei
+------------------------------------
+current progress 258/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+
+Taipei
+------------------------------------
+current progress 262/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+------------------------------------
+current progress 265/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+------------------------------------
+current progress 266/275
+Successful
+Taipei
+------------------------------------
+current progress 267/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+New Taipei
+------------------------------------
+current progress 268/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+
+New Taipei
+------------------------------------
+current progress 269/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Successful
+------------------------------------
+current progress 270/275
+Successful
+Taichung
+------------------------------------
+current progress 271/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+Error translating inner text: the JSON object must be str, bytes or bytearray, not NoneType
+
+Kaohsiung
+------------------------------------
+Successful
+------------------------------------
+current progress 273/275
+Error translating title: the JSON object must be str, bytes or bytearray, not NoneType
+
+
+Process finished with exit code 0

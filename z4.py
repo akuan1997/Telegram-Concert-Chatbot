@@ -14,7 +14,7 @@ from get_keyword_indexes_en import *
 from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 
-from read_json_function import *
+from function_read_json import *
 
 # import nltk
 # from nltk.corpus import stopwords
@@ -81,7 +81,7 @@ def keyword_adjustment_optimized(user_input):
 
     # 提取用戶輸入中的英文字詞並轉成小寫
     english_words = re.findall(r'[A-Za-z0-9]+', user_input.lower())
-    print(f"english_words = {english_words}")
+    print(f"中文模型裡面的english_words = {english_words}")
 
     # 基本匹配檢查
     for word in english_words:
@@ -189,11 +189,13 @@ def get_zh_indexes(user_input, json_filename):
                 print(f"keyword_indexes = {keyword_indexes}")
                 return keyword_indexes
             else:
-                print('直接回傳找不到')
-                return []
+                print('找不到關鍵字，也找不到日期，那就直接搜尋keyword_indexes')
+                keyword_index = get_keyword_indexes_zh(user_input, json_filename)
+                print(f"keyword_index = {keyword_index}")
+                return keyword_index
 
 
-def get_en_indexes(user_input, json_filename):
+async def get_en_indexes(user_input, json_filename):
     with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
@@ -204,7 +206,7 @@ def get_en_indexes(user_input, json_filename):
     message = user_input.lower()
     print(f'ori msg: {message}')
 
-    result = asyncio.run(en_agent.parse_message(message))
+    result = en_agent.parse_message(message)
 
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
@@ -215,7 +217,7 @@ def get_en_indexes(user_input, json_filename):
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
-            ticket_time_indexes = en_get_ticket_time(user_input, en_json)
+            ticket_time_indexes = en_get_ticket_time(user_input, json_filename)
             print(f"ticket_time_indexes = {ticket_time_indexes}")
             return ticket_time_indexes
         elif result['intent']['name'] == "query_keyword":
@@ -223,8 +225,6 @@ def get_en_indexes(user_input, json_filename):
             found_datetime = False
 
             for i in range(len(result['entities'])):
-                # if result['entities'][i]['entity'] != 'keyword' and result['entities'][i]['value']:
-                #     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
                 if result['entities'][i]['entity'] == 'datetime':
                     found_datetime = True
                 elif result['entities'][i]['entity'] == 'keyword':
@@ -249,28 +249,29 @@ def get_en_indexes(user_input, json_filename):
                 print(f"keyword = {keyword}")
                 if found_datetime:
                     print('有keyword，也有datetime，取集合')
-                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
-                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
                     print(f"intersection = {intersection}")
-                    print(type(intersection))
                     return intersection
                 else:
                     print('有keyword，但是沒有datetime，直接顯示keyword indexes')
-                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     return get_keyword_indexes_en_indexes
             else:
                 print('沒有keyword')
                 if found_datetime:
-                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     return en_dates_cities_indexes
                 else:
-                    print('什麼都沒有')
-                    return []
+                    print('沒有keyword，也沒有日期，直接把user_input拿去keyword搜尋')
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(user_input, json_filename)
+                    print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    return get_keyword_indexes_en_indexes
 
 
 # def get_en_indexes(user_input, json_filename):
@@ -429,18 +430,91 @@ en_json = "concert_en.json"
 獲得售票時間 en_get_ticket_time
 """
 
+
+def show_concert_info(indexes, language):
+    if not indexes:
+        return [
+            "對不起，我沒有找到相關的演唱會資訊。" if language == 'zh' else "Sorry, I couldn't find any relevant concert information."]
+
+    formatted_str_list = []
+    if language == 'zh':
+        data = read_json("concert_zh.json")
+        print('zh', len(data))
+    elif language == 'en':
+        data = read_json("concert_en.json")
+        print('en', len(data))
+
+    for index in indexes:
+        if index >= len(data):
+            print(f"索引 {index} 超出範圍，最大索引值應該小於 {len(data)}")
+            continue
+
+        concert = data[index]
+
+        if concert['prc']:
+            sorted_prices = sorted(concert['prc'], reverse=True)
+            sorted_prices_str = ', '.join(map(str, sorted_prices))
+        else:
+            sorted_prices_str = '-'
+        concert_date_str = ', '.join(concert['pdt'])
+
+        if concert['sdt']:
+            sale_date_str = ', '.join(concert['sdt'])
+        else:
+            sale_date_str = '-'
+
+        if concert['loc']:
+            location_str = ', '.join(concert['loc'])
+        else:
+            location_str = '-'
+
+        if language == 'zh':
+            formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+            """
+        elif language == 'en':
+            formatted_str = f"""
+- {concert['tit']}
+- Date: {concert_date_str}
+- Ticket Price: {sorted_prices_str}
+- Sale Date: {sale_date_str}
+- Location: {sale_date_str}
+{concert['url']}
+            """
+
+        formatted_str_list.append(formatted_str.strip())
+
+    return formatted_str_list
+
+current_language = 'zh'
 print('載入完成')
 while True:
     user_input = input("請輸入: ")
-    """ zh """
-    # found_indexes = get_zh_indexes(user_input, zh_json)  # 根據json檔案決定語言
-    # print(f"found_indexes = {found_indexes}")
-
-    """ en """
-    found_indexes = get_en_indexes(user_input, en_json)
-    print(f"found_indexes = {found_indexes}")
-
+    if user_input.lower() == 'zh' or user_input.lower() == 'en':
+        current_language = user_input.lower()  # 更新當前語言為用戶輸入的值
+        print(f"切換語言為 {current_language}")
+    else:
+        if current_language == 'zh':
+            found_indexes = get_zh_indexes(user_input, zh_json)
+            print(f"found_indexes = {found_indexes}")
+            messages = show_concert_info(found_indexes, "zh")
+            for msg in messages:
+                print(msg)
+                print('---')
+        elif current_language == 'en':
+            found_indexes = get_en_indexes(user_input, en_json)
+            print(f"found_indexes = {found_indexes}")
+            messages = show_concert_info(found_indexes, "en")
+            for msg in messages:
+                print(msg)
+                print('---')
     print('-----------------------------------------------')
+
 
     """"""
     # found_indexes = get_en_indexes(user_input, en_json)  # 根據json檔案決定語言

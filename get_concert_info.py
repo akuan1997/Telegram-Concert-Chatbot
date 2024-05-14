@@ -8,16 +8,18 @@ import sys
 from datetime import datetime, time
 from googletrans import Translator
 from fuzzywuzzy import process
-import time
+
 
 from get_concert_new_old import *
 from get_data_from_text import *
+from concert_translation import *
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
 en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Miaoli",
              "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
              "Lienchiang"]
+
 concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation.json', 'ticketplus.json']
 
 # with open('0_useless/concert_data_new_zh.json', 'r', encoding='utf-8') as f:
@@ -3439,55 +3441,55 @@ def get_city_from_stadium(json_file):
                 print('---')
 
 
-def zh_en(zh_json, en_json):
-    time.sleep(5)
-    city_mapping = dict(zip(zh_cities, en_cities))
-    # Copying the original file to a new file for translated content
-    shutil.copy(zh_json, en_json)
-
-    translator = Translator()
-
-    # Open the copied file for reading and translation
-    with open(en_json, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    for i in range(len(data)):
-        print(f'current progress {i + 1}/{len(data)}')
-
-        if data[i]['tit']:
-            try:
-                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
-                translated_title = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
-                data[i]['tit'] = translated_title
-            except Exception as e:
-                print(f'Error translating title: {e}')
-                print('Skipping this entry')
-
-        # Check if 'int' field is not None or empty
-        if data[i]['int']:
-            try:
-                # 使用正則表達式移除非中文字符
-                data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
-                # Translate the text and update the 'int' field
-                translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
-                data[i]['int'] = translated_text
-                print('Successful')
-            except Exception as e:
-                print(f'Error translating inner text: {e}')
-                print('Skipping this entry')
-        else:
-            print('None or empty, skip')
-
-        if 'cit' in data[i]:
-            if data[i]['cit'] in city_mapping:
-                data[i]['cit'] = city_mapping[data[i]['cit']]
-                print(data[i]['cit'])
-
-        print('------------------------------------')
-
-    # Write the translated data back to the file
-    with open(en_json, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+# def zh_en(zh_json, en_json):
+#     time.sleep(5)
+#     city_mapping = dict(zip(zh_cities, en_cities))
+#     # Copying the original file to a new file for translated content
+#     shutil.copy(zh_json, en_json)
+#
+#     translator = Translator()
+#
+#     # Open the copied file for reading and translation
+#     with open(en_json, 'r', encoding='utf-8') as f:
+#         data = json.load(f)
+#
+#     for i in range(len(data)):
+#         print(f'current progress {i + 1}/{len(data)}')
+#
+#         if data[i]['tit']:
+#             try:
+#                 data[i]['tit'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['tit'])
+#                 translated_title = translator.translate(data[i]['tit'], src="zh-TW", dest="en").text
+#                 data[i]['tit'] = translated_title
+#             except Exception as e:
+#                 print(f'Error translating title: {e}')
+#                 print('Skipping this entry')
+#
+#         # Check if 'int' field is not None or empty
+#         if data[i]['int']:
+#             try:
+#                 # 使用正則表達式移除非中文字符
+#                 data[i]['int'] = re.sub(r'[^\u4e00-\u9fa5]+', '', data[i]['int'])
+#                 # Translate the text and update the 'int' field
+#                 translated_text = translator.translate(data[i]['int'], src="zh-TW", dest="en").text
+#                 data[i]['int'] = translated_text
+#                 print('Successful')
+#             except Exception as e:
+#                 print(f'Error translating inner text: {e}')
+#                 print('Skipping this entry')
+#         else:
+#             print('None or empty, skip')
+#
+#         if 'cit' in data[i]:
+#             if data[i]['cit'] in city_mapping:
+#                 data[i]['cit'] = city_mapping[data[i]['cit']]
+#                 print(data[i]['cit'])
+#
+#         print('------------------------------------')
+#
+#     # Write the translated data back to the file
+#     with open(en_json, 'w', encoding='utf-8') as f:
+#         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 def extract_earliest_date(date_list):
@@ -3579,8 +3581,8 @@ def get_latest_concert_info(json_filename):
     print(f"plus_concerts = {plus_concerts}")
     shutil.move(json_filename, "concert_jsons")
     # """"""
-    # zh_en("concert_zh.json", "concert_en.json")  # english version
-    # shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+    zh_en("concert_zh.json", "concert_en.json")  # english version
+    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
 
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -3593,9 +3595,11 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 ''''''
 
-get_latest_concert_info(concert_today)
+# get_latest_concert_info(concert_today)
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
+# zh_en("concert_zh.json", "concert_en.json")  # english version
+# shutil.copy("concert_en.json", f"en_concert_jsons/en_concert_5_14_17.json")
 ''''''
 
 # get_era('era', 'era.json', 'era_temp.txt')

@@ -7,7 +7,7 @@ from rank_bm25 import BM25Okapi
 nltk.download('punkt')
 nltk.download('stopwords')
 
-from read_json_function import *
+from function_read_json import *
 
 def preprocess(text):
     stop_words = set(stopwords.words('english'))

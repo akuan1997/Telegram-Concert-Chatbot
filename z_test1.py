@@ -45,7 +45,7 @@
 # # print(user_status)
 
 import json
-from read_json_function import *
+from function_read_json import *
 from concert_jsons.get_concert_new_old11 import *
 
 data = read_json("singer_info.json")

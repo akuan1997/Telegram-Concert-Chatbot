@@ -5,7 +5,7 @@
 #
 # with open('concert_pin_postid.txt', 'a', encoding='utf-8') as f:
 #     f.write('hello\n')
-from read_json_function import *
+from function_read_json import *
 import json
 
 # from get_concert_info import *

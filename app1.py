@@ -47,6 +47,75 @@ def get_user_language(id):
             return line[line.index('|||') + 3:line.index('|||') + 5]
 
 
+# def show_concert_info(indexes):
+#     formatted_str_list = []
+#     for index in indexes:
+#         concert = data[index]
+#         if concert['prc']:
+#             sorted_prices = sorted(concert['prc'], reverse=True)
+#             sorted_prices_str = ', '.join(map(str, sorted_prices))
+#         else:
+#             sorted_prices_str = '-'
+#         concert_date_str = ', '.join(concert['pdt'])
+#         if concert['sdt']:
+#             sale_date_str = ', '.join(concert['sdt'])
+#         else:
+#             sale_date_str = '-'
+#
+#         formatted_str = f"""
+# - {concert['tit']}
+# - 日期: {concert_date_str}
+# - 票價: {sorted_prices_str}
+# - 售票日期: {sale_date_str}
+# - {concert['url']}
+#     """
+#         formatted_str_list.append(formatted_str)
+#
+#     final_str = "\n".join(formatted_str_list)
+#     print(final_str)
+#
+#     return final_str
+
+
+# def show_concert_info(indexes, language):
+#     formatted_str_list = []
+#     for index in indexes:
+#         concert = data[index]
+#         if concert['prc']:
+#             sorted_prices = sorted(concert['prc'], reverse=True)
+#             sorted_prices_str = ', '.join(map(str, sorted_prices))
+#         else:
+#             sorted_prices_str = '-'
+#         concert_date_str = ', '.join(concert['pdt'])
+#         if concert['sdt']:
+#             sale_date_str = ', '.join(concert['sdt'])
+#         else:
+#             sale_date_str = '-'
+#
+#         if language == 'zh':
+#             formatted_str = f"""
+#     - {concert['tit']}
+#     - 日期: {concert_date_str}
+#     - 票價: {sorted_prices_str}
+#     - 售票日期: {sale_date_str}
+#     - {concert['url']}
+#         """
+#             formatted_str_list.append(formatted_str)
+#         elif language == 'en':
+#             formatted_str = f"""
+#     - {concert['tit']}
+#     - Date: {concert_date_str}
+#     - Ticket Price: {sorted_prices_str}
+#     - Sale Date: {sale_date_str}
+#     - {concert['url']}
+#         """
+#             formatted_str_list.append(formatted_str)
+#
+#     final_str = "\n".join(formatted_str_list)
+#     print(final_str)
+#
+#     return final_str
+
 def show_concert_info(indexes, language):
     formatted_str_list = []
     for index in indexes:
@@ -64,20 +133,20 @@ def show_concert_info(indexes, language):
 
         if language == 'zh':
             formatted_str = f"""
-    - {concert['tit']}
-    - 日期: {concert_date_str}
-    - 票價: {sorted_prices_str}
-    - 售票日期: {sale_date_str}
-    - {concert['url']}
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- {concert['url']}
         """
             formatted_str_list.append(formatted_str)
         elif language == 'en':
             formatted_str = f"""
-    - {concert['tit']}
-    - Date: {concert_date_str}
-    - Ticket Price: {sorted_prices_str}
-    - Sale Date: {sale_date_str}
-    - {concert['url']}
+- {concert['tit']}
+- Date: {concert_date_str}
+- Ticket Price: {sorted_prices_str}
+- Sale Date: {sale_date_str}
+- {concert['url']}
         """
             formatted_str_list.append(formatted_str)
 
@@ -119,7 +188,7 @@ async def get_zh_indexes(user_input, json_filename):
     print(f"原本的輸入: {user_input}")
     user_input, find_singer = keyword_adjustment_optimized(user_input)
     print(f"經過方程式後的輸入: {user_input}")
-    result = asyncio.run(zh_agent.parse_message(user_input))
+    result = await zh_agent.parse_message(user_input)  # 使用 await
     print('zh', result)
     print(f'find singer?', find_singer)  # from function
     print(f"intent: {result['intent']['name']}")
@@ -129,9 +198,6 @@ async def get_zh_indexes(user_input, json_filename):
     print('--')
 
     if len(result['entities']) == 0:
-        """
-        鄭伊健 (Ekin Cheng) 名字必須分開
-        """
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
@@ -221,7 +287,7 @@ async def get_en_indexes(user_input, json_filename):
     message = user_input.lower()
     print(f'ori msg: {message}')
 
-    result = asyncio.run(en_agent.parse_message(message))
+    result = await en_agent.parse_message(message)  # 使用 await
 
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
@@ -232,7 +298,7 @@ async def get_en_indexes(user_input, json_filename):
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
-            ticket_time_indexes = en_get_ticket_time(user_input, en_json)
+            ticket_time_indexes = en_get_ticket_time(user_input, json_filename)
             print(f"ticket_time_indexes = {ticket_time_indexes}")
             return ticket_time_indexes
         elif result['intent']['name'] == "query_keyword":
@@ -240,8 +306,6 @@ async def get_en_indexes(user_input, json_filename):
             found_datetime = False
 
             for i in range(len(result['entities'])):
-                # if result['entities'][i]['entity'] != 'keyword' and result['entities'][i]['value']:
-                #     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
                 if result['entities'][i]['entity'] == 'datetime':
                     found_datetime = True
                 elif result['entities'][i]['entity'] == 'keyword':
@@ -266,23 +330,22 @@ async def get_en_indexes(user_input, json_filename):
                 print(f"keyword = {keyword}")
                 if found_datetime:
                     print('有keyword，也有datetime，取集合')
-                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
-                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
                     print(f"intersection = {intersection}")
-                    print(type(intersection))
                     return intersection
                 else:
                     print('有keyword，但是沒有datetime，直接顯示keyword indexes')
-                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, en_json)
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     return get_keyword_indexes_en_indexes
             else:
                 print('沒有keyword')
                 if found_datetime:
-                    en_dates_cities_indexes = en_dates_cities(user_input, en_json)
+                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     return en_dates_cities_indexes
                 else:
@@ -361,42 +424,31 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
     text: str = update.message.text
     user_id = update.message.chat.id
-    print(f'User ({user_id}) in {message_type}: "{text}"')  # 印出用戶訊息
-
-    # if message_type == 'group':  # 如果是群組訊息
-    #     if BOT_USERNAME in text:  # 如果訊息包含機器人的使用者名稱
-    #         new_text: str = text.replace(BOT_USERNAME, '')  # 去除機器人的使用者名稱
-    #         response: str = handle_response(new_text)  # 根據處理後的訊息回覆
-    #     else:
-    #         return
-    # else:  # 如果是個人訊息
-    # response: str = handle_response(text)  # 直接回覆
+    print(f'User ({user_id}) in {message_type}: "{text}"')
 
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     lines = [line.replace('\n', '').split('|||')[0] for line in lines]
     print('handle message', lines)
 
-    if str(user_id) in lines:  # 使用者已經選擇語言
+    if str(user_id) in lines:
         if get_user_language(str(user_id)) == 'zh':
-            await update.message.reply_text('中文')  # 回覆用戶的訊息
-            # response: str = handle_response(text)  # 直接回覆
-            # print('Bot:', response)  # 印出機器人的回覆
-            # await update.message.reply_text(response)  # 回覆用戶的訊息
-            found_indexes = get_zh_indexes(text, zh_json)
-            show_str = show_concert_info(found_indexes)
-            await update.message.reply_text(show_str)  # 回覆用戶的訊息
-
+            # await update.message.reply_text('中文')
+            found_indexes = await get_zh_indexes(text, zh_json)  # 使用 await
+            show_str = show_concert_info(found_indexes, 'zh')
+            if show_str != '':
+                await update.message.reply_text(show_str)
+            else:
+                await update.message.reply_text("對不起，我沒有找到相關的演唱會資訊。")
         else:
-            await update.message.reply_text('English')  # 回覆用戶的訊息
-            # response: str = handle_response(text)  # 直接回覆
-            # print('Bot:', response)  # 印出機器人的回覆
-            # await update.message.reply_text(response)  # 回覆用戶的訊息
-            found_indexes = get_en_indexes(text, en_json)
-            show_str = show_concert_info(found_indexes)
-            await update.message.reply_text(show_str)  # 回覆用戶的訊息
-
-    elif text.strip() in ('1', '2'):  # 使用者還沒選擇語言
+            # await update.message.reply_text('English')
+            found_indexes = await get_en_indexes(text, en_json)  # 使用 await
+            show_str = show_concert_info(found_indexes, 'en')
+            if show_str != '':
+                await update.message.reply_text(show_str)
+            else:
+                await update.message.reply_text("Sorry, I couldn't find any relevant concert information.")
+    elif text.strip() in ('1', '2'):
         user_language_preferences[user_id] = 'Chinese' if text.strip() == '1' else 'English'
         if user_language_preferences[user_id] == 'Chinese':
             await update.message.reply_text("沒問題! 你的偏好語言已設定為中文!")
@@ -429,5 +481,5 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)  # 添加處理錯誤的處理器
 
-    print('Polling...')  # 印出輪詢訊息
+    print('Go!')  # 印出輪詢訊息
     app.run_polling(poll_interval=3)  # 開始輪詢，設定輪詢間隔為3秒

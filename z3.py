@@ -144,7 +144,7 @@ import os
 # for file in json_files:
 #     print(f"\"concert_jsons/{file}\",")
 """"""
-from read_json_function import *
+from function_read_json import *
 
 # json_list = [
 #     "concert_jsons/concert_3_14_23.json",

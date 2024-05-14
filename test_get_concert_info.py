@@ -1,5 +1,5 @@
 from datetime import datetime
-from read_json_function import read_json
+from function_read_json import read_json
 
 new_all = read_json('0_useless/concert_data_new_zh.json')
 old_all = read_json('0_useless/concert_data_old_zh.json')
