@@ -28,12 +28,12 @@ user_language_file = "user_preferred_language.txt"
 
 """ zh config """
 zh_model_path = r'models/nlu-20240501-165733-frayed-acre.tar.gz'  # zh model
-zh_agent = Agent.load(zh_model_path)
+# zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
 en_model_path = r'en_models/nlu-20240511-033142-brilliant-set.tar.gz'
-en_agent = Agent.load(en_model_path)
+# en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
 
@@ -606,7 +606,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_daily_update, CronTrigger(hour=18, minute=33))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=20, minute=13))
     scheduler.start()
 
     print('Go!')
