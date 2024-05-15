@@ -396,11 +396,200 @@ async def send_daily_update():
         user_id, language = line.strip().split('|||')
         user_id = int(user_id)
         if language == 'zh':
-            for text in zh_texts:
-                await app.bot.send_message(chat_id=user_id, text=text)
+            msgs = await get_daily_msg('zh')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
         else:
-            for text in en_texts:
-                await app.bot.send_message(chat_id=user_id, text=text)
+            msgs = await get_daily_msg('en')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
+
+
+def check_if_today(text):
+    pattern = r"concert_(\d{1,2})_(\d{1,2})_(\d{1,2}).json"
+    month_day = re.search(pattern, text)
+    month = int(month_day.group(1))
+    day = int(month_day.group(2))
+
+    # print(month, datetime.now().month)
+    # print(day, datetime.now().day)
+    if month == datetime.now().month and day == datetime.now().day:
+        return True
+    else:
+        return False
+
+
+async def get_daily_msg(language):
+    new_file = get_latest_json_filename("new_concerts")
+    plus_file = get_latest_json_filename("plus_concerts")
+
+    if not (check_if_today(new_file) or check_if_today(plus_file)):
+        if language == 'zh':
+            formatted_str_list = ["今天沒有任何的資訊"]
+        else:
+            formatted_str_list = ["The is no information today."]
+
+        print('no new file and no plus file')
+        return formatted_str_list
+
+    # data = read_json(json_filename)
+    # pins = [item['pin'] for item in data]
+    #
+    # pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in pins]
+
+    formatted_str_list = []
+
+    if language == 'zh':
+        zh_data = read_json("concert_zh.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('新的演唱會資訊!')
+            for index in new_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                                        """
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
+
+            formatted_str_list.append('新的加場資訊!')
+            for index in plus_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                                                    """
+                formatted_str_list.append(formatted_str.strip())
+
+    if language == 'en':
+        en_data = read_json("concert_en.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('New Concert Information!')
+            for index in new_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Ticket Date: {sale_date_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            formatted_str_list.append('Additional Concert Announced!')
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in plus_pins]
+
+            for index in plus_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Ticket Date: {sale_date_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+    return formatted_str_list
 
 
 if __name__ == '__main__':
@@ -417,7 +606,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_daily_update, CronTrigger(hour=17, minute=40))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=18, minute=33))
     scheduler.start()
 
     print('Go!')

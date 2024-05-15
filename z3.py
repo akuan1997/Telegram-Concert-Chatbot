@@ -324,7 +324,7 @@ def testing_for_large(start_index, json_filename, mode):
 
         print(f"plus_concerts = {plus_concerts}")
         if plus_concerts:
-            with open('plus_concerts/new_concert_5_15_1.json', 'w', encoding='utf-8') as f:
+            with open('plus_concerts/plus_concert_5_15_1.json', 'w', encoding='utf-8') as f:
                 json.dump(new_data_filtered, f, ensure_ascii=False, indent=4)
                 print('寫入成功')
 
