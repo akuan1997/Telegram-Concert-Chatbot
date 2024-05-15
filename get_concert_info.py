@@ -3593,9 +3593,9 @@ def get_latest_concert_info(json_filename):
 
     shutil.move(json_filename, "concert_jsons")
     # """"""
-    # zh_en_tit_int("concert_zh.json", "concert_en.json")  # english version
-    # # zh_en_cit("concert_en.json")
-    # shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+    zh_en("concert_zh.json", "concert_en.json")  # english version
+    # zh_en_cit("concert_en.json")
+    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
     """"""
     emails = get_enews_emails()
     print(f"emails = {emails}")
@@ -3607,9 +3607,9 @@ def get_latest_concert_info(json_filename):
 def schedule_update():
     while True:
         current_time = datetime.now()
-        target_time = datetime.combine(current_time.date(), datetime.min.time()) + timedelta(hours=7, minutes=32)
+        target_time = datetime.combine(current_time.date(), datetime.min.time()) + timedelta(hours=20, minutes=00)
         if current_time > target_time:
-            target_time += timedelta(days=1)  # If it's already past 04:37 today, schedule for 04:37 tomorrow
+            target_time += timedelta(days=1)
 
         time_to_wait = (target_time - current_time).total_seconds()
         print(f"Waiting for {time_to_wait} seconds until the next update.")
@@ -4044,11 +4044,8 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 """"""
 
+# last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+# print(last_file)
 # concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
 # get_latest_concert_info(concert_today)
-# schedule_update()
-last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
-print(last_file)
-# email_content("new_concerts/new_concert_5_15_1.json")
-# content = email_content()
-# email_content1(get_latest_json_filename("new_concerts"), get_latest_json_filename("plus_concerts"))
+schedule_update()
