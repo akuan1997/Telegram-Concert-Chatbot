@@ -298,6 +298,7 @@ def testing_for_large(start_index, json_filename, mode):
         # 新宣布的演唱會資訊、可以刪除的演唱會資訊、資訊有更動的演唱會資訊
         new_data_filtered, plus_concerts, all_data = get_new_delete_compare_concerts(new_but_old_pins, old_but_new_pins,
                                                                                      new_data, old_data, all_data)
+
         print(f"len(new_data_filtered) = {len(new_data_filtered)}")
         print(f"len(plus_concerts) = {len(plus_concerts)}")
         for j in range(len(plus_concerts)):
@@ -314,6 +315,18 @@ def testing_for_large(start_index, json_filename, mode):
                 print('寫入成功')
         elif mode == 0:
             print('設定為未寫入')
+
+        print(f"new_data_filtered = {new_data_filtered}")
+        if new_data_filtered:
+            with open('new_concerts/test.json', 'w', encoding='utf-8') as f:
+                json.dump(new_data_filtered, f, ensure_ascii=False, indent=4)
+                print('寫入成功')
+
+        print(f"plus_concerts = {plus_concerts}")
+        if plus_concerts:
+            with open('plus_concerts/test.json', 'w', encoding='utf-8') as f:
+                json.dump(new_data_filtered, f, ensure_ascii=False, indent=4)
+                print('寫入成功')
 
         print(f"current_index = {current_index}")
         print(f"len(all_data) = {len(all_data)}")
@@ -406,12 +419,12 @@ json_list = [
 #                print(data[i]['tit'])
 
 """ 新舊對比 """
-shutil.copy(json_list[0], "concert_zh.json")  # test
-data = read_json("concert_zh.json")
-print(len(data))
-for i in range(len(json_list) - 1):
-    testing_for_large(i, "concert_zh.json", 1)
-
+# shutil.copy(json_list[0], "concert_zh.json")  # test
+# data = read_json("concert_zh.json")
+# print(len(data))
+# for i in range(len(json_list) - 1):
+#     testing_for_large(i, "concert_zh.json", 0)
+testing_for_large(37, "concert_zh.json", 0)
 """ 顯示一下url以及pin """
 # for i in range(len(json_list)):
 #     data = read_json(json_list[i])

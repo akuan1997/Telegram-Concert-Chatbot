@@ -1,12 +1,10 @@
-# https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1183s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
-
 from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
-
-import asyncio
 import logging
-from typing import Text
+import asyncio
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from rasa.core.agent import Agent
 from rasa.shared.utils.cli import print_info, print_success
@@ -30,12 +28,12 @@ user_language_file = "user_preferred_language.txt"
 
 """ zh config """
 zh_model_path = r'models/nlu-20240501-165733-frayed-acre.tar.gz'  # zh model
-zh_agent = Agent.load(zh_model_path)
+# zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
 en_model_path = r'en_models/nlu-20240511-033142-brilliant-set.tar.gz'
-en_agent = Agent.load(en_model_path)
+# en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
 
@@ -388,20 +386,17 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
-# async def schedule_update():
-#     while True:
-#         now = dt.now()
-#         target_time = dt.combine(now.date(), dt.min.time()) + timedelta(hours=4, minutes=59, seconds=30)
-#         if now > target_time:
-#             target_time += timedelta(days=1)  # If it's already past 04:37 today, schedule for 04:37 tomorrow
-#
-#         time_to_wait = (target_time - now).total_seconds()
-#         print(f"Waiting for {time_to_wait} seconds until the next update.")
-#         await asyncio.sleep(time_to_wait)
-#
-#         concert_today = f'concert_{target_time.month}_{target_time.day}_{target_time.hour}.json'
-#         await update_concert_info(concert_today)
-#         print(f"Updated concert info for {concert_today}")
+async def send_daily_update():
+    with open(user_language_file, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    for line in lines:
+        user_id, language = line.strip().split('|||')
+        user_id = int(user_id)
+        if language == 'zh':
+            await app.bot.send_message(chat_id=user_id, text="這是每日更新的中文消息")
+        else:
+            await app.bot.send_message(chat_id=user_id, text="This is the daily update message in English")
 
 
 if __name__ == '__main__':
@@ -417,39 +412,9 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)
 
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(send_daily_update, CronTrigger(hour=9, minute=2))
+    scheduler.start()
+
     print('Go!')
     app.run_polling(poll_interval=3)
-
-""""""
-
-# if __name__ == '__main__':
-#     print('Starting bot...')
-#     app = Application.builder().token(TOKEN).build()
-#
-#     app.add_handler(CommandHandler('start', start_command))
-#     app.add_handler(CommandHandler('help', help_command))
-#     app.add_handler(CommandHandler('custom', custom_command))
-#     app.add_handler(CommandHandler('switch_language', switch_language_command))
-#
-#     app.add_handler(MessageHandler(filters.TEXT, handle_message))
-#
-#     app.add_error_handler(error)
-#
-#     # # # Create and start the thread
-#     # concert_today = f'concert_{dt.now().month}_{dt.now().day}_{dt.now().hour}.json'
-#     # print(f"concert_today = {concert_today}")
-#     # # info_thread = threading.Thread(target=update_concert_info, args=(concert_today,))
-#     # # info_thread.start()
-#     #
-#     # update_thread = threading.Thread(target=update_concert_info, daemon=True)
-#     # update_thread.start()
-#
-#     # Start the scheduling thread
-#     # schedule_thread = threading.Thread(target=schedule_update, daemon=True)
-#     # schedule_thread.start()
-#
-#     # Start the scheduling task
-#     asyncio.create_task(schedule_update())
-#
-#     print('Go!')
-#     app.run_polling(poll_interval=3)

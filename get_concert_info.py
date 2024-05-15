@@ -9,10 +9,11 @@ from datetime import datetime, time
 from googletrans import Translator
 from fuzzywuzzy import process
 
-
 from get_concert_new_old import *
 from get_data_from_text import *
 from concert_translation import *
+from get_enews_emails import *
+from concert_send_email import *
 
 zh_cities = ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "苗栗", "彰化", "南投", "雲林",
              "嘉義", "屏東", "宜蘭", "花蓮", "台東", "金門", "澎湖", "連江"]
@@ -30,12 +31,6 @@ concert_json_filenames = ['era.json', 'indievox.json', 'kktix.json', 'livenation
 
 with open('concert_zh.json', 'r', encoding='utf-8') as f:
     all_data = json.load(f)
-
-month = datetime.now().month
-day = datetime.now().day
-hour = datetime.now().hour
-
-concert_today = f'concert_{month}_{day}_{hour}.json'
 
 
 def success_msg(txt):
@@ -3581,18 +3576,126 @@ def get_latest_concert_info(json_filename):
     # # print(f'\n------------------\nzh okay!\n------------------\n')
     # # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
     # # print('--- Delete all past ticketing time ---')
-    """"""
+    """ compare new & old """
     new_concerts, plus_concerts = get_new_old(json_filename)
+
     print(f"new_concerts = {new_concerts}")
+    if new_concerts:
+        with open(f'new_concerts/new_{json_filename}', 'w', encoding='utf-8') as f:
+            json.dump(new_concerts, f, ensure_ascii=False, indent=4)
+            print('寫入成功')
+
     print(f"plus_concerts = {plus_concerts}")
+    if plus_concerts:
+        with open(f'plus_concerts/plus_{json_filename}', 'w', encoding='utf-8') as f:
+            json.dump(plus_concerts, f, ensure_ascii=False, indent=4)
+            print('寫入成功')
+
     shutil.move(json_filename, "concert_jsons")
     # """"""
-    zh_en_tit_int("concert_zh.json", "concert_en.json")  # english version
-    zh_en_cit("concert_en.json")
-    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+    # zh_en_tit_int("concert_zh.json", "concert_en.json")  # english version
+    # # zh_en_cit("concert_en.json")
+    # shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+    """"""
+    emails = get_enews_emails()
+    print(f"emails = {emails}")
+    content = email_content(f"new_concerts/new_{json_filename}")
+    for email in emails:
+        send_email("新的演唱會資訊! New Concert Information!", content, email)
 
-    return new_concerts, plus_concerts
 
+def schedule_update():
+    while True:
+        current_time = datetime.now()
+        target_time = datetime.combine(current_time.date(), datetime.min.time()) + timedelta(hours=7, minutes=32)
+        if current_time > target_time:
+            target_time += timedelta(days=1)  # If it's already past 04:37 today, schedule for 04:37 tomorrow
+
+        time_to_wait = (target_time - current_time).total_seconds()
+        print(f"Waiting for {time_to_wait} seconds until the next update.")
+        time.sleep(time_to_wait)
+
+        concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
+        get_latest_concert_info(concert_today)
+        print(f"Updated concert info for {concert_today}")
+
+
+def email_content(json_filename):
+    data = read_json(json_filename)
+    pins = [item['pin'] for item in data]
+    zh_data = read_json("concert_zh.json")
+    en_data = read_json("concert_en.json")
+    pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in pins]
+    # for index in pin_indexes:
+    #     print(zh_data[index]['tit'])
+    formatted_str_list = ['新的演唱會資訊!\n中文版本']
+
+    for index in pin_indexes:
+        concert = zh_data[index]
+
+        if concert['prc']:
+            sorted_prices = sorted(concert['prc'], reverse=True)
+            sorted_prices_str = ', '.join(map(str, sorted_prices))
+        else:
+            sorted_prices_str = '-'
+        concert_date_str = ', '.join(concert['pdt'])
+
+        if concert['sdt']:
+            sale_date_str = ', '.join(concert['sdt'])
+        else:
+            sale_date_str = '-'
+
+        if concert['loc']:
+            location_str = ', '.join(concert['loc'])
+        else:
+            location_str = '-'
+
+        formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                    """
+        formatted_str_list.append(formatted_str.strip())
+    formatted_str_list.append('---\n\nNew concert information!\nEnglish version')
+    for index in pin_indexes:
+        concert = en_data[index]
+
+        if concert['prc']:
+            sorted_prices = sorted(concert['prc'], reverse=True)
+            sorted_prices_str = ', '.join(map(str, sorted_prices))
+        else:
+            sorted_prices_str = '-'
+        concert_date_str = ', '.join(concert['pdt'])
+
+        if concert['sdt']:
+            sale_date_str = ', '.join(concert['sdt'])
+        else:
+            sale_date_str = '-'
+
+        if concert['loc']:
+            location_str = ', '.join(concert['loc'])
+        else:
+            location_str = '-'
+
+        formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+            """
+        formatted_str_list.append(formatted_str.strip())
+
+    content_str = '\n\n'.join(formatted_str_list)
+    print(content_str)
+
+    return content_str
+
+""""""
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
 thread_livenation = threading.Thread(target=get_livenation,
@@ -3602,13 +3705,6 @@ threading_ticketplus = threading.Thread(target=get_ticketplus,
                                         args=('Ticket Plus', 'ticketplus.json', 'ticketplus_temp.txt'))
 thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "kktix_temp.txt"))
 
-''''''
-
-# get_latest_concert_info(concert_today)
-# last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
-# print(last_file)
-# zh_en("concert_zh.json", "concert_en.json")  # english version
-# shutil.copy("concert_en.json", f"en_concert_jsons/en_concert_5_14_17.json")
 ''''''
 
 # get_era('era', 'era.json', 'era_temp.txt')
@@ -3645,3 +3741,12 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 #         location, address = kktix_get_location_str1(page, location, address)
 #         print(location)
 #         print(address)
+
+""""""
+
+# concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
+# get_latest_concert_info(concert_today)
+# schedule_update()
+# last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
+# print(last_file)
+email_content("new_concerts/test.json")
