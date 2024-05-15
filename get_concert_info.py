@@ -3904,6 +3904,8 @@ def email_content():
 """
             formatted_str_list.append(formatted_str.strip())
 
+    formatted_str_list.append('--------------------------------------------')
+
     en_data = read_json("concert_en.json")
 
     if check_if_today(new_file):
@@ -4048,4 +4050,4 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 # print(last_file)
 # concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
 # get_latest_concert_info(concert_today)
-schedule_update()
+# schedule_update()
