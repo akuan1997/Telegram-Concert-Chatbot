@@ -318,13 +318,13 @@ def testing_for_large(start_index, json_filename, mode):
 
         print(f"new_data_filtered = {new_data_filtered}")
         if new_data_filtered:
-            with open('new_concerts/test.json', 'w', encoding='utf-8') as f:
+            with open('new_concerts/new_concert_5_15_1.json', 'w', encoding='utf-8') as f:
                 json.dump(new_data_filtered, f, ensure_ascii=False, indent=4)
                 print('寫入成功')
 
         print(f"plus_concerts = {plus_concerts}")
         if plus_concerts:
-            with open('plus_concerts/test.json', 'w', encoding='utf-8') as f:
+            with open('plus_concerts/new_concert_5_15_1.json', 'w', encoding='utf-8') as f:
                 json.dump(new_data_filtered, f, ensure_ascii=False, indent=4)
                 print('寫入成功')
 

@@ -3583,13 +3583,13 @@ def get_latest_concert_info(json_filename):
     if new_concerts:
         with open(f'new_concerts/new_{json_filename}', 'w', encoding='utf-8') as f:
             json.dump(new_concerts, f, ensure_ascii=False, indent=4)
-            print('寫入成功')
+            print('new concerts 寫入成功')
 
     print(f"plus_concerts = {plus_concerts}")
     if plus_concerts:
         with open(f'plus_concerts/plus_{json_filename}', 'w', encoding='utf-8') as f:
             json.dump(plus_concerts, f, ensure_ascii=False, indent=4)
-            print('寫入成功')
+            print('plus concerts 寫入成功')
 
     shutil.move(json_filename, "concert_jsons")
     # """"""
@@ -3695,6 +3695,129 @@ def email_content(json_filename):
 
     return content_str
 
+
+def email_content1(new_file, plus_file):
+    print(f"--- test ---\nnew_file = {new_file}")
+    print(f"plus_file = {plus_file}\n--- test ---\n")
+    zh_data = read_json("concert_zh.json")
+    en_data = read_json("concert_en.json")
+
+    new_data = read_json(f"new_concerts/{new_file}")
+    new_pins = [item['pin'] for item in new_data]
+    new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
+
+    plus_data = read_json(f"plus_concerts/{plus_file}")
+    plus_pins = [item['pin'] for item in plus_data]
+    plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
+
+    new_latest_filename = get_latest_json_filename("new_concerts")
+    pattern = r"new_concert_(\d{1,2})_(\d{1,2})_(\d{1,2}).json"
+    md = re.search(pattern, new_latest_filename)
+    if int(md.group(1)) == datetime.now().month and int(md.group(2)) == datetime.now().day:
+        if new_pin_indexes:
+            # 新的演唱會資訊 中文
+            formatted_str_list = ['新的演唱會資訊! (The English version is below.)']
+            for index in new_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                            """
+                formatted_str_list.append(formatted_str.strip())
+
+        if plus_pin_indexes:
+            formatted_str_list.append("新的加場資訊!")
+            # 新的演唱會資訊 中文
+            for index in plus_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                                        """
+                formatted_str_list.append(formatted_str.strip())
+
+#     # 新的演唱會資訊 英文
+#     formatted_str_list.append('---\n\nNew concert information!')
+#     for index in new_pin_indexes:
+#         concert = en_data[index]
+#
+#         if concert['prc']:
+#             sorted_prices = sorted(concert['prc'], reverse=True)
+#             sorted_prices_str = ', '.join(map(str, sorted_prices))
+#         else:
+#             sorted_prices_str = '-'
+#         concert_date_str = ', '.join(concert['pdt'])
+#
+#         if concert['sdt']:
+#             sale_date_str = ', '.join(concert['sdt'])
+#         else:
+#             sale_date_str = '-'
+#
+#         if concert['loc']:
+#             location_str = ', '.join(concert['loc'])
+#         else:
+#             location_str = '-'
+#
+#         formatted_str = f"""
+# - {concert['tit']}
+# - 日期: {concert_date_str}
+# - 票價: {sorted_prices_str}
+# - 售票日期: {sale_date_str}
+# - 地點: {location_str}
+# {concert['url']}
+#             """
+#         formatted_str_list.append(formatted_str.strip())
+
+    content_str = '\n\n'.join(formatted_str_list)
+    print(content_str)
+
+    return content_str
+
+
 """"""
 
 thread_era = threading.Thread(target=get_era, args=('era', 'era.json', 'era_temp.txt'))
@@ -3749,4 +3872,5 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 # schedule_update()
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
-email_content("new_concerts/test.json")
+# email_content("new_concerts/new_concert_5_15_1.json")
+email_content1(get_latest_json_filename("new_concerts"), get_latest_json_filename("plus_concerts"))

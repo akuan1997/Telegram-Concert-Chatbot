@@ -390,13 +390,17 @@ async def send_daily_update():
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
+    zh_texts = ['中文1', '中文2']
+    en_texts = ['eng1', 'eng2']
     for line in lines:
         user_id, language = line.strip().split('|||')
         user_id = int(user_id)
         if language == 'zh':
-            await app.bot.send_message(chat_id=user_id, text="這是每日更新的中文消息")
+            for text in zh_texts:
+                await app.bot.send_message(chat_id=user_id, text=text)
         else:
-            await app.bot.send_message(chat_id=user_id, text="This is the daily update message in English")
+            for text in en_texts:
+                await app.bot.send_message(chat_id=user_id, text=text)
 
 
 if __name__ == '__main__':
@@ -413,7 +417,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_daily_update, CronTrigger(hour=9, minute=2))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=17, minute=40))
     scheduler.start()
 
     print('Go!')

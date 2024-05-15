@@ -281,7 +281,132 @@
 # #                 print(data[i]['cit'])
 # #                 with open("concert_en1.json", 'w', encoding='utf-8') as f:
 # #                     json.dump(data, f, indent=4, ensure_ascii=False)
-with open('user_preferred_language.txt', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
-users = [line.split('|||')[0] for line in lines]
-print(users)
+# with open('user_preferred_language.txt', 'r', encoding='utf-8') as f:
+#     lines = f.readlines()
+# users = [line.split('|||')[0] for line in lines]
+# print(users)
+import os
+from function_read_json import *
+import re
+from datetime import datetime
+
+def get_latest_json_filename(directory):
+    # 檢查目錄是否存在
+    if not os.path.exists(directory):
+        print(f"目錄 '{directory}' 不存在。")
+        return None
+
+    # 獲取目錄中的所有檔案名稱
+    filenames = os.listdir(directory)
+
+    # 過濾出所有的 .json 檔案
+    json_files = [filename for filename in filenames if filename.endswith(".json")]
+
+    # 如果沒有找到 .json 檔案，返回 None
+    if not json_files:
+        print("沒有找到任何 .json 檔案。")
+        return None
+
+    # 根據檔案的修改時間對 .json 檔案進行排序，最新的檔案在最後
+    json_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)))
+
+    # 返回最新的 .json 檔案
+    return json_files[-1]
+
+
+def get_daily_msg(json_filename, language):
+    data = read_json(json_filename)
+    pins = [item['pin'] for item in data]
+    zh_data = read_json("concert_zh.json")
+    en_data = read_json("concert_en.json")
+    pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in pins]
+
+    if language == 'zh':
+        formatted_str_list = ['新的演唱會資訊!']
+        for index in pin_indexes:
+            concert = zh_data[index]
+
+            if concert['prc']:
+                sorted_prices = sorted(concert['prc'], reverse=True)
+                sorted_prices_str = ', '.join(map(str, sorted_prices))
+            else:
+                sorted_prices_str = '-'
+            concert_date_str = ', '.join(concert['pdt'])
+
+            if concert['sdt']:
+                sale_date_str = ', '.join(concert['sdt'])
+            else:
+                sale_date_str = '-'
+
+            if concert['loc']:
+                location_str = ', '.join(concert['loc'])
+            else:
+                location_str = '-'
+
+            formatted_str = f"""
+        - {concert['tit']}
+        - 日期: {concert_date_str}
+        - 票價: {sorted_prices_str}
+        - 售票日期: {sale_date_str}
+        - 地點: {location_str}
+        {concert['url']}
+                            """
+            formatted_str_list.append(formatted_str.strip())
+    if language == 'en':
+        formatted_str_list = ['New concert information!']
+        for index in pin_indexes:
+            concert = en_data[index]
+
+            if concert['prc']:
+                sorted_prices = sorted(concert['prc'], reverse=True)
+                sorted_prices_str = ', '.join(map(str, sorted_prices))
+            else:
+                sorted_prices_str = '-'
+            concert_date_str = ', '.join(concert['pdt'])
+
+            if concert['sdt']:
+                sale_date_str = ', '.join(concert['sdt'])
+            else:
+                sale_date_str = '-'
+
+            if concert['loc']:
+                location_str = ', '.join(concert['loc'])
+            else:
+                location_str = '-'
+
+            formatted_str = f"""
+        - {concert['tit']}
+        - 日期: {concert_date_str}
+        - 票價: {sorted_prices_str}
+        - 售票日期: {sale_date_str}
+        - 地點: {location_str}
+        {concert['url']}
+                    """
+            formatted_str_list.append(formatted_str.strip())
+
+    # daily_msg = '\n\n'.join(formatted_str_list)
+    # print(f"daily_msg = {daily_msg}")
+
+    return formatted_str_list
+
+latest_filename = get_latest_json_filename("new_concerts")
+print(latest_filename)
+pattern = r"new_concert_(\d{1,2})_(\d{1,2})_(\d{1,2}).json"
+md = re.search(pattern, latest_filename)
+month = int(md.group(1))
+day = int(md.group(2))
+print(month, datetime.now().month)
+print(day, datetime.now().day)
+if month == datetime.now().month and day == datetime.now().day:
+    print('oh ya')
+else:
+    print('oh no')
+# txt = "new_concert_3_20_16.json"
+# pattern = r"new_concert_(\d{1,2})_(\d{1,2})_16.json"
+# md = re.search(pattern, txt)
+# month = md.group(1)
+# day = md.group(2)
+# print(month)
+# print(day)
+# if month == datetime.now().month and day == datetime.now().day:
+#     print('oh ya')
