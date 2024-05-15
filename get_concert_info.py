@@ -4050,9 +4050,9 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 # print(last_file)
 # concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
 # get_latest_concert_info(concert_today)
-# schedule_update()
-emails = get_enews_emails()
-print(f"emails = {emails}")
-content = email_content()
-for email in emails:
-    send_email("新的演唱會資訊! New Concert Information!", content, email)
+schedule_update()
+# emails = get_enews_emails()
+# print(f"emails = {emails}")
+# content = email_content()
+# for email in emails:
+#     send_email("新的演唱會資訊! New Concert Information!", content, email)

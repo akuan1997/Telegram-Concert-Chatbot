@@ -606,7 +606,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_daily_update, CronTrigger(hour=20, minute=13))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=21))
     scheduler.start()
 
     print('Go!')
