@@ -3595,7 +3595,7 @@ def get_latest_concert_info(json_filename):
     # """"""
     zh_en("concert_zh.json", "concert_en.json")  # english version
     # zh_en_cit("concert_en.json")
-    shutil.copy("concert_en.json", f"en_concert_jsons/en_{concert_today}")
+    shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
     """"""
     emails = get_enews_emails()
     print(f"emails = {emails}")

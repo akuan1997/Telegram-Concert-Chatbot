@@ -1,12 +1,10 @@
-# https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1183s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
-
 from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
-
-import asyncio
 import logging
-from typing import Text
+import asyncio
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from rasa.core.agent import Agent
 from rasa.shared.utils.cli import print_info, print_success
@@ -388,20 +386,210 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
-# async def schedule_update():
-#     while True:
-#         now = dt.now()
-#         target_time = dt.combine(now.date(), dt.min.time()) + timedelta(hours=4, minutes=59, seconds=30)
-#         if now > target_time:
-#             target_time += timedelta(days=1)  # If it's already past 04:37 today, schedule for 04:37 tomorrow
-#
-#         time_to_wait = (target_time - now).total_seconds()
-#         print(f"Waiting for {time_to_wait} seconds until the next update.")
-#         await asyncio.sleep(time_to_wait)
-#
-#         concert_today = f'concert_{target_time.month}_{target_time.day}_{target_time.hour}.json'
-#         await update_concert_info(concert_today)
-#         print(f"Updated concert info for {concert_today}")
+async def send_daily_update():
+    with open(user_language_file, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    zh_texts = ['中文1', '中文2']
+    en_texts = ['eng1', 'eng2']
+    for line in lines:
+        user_id, language = line.strip().split('|||')
+        user_id = int(user_id)
+        if language == 'zh':
+            msgs = await get_daily_msg('zh')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
+        else:
+            msgs = await get_daily_msg('en')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
+
+
+def check_if_today(text):
+    pattern = r"concert_(\d{1,2})_(\d{1,2})_(\d{1,2}).json"
+    month_day = re.search(pattern, text)
+    month = int(month_day.group(1))
+    day = int(month_day.group(2))
+
+    # print(month, datetime.now().month)
+    # print(day, datetime.now().day)
+    if month == datetime.now().month and day == datetime.now().day:
+        return True
+    else:
+        return False
+
+
+async def get_daily_msg(language):
+    new_file = get_latest_json_filename("new_concerts")
+    plus_file = get_latest_json_filename("plus_concerts")
+
+    if not (check_if_today(new_file) or check_if_today(plus_file)):
+        if language == 'zh':
+            formatted_str_list = ["今天沒有任何的資訊"]
+        else:
+            formatted_str_list = ["The is no information today."]
+
+        print('no new file and no plus file')
+        return formatted_str_list
+
+    # data = read_json(json_filename)
+    # pins = [item['pin'] for item in data]
+    #
+    # pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in pins]
+
+    formatted_str_list = []
+
+    if language == 'zh':
+        zh_data = read_json("concert_zh.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('新的演唱會資訊!')
+            for index in new_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                                        """
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
+
+            formatted_str_list.append('新的加場資訊!')
+            for index in plus_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 售票日期: {sale_date_str}
+- 地點: {location_str}
+{concert['url']}
+                                                    """
+                formatted_str_list.append(formatted_str.strip())
+
+    if language == 'en':
+        en_data = read_json("concert_en.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('New Concert Information!')
+            for index in new_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Ticket Date: {sale_date_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            formatted_str_list.append('Additional Concert Announced!')
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in plus_pins]
+
+            for index in plus_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Ticket Date: {sale_date_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+    return formatted_str_list
 
 
 if __name__ == '__main__':
@@ -417,39 +605,9 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)
 
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(send_daily_update, CronTrigger(hour=18, minute=33))
+    scheduler.start()
+
     print('Go!')
     app.run_polling(poll_interval=3)
-
-""""""
-
-# if __name__ == '__main__':
-#     print('Starting bot...')
-#     app = Application.builder().token(TOKEN).build()
-#
-#     app.add_handler(CommandHandler('start', start_command))
-#     app.add_handler(CommandHandler('help', help_command))
-#     app.add_handler(CommandHandler('custom', custom_command))
-#     app.add_handler(CommandHandler('switch_language', switch_language_command))
-#
-#     app.add_handler(MessageHandler(filters.TEXT, handle_message))
-#
-#     app.add_error_handler(error)
-#
-#     # # # Create and start the thread
-#     # concert_today = f'concert_{dt.now().month}_{dt.now().day}_{dt.now().hour}.json'
-#     # print(f"concert_today = {concert_today}")
-#     # # info_thread = threading.Thread(target=update_concert_info, args=(concert_today,))
-#     # # info_thread.start()
-#     #
-#     # update_thread = threading.Thread(target=update_concert_info, daemon=True)
-#     # update_thread.start()
-#
-#     # Start the scheduling thread
-#     # schedule_thread = threading.Thread(target=schedule_update, daemon=True)
-#     # schedule_thread.start()
-#
-#     # Start the scheduling task
-#     asyncio.create_task(schedule_update())
-#
-#     print('Go!')
-#     app.run_polling(poll_interval=3)
