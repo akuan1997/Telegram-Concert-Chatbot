@@ -1,7 +1,4 @@
 11501|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0E994TH_04_04_12_31
-11502|||https://www.indievox.com/activity/detail/24_iv0291996_05_15_20
-11503|||https://www.indievox.com/activity/detail/24_iv02970fe_05_15_19
-11504|||https://ticketplus.com.tw/activity/412bc49904bbd0f6ab1ed1c2b2a22f4f_05_15_20
 11505|||https://waynessosad.kktix.cc/events/wss2024s
 11506|||https://ticketplus.com.tw/activity/dddea6b6316a87e04091f250acc588a7_05_16_20
 11507|||https://ticketplus.com.tw/activity/c8ef0619263e45f0bccd83756ca318ae_05_16_19
@@ -16,7 +13,6 @@
 11516|||https://jensmusical.kktix.cc/events/se4g7s
 11517|||https://www.indievox.com/activity/detail/24_iv029776b_05_17_19
 11518|||https://asiamedia-2.kktix.cc/events/jkdswewr
-11519|||https://asiamedia-2.kktix.cc/events/jkdswe01
 11520|||https://goldendeerjr.kktix.cc/events/keswlkfo1
 11521|||https://justlive.kktix.cc/events/hzeger
 11522|||https://sunnysideup.kktix.cc/events/cfd976a4-01afd
@@ -32,7 +28,6 @@
 11532|||https://ticketplus.com.tw/activity/c9fce3391591ff002a18f2a0bf69f562_05_18_05_28
 11533|||https://ticketplus.com.tw/activity/dc209500f6b030efad4935bd7a1ce364_05_18_19
 11534|||https://ticketplus.com.tw/activity/8b5c5f77cb5b9f1a2a92e01e422c3b9b_05_18_19
-11535|||https://theartistudio.kktix.cc/events/1f4cb314
 11536|||https://10percent.kktix.cc/events/d5a7610d
 11537|||https://10percent.kktix.cc/events/901b42c3
 11538|||https://reasonbrothers.kktix.cc/events/ukllef-01
@@ -41,7 +36,6 @@
 11541|||https://www.indievox.com/activity/detail/24_iv0291088_05_19_19
 11542|||https://ticketplus.com.tw/activity/9741b0dbcf2e2016b60bcf89644e949a_05_19_17
 11543|||https://ticketplus.com.tw/activity/36782bd6be30eafb212174f4ae04483d_05_19_19
-11544|||https://theartistudio.kktix.cc/events/2f76a285
 11545|||https://romanticoffice.kktix.cc/events/240521
 11546|||https://riversidelivehouse.kktix.cc/events/240521-1121-b
 11547|||https://theuumouth.kktix.cc/events/uu240522
@@ -187,7 +181,6 @@
 11687|||https://amuse-binlive.kktix.cc/events/f628bb3d
 11688|||https://ticketplus.com.tw/activity/cd3463e3e0ba3a6bc24655590e5ad7a4_06_22_19
 11689|||https://ticketplus.com.tw/activity/a6ead6a3d9cb2e75054902e51f690727_06_22_20
-11690|||https://reasonbrothers.kktix.cc/events/ukllef-06
 11691|||https://www.livenation.com.tw/show/1487888/2024-lee-youngji-world-tour-all-or-nothing/taipei/2024-06-22/tw_6_22_19
 11692|||https://www.indievox.com/activity/detail/24_iv02946f0_06_23_19
 11693|||https://www.livenation.com.tw/show/1485467/-babymonster-presents-see-you-there-in-taipei/taipei/2024-06-23/tw_6_23_19
@@ -264,8 +257,6 @@
 11764|||https://www.livenation.com.tw/show/1485152/conan-gray-found-heaven-on-tour/taipei/2024-08-30/tw_8_30_20
 11765|||https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw_8_31_20
 11766|||https://kklivetw.kktix.cc/events/2024kstttsmconcert
-11767|||https://ticketplus.com.tw/activity/6cc01185ce41c96d80dd41425dcd2a81_09_03_20
-11768|||https://ticketplus.com.tw/activity/6cc01185ce41c96d80dd41425dcd2a81_09_04_20
 11769|||https://laruedesign.kktix.cc/events/2wahj5
 11770|||https://www.indievox.com/activity/detail/24_iv02922d5_09_07_19
 11771|||https://www.indievox.com/activity/detail/24_iv02922d5_09_08_17
@@ -284,3 +275,13 @@
 11784|||https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw_12_10_20
 11785|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0I5F83G_05_10_14
 11786|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0I5F83G_05_11_14
+11798|||https://www.indievox.com/activity/detail/24_iv030014e_06_07_19
+11799|||https://www.indievox.com/activity/detail/24_iv0299336_06_09_22
+11800|||https://www.indievox.com/activity/detail/24_iv03004ad_06_14_20
+11801|||https://www.indievox.com/activity/detail/24_iv029926b_06_29_18
+11802|||https://www.indievox.com/activity/detail/24_iv030033f_07_07_19
+11803|||https://goodball.kktix.cc/events/ba9cc92
+11804|||https://qstyle.kktix.cc/events/0d123b42
+11805|||https://altanightclub.kktix.cc/events/fsfsd
+11806|||https://omni.kktix.cc/events/730ac62b
+11807|||https://lerh.kktix.cc/events/f34e4327

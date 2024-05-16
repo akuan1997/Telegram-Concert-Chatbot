@@ -3597,11 +3597,16 @@ def get_latest_concert_info(json_filename):
     # zh_en_cit("concert_en.json")
     shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
     """"""
-    emails = get_enews_emails()
-    print(f"emails = {emails}")
-    content = email_content()
-    for email in emails:
-        send_email("新的演唱會資訊! New Concert Information!", content, email)
+    while True:
+        try:
+            emails = get_enews_emails()
+            print(f"emails = {emails}")
+            content = email_content()
+            for email in emails:
+                send_email("新的演唱會資訊! New Concert Information!", content, email)
+            break
+        except:
+            continue
 
 
 def schedule_update():
