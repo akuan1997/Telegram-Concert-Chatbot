@@ -129,8 +129,8 @@ def run_cmdline(model_path: Text, user_input) -> None:
     # print(f'find singer?', find_singer)
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
-    if result['intent']['confidence'] > 0.6:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # if result['intent']['confidence'] > 0.6:
+    #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     print('--')
     if len(result['entities']) == 0:
         print('No Entities')
@@ -229,8 +229,8 @@ def run_cmdline1(model_path: Text, words) -> None:
         # print(f'find singer?', find_singer)
         print(f"intent: {result['intent']['name']}")
         print(f"score: {result['intent']['confidence']}")
-        if result['intent']['confidence'] > 0.6:
-            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # if result['intent']['confidence'] > 0.6:
+        #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         print('--')
         if len(result['entities']) == 0:
             print('No Entities')

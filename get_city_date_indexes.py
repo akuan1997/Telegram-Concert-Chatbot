@@ -1459,7 +1459,7 @@ def en_dates_cities(text, json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    print(f'ori msg: {text}')
+    # print(f'ori msg: {text}')
 
     # text = en_text_replacement(text)
     #
@@ -2458,7 +2458,7 @@ def zh_dates_cities(text, json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    print(f'ori str {text}')  # 原始字串
+    # print(f'ori str {text}')  # 原始字串
 
     """ 開始處理日期 """
     time_tags, matched_texts, matched_indexes, matched_time_lines, text, text_for_indexing = zh_get_dates(text)

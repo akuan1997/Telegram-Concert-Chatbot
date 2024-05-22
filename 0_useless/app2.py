@@ -227,8 +227,8 @@ async def get_en_indexes(user_input, json_filename):
 
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
-    if result['intent']['confidence'] > 0.6:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # if result['intent']['confidence'] > 0.6:
+    #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     print('--')
     if len(result['entities']) == 0:
         print('No Entities')

@@ -135,9 +135,9 @@ async def get_zh_indexes(user_input, json_filename):
     print(f'find singer?', find_singer)
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
-    if result['intent']['confidence'] > 0.6:
-        print('信心程度大於六成')
-    print('--')
+    # if result['intent']['confidence'] > 0.6:
+    #     print('信心程度大於六成')
+    # print('--')
 
     if len(result['entities']) == 0:
         print('No Entities')
@@ -232,9 +232,9 @@ async def get_en_indexes(user_input, json_filename):
 
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
-    if result['intent']['confidence'] > 0.6:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    print('--')
+    # if result['intent']['confidence'] > 0.6:
+    #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # print('--')
     if len(result['entities']) == 0:
         print('No Entities')
     else:
@@ -364,7 +364,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             found_indexes = await get_en_indexes(text, en_json)
             messages = show_concert_info(found_indexes, 'en')
 
-        print(f"一共找到{len(messages)}筆資料")
+        print(f"一共找到{len(found_indexes)}筆資料")
         for msg in messages:
             await update.message.reply_text(msg)
 
