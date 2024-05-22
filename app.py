@@ -226,7 +226,7 @@ async def get_en_indexes(user_input, json_filename):
 
     print_success("NLU model loaded. Type a message and press enter to parse it.")
     message = user_input.lower()
-    print(f'ori msg: {message}')
+    # print(f'ori msg: {message}')
 
     result = await en_agent.parse_message(message)
 
