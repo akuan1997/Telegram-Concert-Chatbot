@@ -83,18 +83,18 @@ def show_concert_info(indexes, language):
         if language == 'zh':
             formatted_str = f"""
 - {concert['tit']}
-- 日期: {concert_date_str}
-- 票價: {sorted_prices_str}
 - 售票日期: {sale_date_str}
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
 - 地點: {location_str}
 {concert['url']}
             """
         elif language == 'en':
             formatted_str = f"""
 - {concert['tit']}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Ticket Price: {sorted_prices_str}
-- Sale Date: {sale_date_str}
 - Location: {location_str}
 {concert['url']}
             """

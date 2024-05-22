@@ -2,7 +2,6 @@
 11505|||https://waynessosad.kktix.cc/events/wss2024s
 11532|||https://ticketplus.com.tw/activity/c9fce3391591ff002a18f2a0bf69f562_05_18_05_28
 11547|||https://theuumouth.kktix.cc/events/uu240522
-11548|||https://cohesionmusic.kktix.cc/events/0522-0911
 11549|||https://romanticoffice.kktix.cc/events/240523
 11550|||https://ticketplus.com.tw/activity/7801c68aaf7f9c396a8098d1ca068041_05_23_19
 11551|||https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw_5_23_20
@@ -220,7 +219,6 @@
 11764|||https://www.livenation.com.tw/show/1485152/conan-gray-found-heaven-on-tour/taipei/2024-08-30/tw_8_30_20
 11765|||https://www.livenation.com.tw/show/1483664/laufey-bewitched-the-goddess-tour-asia-and-australia-/taipei/2024-08-31/tw_8_31_20
 11766|||https://kklivetw.kktix.cc/events/2024kstttsmconcert
-11769|||https://laruedesign.kktix.cc/events/2wahj5
 11770|||https://www.indievox.com/activity/detail/24_iv02922d5_09_07_19
 11771|||https://www.indievox.com/activity/detail/24_iv02922d5_09_08_17
 11772|||https://ticketplus.com.tw/activity/d6c1bd61eb32f4f72de5e3db7bcef4bc_09_14_22
@@ -235,7 +233,6 @@
 11781|||https://www.indievox.com/activity/detail/24_iv02984f2_12_05_20
 11782|||https://www.indievox.com/activity/detail/24_iv02984f2_12_06_20
 11783|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0F21YE0_12_07_19
-11784|||https://www.livenation.com.tw/show/1484599/porter-robinson-smile-d-world-tour/taipei/2024-12-10/tw_12_10_20
 11785|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0I5F83G_05_10_14
 11786|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0I5F83G_05_11_14
 11798|||https://www.indievox.com/activity/detail/24_iv030014e_06_07_19
@@ -244,7 +241,6 @@
 11801|||https://www.indievox.com/activity/detail/24_iv029926b_06_29_18
 11802|||https://www.indievox.com/activity/detail/24_iv030033f_07_07_19
 11803|||https://goodball.kktix.cc/events/ba9cc92
-11804|||https://qstyle.kktix.cc/events/0d123b42
 11805|||https://altanightclub.kktix.cc/events/fsfsd
 11806|||https://omni.kktix.cc/events/730ac62b
 11807|||https://lerh.kktix.cc/events/f34e4327
@@ -282,13 +278,9 @@
 11854|||https://www.indievox.com/activity/detail/24_iv02984f2_11_29_20
 11855|||https://www.indievox.com/activity/detail/24_iv02984f2_12_05_20
 11856|||https://www.indievox.com/activity/detail/24_iv02984f2_12_06_20
-11857|||https://cohesionmusic.kktix.cc/events/0522-0911
 11858|||https://cohesionmusic.kktix.cc/events/0529-0911
-11859|||https://qstyle.kktix.cc/events/063cc139
 11860|||https://cohesionmusic.kktix.cc/events/0605-0911
 11861|||https://wanxing.kktix.cc/events/2c059a7e
-11862|||https://qstyle.kktix.cc/events/0d123b42
-11863|||https://busanoneasiafestival.kktix.cc/events/4a1a617a
 11864|||https://wanxing.kktix.cc/events/1fsd5gf
 11865|||https://theuumouth.kktix.cc/events/uu240612
 11866|||https://altanightclub.kktix.cc/events/fsfsd
@@ -323,3 +315,6 @@
 11895|||https://ticketplus.com.tw/activity/568837fd8a726b05ef99edc5ca76bb2e_06_08_19
 11896|||https://ticketplus.com.tw/activity/752c7613fdf4dfd0d95b651037e54a79_06_15_19
 11897|||https://ticketplus.com.tw/activity/2e5a72fbd5b61e501f834372f704db58_06_28_19
+11968|||https://kklivetw.kktix.cc/events/2024riizefancontour-tp-fe59wgr
+11969|||https://best-onlineteam.kktix.cc/events/ldeogr
+11970|||https://www.livenation.com.tw/show/1489268/queen-bee-final-angel-in-taipei/taipei/2024-08-25/tw_8_25_19
