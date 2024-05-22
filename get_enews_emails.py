@@ -5,14 +5,14 @@ from playwright.sync_api import expect, Page
 def get_enews_emails():
     with sync_playwright() as p:
         # browser = p.chromium.launch(headless=False)
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=True, slow_mo=1000)
         context = browser.new_context()
         page = context.new_page()
         wait_seconds = 3000
         page.goto('https://concertinfo.site/wp-admin')
 
         page.locator("#user_login").fill('user')
-        page.locator("#user_pass").fill('fjKuan123!')
+        page.locator("#user_pass").fill('FHDortmund_Kuan')
         page.wait_for_timeout(wait_seconds)
         page.keyboard.press('Enter')
         # page.wait_for_load_state('load')

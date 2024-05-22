@@ -1153,6 +1153,7 @@ def get_ticketplus(website, json_filename, txt_filename):
                 break
 
             except Exception as e:
+                # 錯誤
                 page.close()
                 print(e, f'{website} restart')
                 print('last finished index = ', last_finished_index)
@@ -3561,11 +3562,8 @@ def get_latest_concert_info(json_filename):
     success_msg("Website jsons merged")
     move_concert_files(concert_json_filenames)  # move each website json file to folder "website_jsons"
     success_msg("Website jsons moved")
-    # delete_files(concert_today)  # nothing to be deleted right now, can uncomment it in the future
     get_city_from_stadium(json_filename)  # open the json file, and fill it the city according to the address
     success_msg("Get city from loc")
-    # json_in_order(json_filename)  # sort the json file according performance time
-    # success_msg("Json in order")
     price_str_to_int(json_filename)  # price, if str -> int
     success_msg("Replaced str with int for all str")
     price_in_order(json_filename)  # price in order, start from the most highest price
@@ -3573,13 +3571,10 @@ def get_latest_concert_info(json_filename):
     validate_pin(json_filename)
     success_msg("Pin validated")
     success_msg("--- zh okay ---")
-    # # print(f'\n------------------\nzh okay!\n------------------\n')
-    # # delete_past_ticketing_time(concert_all_data)  # delete past ticketing time
-    # # print('--- Delete all past ticketing time ---')
     """ compare new & old """
     new_concerts, plus_concerts = get_new_old(json_filename)
 
-    print(f"new_concerts = {new_concerts}")
+    # print(f"new_concerts = {new_concerts}")
     if new_concerts:
         with open(f'new_concerts/new_{json_filename}', 'w', encoding='utf-8') as f:
             json.dump(new_concerts, f, ensure_ascii=False, indent=4)
@@ -3592,9 +3587,8 @@ def get_latest_concert_info(json_filename):
             print('plus concerts 寫入成功')
 
     shutil.move(json_filename, "concert_jsons")
-    # """"""
+    """"""
     zh_en("concert_zh.json", "concert_en.json")  # english version
-    # zh_en_cit("concert_en.json")
     shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
     """"""
     while True:
@@ -3824,7 +3818,9 @@ def schedule_update():
 
 def email_content():
     new_file = get_latest_json_filename("new_concerts")
+    # print(f"new_file = {new_file}")
     plus_file = get_latest_json_filename("plus_concerts")
+    # print(f"plus_file = {plus_file}")
 
     if not (check_if_today(new_file) or check_if_today(plus_file)):
         formatted_str_list = ["今天沒有任何的資訊"]
@@ -4056,8 +4052,3 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 # concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
 # get_latest_concert_info(concert_today)
 schedule_update()
-# emails = get_enews_emails()
-# print(f"emails = {emails}")
-# content = email_content()
-# for email in emails:
-#     send_email("新的演唱會資訊! New Concert Information!", content, email)

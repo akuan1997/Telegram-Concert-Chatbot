@@ -315,17 +315,17 @@ If no input is provided, we will use the default language: Chinese.
     await update.message.reply_text(txt)
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Execute help command')
+# async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     await update.message.reply_text('Execute help command')
 
 
-async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.message.chat.id
-    user_status[user_id] = ""
-    print(user_status)
-
-    await update.message.reply_text(str(user_id))
-    await update.message.reply_text('Execute custom aaa command')
+# async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     user_id = update.message.chat.id
+#     user_status[user_id] = ""
+#     print(user_status)
+#
+#     await update.message.reply_text(str(user_id))
+#     await update.message.reply_text('Execute custom aaa command')
 
 
 async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -470,9 +470,9 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- 日期: {concert_date_str}
-- 票價: {sorted_prices_str}
 - 售票日期: {sale_date_str}
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
 - 地點: {location_str}
 {concert['url']}
                                         """
@@ -492,6 +492,7 @@ async def get_daily_msg(language):
                     sorted_prices_str = ', '.join(map(str, sorted_prices))
                 else:
                     sorted_prices_str = '-'
+
                 concert_date_str = ', '.join(concert['pdt'])
 
                 if concert['sdt']:
@@ -506,9 +507,9 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- 日期: {concert_date_str}
-- 票價: {sorted_prices_str}
 - 售票日期: {sale_date_str}
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
 - 地點: {location_str}
 {concert['url']}
                                                     """
@@ -545,9 +546,9 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
+- Ticket Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
-- Ticket Date: {sale_date_str}
 - Location: {location_str}
 {concert['url']}
 """
@@ -581,9 +582,9 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
+- Ticket Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
-- Ticket Date: {sale_date_str}
 - Location: {location_str}
 {concert['url']}
 """
@@ -597,8 +598,8 @@ if __name__ == '__main__':
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler('start', start_command))
-    app.add_handler(CommandHandler('help', help_command))
-    app.add_handler(CommandHandler('custom', custom_command))
+    # app.add_handler(CommandHandler('help', help_command))
+    # app.add_handler(CommandHandler('custom', custom_command))
     app.add_handler(CommandHandler('switch_language', switch_language_command))
 
     app.add_handler(MessageHandler(filters.TEXT, handle_message))

@@ -223,7 +223,7 @@ def check_each_info(new_data, old_data, all_data):
                     # print('old /', repr(old_data[j]['int']))  # test
                     # print('new /', repr(new_data[i]['int']))  # test
                     unique_part = find_unique_part(old_data[j]['int'], new_data[i]['int'])
-                    print(f'unique_part = {repr(unique_part)}')
+                    # print(f'unique_part = {repr(unique_part)}')
                     if '加場' in unique_part or '加開' in unique_part or '釋票' in unique_part or '清票' in unique_part:
                         print('重要資訊！通知使用者')
                         plus_concerts.append(new_data[i])
