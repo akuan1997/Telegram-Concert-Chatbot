@@ -405,21 +405,22 @@ No problem! Your preferred language has been set to English!
 
 ---
 
-Usage Instructions
-You can inquire upcoming concerts by artist name, genre, city, or specific time
+Usage Instructions:
+
+You can inquire upcoming concerts by artist name, genre, city, or specific time.
 Example inputs:
 "Taylor Swift"
 "Rap"
 "Taipei"
 "Tomorrow"
 
-You can also specify multiple criteria simultaneously
+You can also specify multiple criteria simultaneously.
 Example inputs:
 "Taylor Swift concerts in Taipei"
 "Post Malone, next month"
 "Hip-Hop, this week, and in Tainan city"
 
-Further more, you can inquire which concerts are going to start selling
+Further more, you can inquire which concerts are going to start selling the tickets.
 Example inputs:
 "Find out which concerts are open for sale tomorrow"
 "Ticketing time, today and tomorrow"
