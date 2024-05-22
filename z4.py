@@ -491,7 +491,7 @@ def show_concert_info(indexes, language):
 
     return formatted_str_list
 
-current_language = 'zh'
+current_language = 'en'
 print('載入完成')
 while True:
     user_input = input("請輸入: ")

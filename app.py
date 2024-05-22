@@ -371,11 +371,62 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif text.strip() in ('1', '2'):
         user_language_preferences[user_id] = 'Chinese' if text.strip() == '1' else 'English'
         if user_language_preferences[user_id] == 'Chinese':
-            await update.message.reply_text("沒問題! 你的偏好語言已設定為中文!")
+            txt = """
+沒問題! 你的偏好語言已設定為中文!
+
+---
+
+你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
+示例輸入：
+"周杰倫"
+"饒舌"
+"台北"
+"明天"
+
+你也可以同時指定多個條件
+範例：
+"蔡依林在台北的音樂會"
+"Post Malone，下個月"
+"嘻哈，這周，台南"
+
+此外，你還可以查詢即將開始售票的音樂會
+範例：
+"查找明天開始售票的音樂會"
+"售票時間，今天和明天"
+
+祝您演唱會玩得開心！
+"""
+            await update.message.reply_text(txt)
             with open(user_language_file, 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|||zh\n")
         else:
-            await update.message.reply_text("No problem! Your preferred language has been set to English!")
+            txt = """
+No problem! Your preferred language has been set to English!
+
+---
+
+Usage Instructions
+You can inquire upcoming concerts by artist name, genre, city, or specific time
+Example inputs:
+"Taylor Swift"
+"Rap"
+"Taipei"
+"Tomorrow"
+
+You can also specify multiple criteria simultaneously
+Example inputs:
+"Taylor Swift concerts in Taipei"
+"Post Malone, next month"
+"Hip-Hop, this week, and in Tainan city"
+
+Further more, you can inquire which concerts are going to start selling
+Example inputs:
+"Find out which concerts are open for sale tomorrow"
+"Ticketing time, today and tomorrow"
+
+Have Fun!
+"""
+            await update.message.reply_text(txt)
             with open(user_language_file, 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|||en\n")
     else:
