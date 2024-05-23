@@ -1,8 +1,6 @@
 11501|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0E994TH_04_04_12_31
 11505|||https://waynessosad.kktix.cc/events/wss2024s
 11532|||https://ticketplus.com.tw/activity/c9fce3391591ff002a18f2a0bf69f562_05_18_05_28
-11547|||https://theuumouth.kktix.cc/events/uu240522
-11549|||https://romanticoffice.kktix.cc/events/240523
 11550|||https://ticketplus.com.tw/activity/7801c68aaf7f9c396a8098d1ca068041_05_23_19
 11551|||https://www.livenation.com.tw/show/1476056/jp-saxe-a-grey-area-world-tour/taipei/2024-05-23/tw_5_23_20
 11552|||https://www.livenation.com.tw/show/1468089/elijah-woods-ilu-24-7-365-tour/taipei/2024-05-24/tw_5_24_20
@@ -225,7 +223,6 @@
 11773|||https://offtimemusic.kktix.cc/events/omoinotake2024
 11774|||https://www.livenation.com.tw/show/1485511/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-26/tw_9_26_20
 11775|||https://www.livenation.com.tw/show/1487780/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-30/tw_9_30_20
-11776|||https://www.livenation.com.tw/show/1474950/lany-a-beautiful-blur-the-world-tour/kaohsiung/2024-10-04/tw_10_04_20
 11777|||https://ticket.com.tw/application/UTK02/UTK0201_00.aspx?PRODUCT_ID=P0HQ0VK1_10_05_19
 11778|||https://laruedesign.kktix.cc/events/fkekfw
 11779|||https://www.indievox.com/activity/detail/24_iv02984f2_11_28_20
@@ -303,7 +300,6 @@
 11883|||https://www.livenation.com.tw/show/1487888/2024-lee-youngji-world-tour-all-or-nothing/taipei/2024-06-22/tw_6_22_19
 11884|||https://www.livenation.com.tw/show/1487547/gesu-no-kiwami-otome-one-man-tour-2024-night-clubbing-/taipei/2024-07-15/tw_7_15_20
 11885|||https://www.livenation.com.tw/show/1487780/nigel-ng-the-haiyaa-world-tour/taipei/2024-09-30/tw_9_30_20
-11886|||https://www.livenation.com.tw/show/1488512/anne-marie-2024-live-in-asia/taipei/2024-10-07/tw_10_07_20
 11887|||https://ticketplus.com.tw/activity/6ac8ecf650b2c040f960a87883fa2a9f_07_18_20
 11888|||https://ticketplus.com.tw/activity/6cc01185ce41c96d80dd41425dcd2a81_09_03_20
 11889|||https://ticketplus.com.tw/activity/6cc01185ce41c96d80dd41425dcd2a81_09_04_20
@@ -318,3 +314,15 @@
 11968|||https://kklivetw.kktix.cc/events/2024riizefancontour-tp-fe59wgr
 11969|||https://best-onlineteam.kktix.cc/events/ldeogr
 11970|||https://www.livenation.com.tw/show/1489268/queen-bee-final-angel-in-taipei/taipei/2024-08-25/tw_8_25_19
+11981|||https://www.indievox.com/activity/detail/24_iv030197d_06_01_19
+11982|||https://www.indievox.com/activity/detail/24_iv030156b_06_15_19
+11983|||https://www.indievox.com/activity/detail/24_iv030134e_07_03_20
+11984|||https://qstyle.kktix.cc/events/063cc139
+11985|||https://busanoneasiafestival.kktix.cc/events/4a1a617a
+11986|||https://cocakoala.kktix.cc/events/idolkoala
+11987|||https://theuumouth.kktix.cc/events/uu240630
+11988|||https://goldendeerjr.kktix.cc/events/a2bbbbf8
+11989|||https://goldendeerjr.kktix.cc/events/b38d347a
+11990|||https://baodaorecords.kktix.cc/events/ufwrbn
+11991|||https://www.livenation.com.tw/show/1489602/sasha-alex-sloan-me-again-tour-asia/taipei/2024-08-29/tw_8_29_20
+11992|||https://www.livenation.com.tw/show/1489618/sasha-alex-sloan-me-again-tour-asia/kaohsiung/2024-08-30/tw_8_30_20
