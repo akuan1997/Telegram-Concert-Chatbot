@@ -4049,6 +4049,6 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
-# concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
-# get_latest_concert_info(concert_today)
-schedule_update()
+concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
+get_latest_concert_info(concert_today)
+# schedule_update()
