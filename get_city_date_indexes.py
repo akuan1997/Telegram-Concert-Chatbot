@@ -657,9 +657,9 @@ def en_dates_cities(text, json_file):
         city_indexes.append(origin_start_index)
 
     print(f'--- city ---')
-    # print(f'city_indexes: {city_indexes}')
+    print(f'city_indexes: {city_indexes}')
     print(f'cities: {cities}')
-    # print(f'tag & cit str -> {text}\n')
+    print(f'tag & cit str -> {text}\n')
     """ 日期處理完畢 """
 
     """ 開始處理日期以及城市 """
@@ -714,8 +714,9 @@ def en_dates_cities(text, json_file):
 
         for city in cities:
             for i in range(len(data)):
-                if data[i]['cit'] == city:
+                if data[i]['cit'].lower() == city.lower():
                     found_cities.append(i)
+        print(f"找到{len(found_cities)}筆資料")
 
         ''''''
 

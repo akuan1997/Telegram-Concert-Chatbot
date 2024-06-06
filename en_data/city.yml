@@ -2,27 +2,23 @@ version: "3.0"
 nlu:
   - lookup: city
     examples: |
-      - 台北
-      - 新北
-      - 桃園
-      - 台中
-      - 台南
-      - 高雄
-      - 基隆
-      - 新竹
-      - 苗栗
-      - 彰化
-      - 南投
-      - 雲林
-      - 嘉義
-      - 屏東
-      - 宜蘭
-      - 花蓮
-      - 台東
-      - 金門
-      - 澎湖
-      - 連江
-      - 北部
-      - 中部
-      - 南部
-      - 東部
+      - Taipei
+      - New Taipei
+      - Taoyuan
+      - Taichung
+      - Tainan
+      - Kaohsiung
+      - Keelung
+      - Hsinchu
+      - Miaoli
+      - Changhua
+      - Nantou
+      - Yunlin
+      - Chiayi
+      - Pingtung
+      - Yilan
+      - Hualien
+      - Taitung
+      - Kinmen
+      - Penghu
+      - Lienchiang
