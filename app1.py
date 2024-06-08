@@ -1,4 +1,3 @@
-# https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1022s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
 from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
