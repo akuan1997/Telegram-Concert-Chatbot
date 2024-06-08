@@ -292,8 +292,15 @@
 # data = read_json("en_concert_jsons/en_concert_6_4_23.json")
 # for i in range(len(data)):
 #     print(data[i]['cit'])
-from get_city_date_indexes import *
-print(en_dates_cities("taipei concerts", "en_concert_jsons/en_concert_6_4_23.json"))
+# from get_city_date_indexes import *
+# print(en_dates_cities("taipei concerts", "en_concert_jsons/en_concert_6_4_23.json"))
 # while True:
 #     txt = input("請輸入:")
 #     print(en_dates_cities(txt, "en_concert_jsons/en_concert_6_4_23.json"))
+# from function_read_json import *
+# data = read_json("concert_jsons/concert_6_4_23.json")
+# for i in range(len(data)):
+#     for j in range(i + 1, len(data)):
+#         if data[i]['url'] == data[j]['url']:
+#             print(data[i]['tit'])
+#             print(data[i]['url'])

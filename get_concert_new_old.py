@@ -3,6 +3,7 @@ import re
 from datetime import datetime, time
 import shutil  # test
 from concert_rest_api import *
+import os
 
 
 def find_unique_part(str1, str2):
@@ -264,16 +265,16 @@ def check_each_info(new_data, old_data, all_data):
                 # with open('concert_zh.json', 'w', encoding='utf-8') as file:
                 #     json.dump(all_data, file, indent=4, ensure_ascii=False)
     """"""
-    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    for pin in change_pins:
-        for i in range(len(all_data)):
-            if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
-                for line in lines:
-                    line_pin = line.split('|||')[1].replace('\n', '')
-                    if pin == line_pin:
-                        post_id = line.split('|||')[0]
-                        update_post_content(post_id, all_data[i])
+    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+    #     lines = f.readlines()
+    # for pin in change_pins:
+    #     for i in range(len(all_data)):
+    #         if all_data[i]['pin'] == pin:  # 這個pin在all_data的第i個位置
+    #             for line in lines:
+    #                 line_pin = line.split('|||')[1].replace('\n', '')
+    #                 if pin == line_pin:
+    #                     post_id = line.split('|||')[0]
+    #                     update_post_content(post_id, all_data[i])
     """"""
     print(f"len(change_pins) = {len(change_pins)}")
     print(f"change_pins = {change_pins}")
@@ -293,8 +294,8 @@ def new_concert_add(new_but_old_pins, new_data, all_data):
     print(f"len(new_data_filtered) = {len(new_data_filtered)}")
     print('-------------------------------------------------------------------------------------------------------')
     """"""
-    for i in range(len(new_data_filtered)):
-        post_concert(new_data_filtered[i])
+    # for i in range(len(new_data_filtered)):
+    #     post_concert(new_data_filtered[i])
     """"""
     return new_data_filtered, all_data
 
@@ -319,18 +320,18 @@ def old_concert_delete(old_but_new_pins, old_data, all_data):
     print('-------------------------------------------------------------------------------------------------------')
     print(f"old_but_new_pins = {old_but_new_pins}")
     """"""
-    with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    new_lines = []
-    for line in lines:
-        line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
-        post_id = line.split('|||')[0]
-        if line_pin not in old_but_new_pins:
-            new_lines.append(line)
-        else:
-            delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
-    with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
-        f.writelines(new_lines)
+    # with open('concert_pin_postid.txt', 'r', encoding='utf-8') as f:
+    #     lines = f.readlines()
+    # new_lines = []
+    # for line in lines:
+    #     line_pin = line.split('|||')[1].strip()  # 使用strip()來移除尾部的換行符和其他空白
+    #     post_id = line.split('|||')[0]
+    #     if line_pin not in old_but_new_pins:
+    #         new_lines.append(line)
+    #     else:
+    #         delete_article(post_id)  # 假設 delete_article 是一個正確定義且可用來刪除文章的函數
+    # with open('concert_pin_postid.txt', 'w', encoding='utf-8') as f:
+    #     f.writelines(new_lines)
     """"""
     return all_data
 
@@ -496,9 +497,19 @@ def testing_for_small(start_index):
     json_in_order('concert_zh.json')
 
 
+def os_show_file_title(folder_path):
+    json_filenames = []
+    # 使用os模块列出文件夹中的所有文件
+    for filename in os.listdir(folder_path):
+        if os.path.isfile(os.path.join(folder_path, filename)):
+            # print(filename.replace('.mhtml', ''))
+            json_filenames.append(filename)
+    return json_filenames
+
+
 def testing_for_large(start_index, json_filename, mode):
     # print(f"len(json_list) = {len(json_list)}")
-
+    json_list = os_show_file_title("concert_jsons")
     shutil.copy(json_list[0], json_filename)  # test
 
     # for i in range(len(json_list) - 1):
@@ -587,43 +598,6 @@ def check_duplicate():
                 print(pins[i])
 
 
-json_list = [
-    "concert_jsons/concert_3_14_23.json",
-    "concert_jsons/concert_3_17_16.json",
-    "concert_jsons/concert_3_17_19.json",
-    "concert_jsons/concert_3_18_13.json",
-    "concert_jsons/concert_3_20_16.json",
-    "concert_jsons/concert_3_22_0.json",
-    "concert_jsons/concert_3_23_14.json",
-    "concert_jsons/concert_3_24_8.json",
-    "concert_jsons/concert_3_25_0.json",
-    "concert_jsons/concert_3_25_17.json",
-    "concert_jsons/concert_3_26_0.json",
-    "concert_jsons/concert_3_27_3.json",
-    "concert_jsons/concert_3_29_0.json",
-    "concert_jsons/concert_3_30_13.json",
-    "concert_jsons/concert_3_30_20.json",
-    "concert_jsons/concert_3_31_14.json",
-    "concert_jsons/concert_3_31_18.json",
-    "concert_jsons/concert_4_2_0.json",
-    "concert_jsons/concert_4_3_10.json",
-    "concert_jsons/concert_4_3_22.json",
-    "concert_jsons/concert_4_4_14.json",
-    "concert_jsons/concert_4_4_3.json",
-    "concert_jsons/concert_4_5_16.json",
-    "concert_jsons/concert_4_7_17.json",
-    "concert_jsons/concert_4_15_1.json",
-    "concert_jsons/concert_5_2_14.json",
-    "concert_jsons/concert_5_4_20.json",
-    "concert_jsons/concert_5_7_1.json",
-    "concert_jsons/concert_5_7_21.json",
-    "concert_jsons/concert_5_9_14.json",
-    "concert_jsons/concert_5_10_11.json",
-    "concert_jsons/concert_5_11_23.json",
-    "concert_jsons/concert_5_12_11.json",
-    "concert_jsons/concert_5_12_21.json"
-]
-
 
 def for_testing():
     while True:
@@ -651,9 +625,13 @@ def for_testing():
             # with open('concert_zh.json', 'r', encoding='utf-8') as f:
             #     data = json.load(f)
             break
-# for_testing()
+for_testing()
 # delete_post(10738, 11222)
 # data = read_json("concert_zh.json")
 # post_concert(data[0])
 # for i in range(1, len(data)):
 #     post_concert(data[i])
+
+json_list = os_show_file_title("concert_jsons")
+for each_json in json_list:
+    print(each_json)
