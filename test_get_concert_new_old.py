@@ -652,6 +652,7 @@ json_list = ["concert_jsons/concert_3_14_23.json", "concert_jsons/concert_3_17_1
              "concert_jsons/concert_5_15_19.json", "concert_jsons/concert_5_16_20.json", "concert_jsons/concert_5_21_20.json",
              "concert_jsons/concert_5_22_20.json", "concert_jsons/concert_5_23_20.json", "concert_jsons/concert_5_28_20.json",
              "concert_jsons/concert_5_29_20.json", "concert_jsons/concert_6_4_23.json", ]
-shutil.copy(json_list[0], "concert_zh1.json") # for testing and validation
-for i in range(len(json_list)-1):
-    data_comparison(i, "concert_zh1.json", 1)
+
+# shutil.copy(json_list[0], "concert_zh1.json") # for testing and validation
+# for i in range(len(json_list)-1):
+#     data_comparison(i, "concert_zh1.json", 1)

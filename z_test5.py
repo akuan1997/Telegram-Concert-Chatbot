@@ -1,5 +1,5 @@
 import json
-from function_read_json import *
+from read_json_function import *
 from datetime import datetime
 
 json_list = ["concert_3_14_23.json",

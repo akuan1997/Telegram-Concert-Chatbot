@@ -304,3 +304,43 @@
 #         if data[i]['url'] == data[j]['url']:
 #             print(data[i]['tit'])
 #             print(data[i]['url'])
+
+
+# from read_json_function import *
+#
+# json_list = ["concert_jsons/concert_3_14_23.json", "concert_jsons/concert_3_17_16.json",
+#              "concert_jsons/concert_3_17_19.json",
+#              "concert_jsons/concert_3_18_13.json", "concert_jsons/concert_3_20_16.json",
+#              "concert_jsons/concert_3_22_0.json",
+#              "concert_jsons/concert_3_23_14.json", "concert_jsons/concert_3_24_8.json",
+#              "concert_jsons/concert_3_25_0.json",
+#              "concert_jsons/concert_3_25_17.json", "concert_jsons/concert_3_26_0.json",
+#              "concert_jsons/concert_3_27_3.json",
+#              "concert_jsons/concert_3_29_0.json", "concert_jsons/concert_3_30_13.json",
+#              "concert_jsons/concert_3_30_20.json",
+#              "concert_jsons/concert_3_31_14.json", "concert_jsons/concert_3_31_18.json",
+#              "concert_jsons/concert_4_2_0.json",
+#              "concert_jsons/concert_4_3_10.json", "concert_jsons/concert_4_3_22.json",
+#              "concert_jsons/concert_4_4_14.json",
+#              "concert_jsons/concert_4_4_3.json", "concert_jsons/concert_4_5_16.json",
+#              "concert_jsons/concert_4_7_17.json",
+#              "concert_jsons/concert_4_15_1.json", "concert_jsons/concert_5_2_14.json",
+#              "concert_jsons/concert_5_4_20.json",
+#              "concert_jsons/concert_5_7_1.json", "concert_jsons/concert_5_7_21.json",
+#              "concert_jsons/concert_5_9_14.json",
+#              "concert_jsons/concert_5_10_11.json", "concert_jsons/concert_5_11_23.json",
+#              "concert_jsons/concert_5_12_11.json",
+#              "concert_jsons/concert_5_12_21.json", "concert_jsons/concert_5_13_14.json",
+#              "concert_jsons/concert_5_13_15.json",
+#              "concert_jsons/concert_5_13_17.json", "concert_jsons/concert_5_13_18.json",
+#              "concert_jsons/concert_5_13_19.json",
+#              "concert_jsons/concert_5_14_17.json", "concert_jsons/concert_5_14_4.json",
+#              "concert_jsons/concert_5_15_1.json",
+#              "concert_jsons/concert_5_15_19.json", "concert_jsons/concert_5_16_20.json",
+#              "concert_jsons/concert_5_21_20.json",
+#              "concert_jsons/concert_5_22_20.json", "concert_jsons/concert_5_23_20.json",
+#              "concert_jsons/concert_5_28_20.json",
+#              "concert_jsons/concert_5_29_20.json", "concert_jsons/concert_6_4_23.json", ]
+# data = read_json(json_list[0])
+# for i in range(len(data)):
+#     if

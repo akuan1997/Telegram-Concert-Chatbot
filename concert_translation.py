@@ -10,7 +10,7 @@ en_cities = ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung
              "Changhua", "Nantou", "Yunlin", "Chiayi", "Pingtung", "Yilan", "Hualien", "Taitung", "Kinmen", "Penghu",
              "Lienchiang"]
 
-from function_read_json import *
+from read_json_function import *
 
 city_mapping = dict(zip(zh_cities, en_cities))
 

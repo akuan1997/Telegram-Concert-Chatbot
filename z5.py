@@ -72,7 +72,7 @@ success_msg(x)
 y = 2
 print(y)
 
-from function_read_json import *
+from read_json_function import *
 
 data = read_json("concert_zh.json")
 success_msg(len(data))

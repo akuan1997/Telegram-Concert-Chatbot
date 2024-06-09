@@ -286,7 +286,7 @@
 # users = [line.split('|||')[0] for line in lines]
 # print(users)
 import os
-from function_read_json import *
+from read_json_function import *
 import re
 from datetime import datetime
 

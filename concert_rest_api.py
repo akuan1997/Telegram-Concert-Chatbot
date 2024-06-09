@@ -3,7 +3,7 @@ import base64
 import json
 import requests
 from pprint import pprint
-from function_read_json import *
+from read_json_function import *
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import re
 from datetime import datetime, timedelta

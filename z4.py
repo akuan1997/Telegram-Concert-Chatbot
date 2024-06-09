@@ -14,7 +14,7 @@ from get_keyword_indexes_en import *
 from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 
-from function_read_json import *
+from read_json_function import *
 
 # import nltk
 # from nltk.corpus import stopwords

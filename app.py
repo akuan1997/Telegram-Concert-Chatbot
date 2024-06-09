@@ -17,7 +17,7 @@ import re
 from get_keyword_indexes_en import *
 from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
-from function_read_json import *
+from read_json_function import *
 
 TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
 BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
