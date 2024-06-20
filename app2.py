@@ -367,7 +367,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     lines = [line.replace('\n', '').split('|||')[0] for line in lines]
-    print('handle message', lines)
+    # print('handle message', lines)  # test
 
     if str(user_id) in lines:
         if get_user_language(str(user_id)) == 'zh':

@@ -87,67 +87,68 @@ import pyautogui
 # 获取当前鼠标位置
 current_mouse_position = pyautogui.position()
 print(f"当前鼠标位置： {current_mouse_position}")
+print(f"{current_mouse_position.x}, {current_mouse_position.y}")
 
-import random
-
-data = read_json("concert_zh.json")
-random_integers = sorted([random.randint(0, len(data) - 1) for _ in range(10)])
-print(random_integers)
-
-
-def show_concert_info(indexes, language):
-    if not indexes:
-        return [
-            "對不起，我沒有找到相關的演唱會資訊。" if language == 'zh' else "Sorry, I couldn't find any relevant concert information."]
-
-    formatted_str_list = []
-    if language == 'zh':
-        data = read_json("concert_zh.json")
-        print('zh', len(data))
-    elif language == 'en':
-        data = read_json("concert_en.json")
-        print('en', len(data))
-
-    for index in indexes:
-        if index >= len(data):
-            print(f"索引 {index} 超出範圍，最大索引值應該小於 {len(data)}")
-            continue
-
-        concert = data[index]
-        if concert['prc']:
-            sorted_prices = sorted(concert['prc'], reverse=True)
-            sorted_prices_str = ', '.join(map(str, sorted_prices))
-        else:
-            sorted_prices_str = '-'
-        concert_date_str = ', '.join(concert['pdt'])
-        if concert['sdt']:
-            sale_date_str = ', '.join(concert['sdt'])
-        else:
-            sale_date_str = '-'
-
-        if language == 'zh':
-            formatted_str = f"""
-- {concert['tit']}
-- 日期: {concert_date_str}
-- 票價: {sorted_prices_str}
-- 售票日期: {sale_date_str}
-- {concert['url']}
-            """
-        elif language == 'en':
-            formatted_str = f"""
-- {concert['tit']}
-- Date: {concert_date_str}
-- Ticket Price: {sorted_prices_str}
-- Sale Date: {sale_date_str}
-- {concert['url']}
-            """
-
-        formatted_str_list.append(formatted_str.strip())
-
-    print(formatted_str_list)
-    return formatted_str_list
-
-
-messages = show_concert_info(random_integers, 'zh')
-for msg in messages:
-    print(msg)
+# import random
+#
+# data = read_json("concert_zh.json")
+# random_integers = sorted([random.randint(0, len(data) - 1) for _ in range(10)])
+# print(random_integers)
+#
+#
+# def show_concert_info(indexes, language):
+#     if not indexes:
+#         return [
+#             "對不起，我沒有找到相關的演唱會資訊。" if language == 'zh' else "Sorry, I couldn't find any relevant concert information."]
+#
+#     formatted_str_list = []
+#     if language == 'zh':
+#         data = read_json("concert_zh.json")
+#         print('zh', len(data))
+#     elif language == 'en':
+#         data = read_json("concert_en.json")
+#         print('en', len(data))
+#
+#     for index in indexes:
+#         if index >= len(data):
+#             print(f"索引 {index} 超出範圍，最大索引值應該小於 {len(data)}")
+#             continue
+#
+#         concert = data[index]
+#         if concert['prc']:
+#             sorted_prices = sorted(concert['prc'], reverse=True)
+#             sorted_prices_str = ', '.join(map(str, sorted_prices))
+#         else:
+#             sorted_prices_str = '-'
+#         concert_date_str = ', '.join(concert['pdt'])
+#         if concert['sdt']:
+#             sale_date_str = ', '.join(concert['sdt'])
+#         else:
+#             sale_date_str = '-'
+#
+#         if language == 'zh':
+#             formatted_str = f"""
+# - {concert['tit']}
+# - 日期: {concert_date_str}
+# - 票價: {sorted_prices_str}
+# - 售票日期: {sale_date_str}
+# - {concert['url']}
+#             """
+#         elif language == 'en':
+#             formatted_str = f"""
+# - {concert['tit']}
+# - Date: {concert_date_str}
+# - Ticket Price: {sorted_prices_str}
+# - Sale Date: {sale_date_str}
+# - {concert['url']}
+#             """
+#
+#         formatted_str_list.append(formatted_str.strip())
+#
+#     print(formatted_str_list)
+#     return formatted_str_list
+#
+#
+# messages = show_concert_info(random_integers, 'zh')
+# for msg in messages:
+#     print(msg)
