@@ -656,7 +656,6 @@ async def get_daily_msg(language):
 
     return formatted_str_list
 
-
 if __name__ == '__main__':
     print('Starting bot...')
     app = Application.builder().token(TOKEN).build()
@@ -671,7 +670,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    # scheduler.add_job(send_daily_update, CronTrigger(hour=21))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=21))
     scheduler.start()
 
     print('Go!')

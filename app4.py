@@ -381,9 +381,11 @@ async def get_en_indexes(user_input, json_filename):
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
-            ticket_time_indexes = en_get_ticket_time(user_input, json_filename)
+            ticket_time_indexes, user_prompt = en_get_ticket_time(user_input, json_filename)
             print(f"ticket_time_indexes = {ticket_time_indexes}")
-            return ticket_time_indexes
+            user_prompt = f"No problem! Searching ticketing time \"{user_prompt}\""
+            return ticket_time_indexes, user_prompt
+
         elif result['intent']['name'] == "query_keyword":
             keywords = []
             found_datetime_city = False
@@ -422,30 +424,44 @@ async def get_en_indexes(user_input, json_filename):
 
                 if found_datetime_city:
                     print('有keyword，也有datetime，取集合')
-                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_cities = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                    print(f"user_dates_cities = {user_dates_cities}")
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
                     print(f"intersection = {intersection}")
-                    return intersection
+
+                    user_prompt = f"No problem! Searching \"keyword: {keyword}\", {user_dates_cities}"
+                    print(f"user_prompt = {user_prompt}")
+                    return intersection, user_prompt
                 else:
                     print('有keyword，但是沒有datetime，直接顯示keyword indexes')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
-                    return get_keyword_indexes_en_indexes
+
+                    user_prompt = f"No problem! Searching \"keyword: {keyword}\""
+                    print(f"user_prompt = {user_prompt}")
+                    return get_keyword_indexes_en_indexes, user_prompt
             else:
                 print('沒有keyword')
                 if found_datetime_city:
                     print(f"user_input = {user_input}")
-                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_times = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
-                    return en_dates_cities_indexes
+                    print(f"user_dates_times = {user_dates_times}")
+
+                    user_prompt = "No problem! Searching " + user_dates_times
+                    print(f"user_prompt = {user_prompt}")
+                    return en_dates_cities_indexes, user_prompt
                 else:
                     print('沒有keyword，也沒有日期，直接把user_input拿去keyword搜尋')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(user_input, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
-                    return get_keyword_indexes_en_indexes
+
+                    user_prompt = "Sorry, we couldn't find any keyword, date or city. We will search relevant information for you."
+                    print(f"user_prompt = {user_prompt}")
+                    return get_keyword_indexes_en_indexes, user_prompt
 
 
 # 定義三個處理不同指令的異步函式
@@ -515,7 +531,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if str(user_id) in lines:
         if get_user_language(str(user_id)) == 'zh':
-            if message.reply_to_message:  # chi, reply
+            # chi, reply
+            if message.reply_to_message:
                 reply_message = message.reply_to_message
                 reply_text = reply_message.text
                 title = reply_text.split("\n")[0].replace('- ', '')
@@ -545,8 +562,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # new_date_time = now + timedelta(seconds=5)
                 # scheduler.add_job(send_msg, CronTrigger(hour=new_date_time.hour, minute=new_date_time.minute,
                 #                                         second=new_date_time.second), args=[user_id, "你好呀"])
-
-            else:  # chi, direct msg
+            # chi, direct msg
+            else:
                 found_indexes = await get_zh_indexes(user_input, zh_json)
                 messages = show_concert_info(found_indexes, 'zh')
 
@@ -555,7 +572,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 for msg in messages:
                     await update.message.reply_text(msg)
         else:
-            if message.reply_to_message:  # eng, reply
+            # eng, reply
+            if message.reply_to_message:
                 reply_message = message.reply_to_message
                 reply_text = reply_message.text
                 title = reply_text.split("\n")[0].replace('- ', '')
@@ -583,11 +601,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # new_date_time = now + timedelta(seconds=5)
                 # scheduler.add_job(send_msg, CronTrigger(hour=new_date_time.hour, minute=new_date_time.minute,
                 #                                         second=new_date_time.second), args=[user_id, "你好呀"])
-            else:  # eng, direct msg
-                found_indexes = await get_en_indexes(user_input, en_json)
+            # eng, direct msg
+            else:
+                found_indexes, user_prompt = await get_en_indexes(user_input, en_json)
                 messages = show_concert_info(found_indexes, 'en')
 
                 print(f"一共找到{len(found_indexes)}筆資料")
+                await update.message.reply_text(user_prompt)
+                # if len(found_indexes) > N:
                 # to do
                 for msg in messages:
                     await update.message.reply_text(msg)

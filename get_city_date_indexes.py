@@ -662,9 +662,14 @@ def en_dates_cities(text, json_file):
     print(f'tag & cit str -> {text}\n')
     """ 日期處理完畢 """
 
+    user_input_dates = ", ".join(matched_texts).title()
+    user_input_cities = ", ".join(cities).title()
+    # print(f'testing\nTime: {user_input_dates}\nCity: {user_input_cities}')
+
     """ 開始處理日期以及城市 """
     found_cities = []
     found_dates = []
+    user_dates_cities = ''
     # 可以比較簡單處理
     if matched_indexes and city_indexes:
         # 如果城市都在標籤的右手邊或是左手邊
@@ -686,6 +691,8 @@ def en_dates_cities(text, json_file):
 
             show_info_indexes = [index for index in found_cities if index in found_dates]
 
+            user_dates_cities = f"\"Dates: {user_input_dates}\" and \"Cities: {user_input_cities}\""
+
             print(f'---\nfound_cities: {sorted(found_cities)}')
             print(f'found_dates: {sorted(found_dates)}')
             print(f'show_info_indexes: {sorted(show_info_indexes)}')
@@ -706,6 +713,9 @@ def en_dates_cities(text, json_file):
         ''''''
 
         show_info_indexes = found_dates
+
+        user_dates_cities = f"\"Dates: {user_input_dates}\""
+
         print('---\n直接顯示尋找到的日期')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
     # 有城市 但是沒有日期
@@ -721,6 +731,9 @@ def en_dates_cities(text, json_file):
         ''''''
 
         show_info_indexes = found_cities
+
+        user_dates_cities = f"\"Cities: {user_input_cities}\""
+
         print('---\n直接顯示尋找到的城市')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
 
@@ -729,7 +742,9 @@ def en_dates_cities(text, json_file):
         print('找不到城市以及日期')
         show_info_indexes = None
 
-    return show_info_indexes
+    print(f"user_dates_cities:\n{user_dates_cities}")
+
+    return show_info_indexes, user_dates_cities
 
 
 def zh_get_until_sdt(found_dates, text, matched_time_lines, data):
@@ -1553,5 +1568,25 @@ def en_get_ticket_time(text, json_filename):
     # print(f'after_single_text = {after_single_text}')  # test
     # for index in found_dates:
     #     print(data[index]['sdt'])
+    user_input_dates = ", ".join(matched_texts).title()
+    return list(set(found_dates)), user_input_dates
 
-    return list(set(found_dates))
+
+# """ test 1 """
+# en_dates_cities("June", "concert_en.json")
+# print('---')
+# en_dates_cities("June in taipei", "concert_en.json")
+# print('---')
+# en_dates_cities("June in taipei and taoyuan", "concert_en.json")
+# print('---')
+# en_dates_cities("between may and june in taipei", "concert_en.json")
+# """ test 2 """
+
+# """ test1 """
+# print(f"time_tags = {time_tags}")
+# print(f"matched_texts = {matched_texts}")
+# print(f"matched_indexes = {matched_indexes}")
+# print(f"matched_time_lines = {matched_time_lines}")
+# print(f"text = {text}")
+# print(f"text_for_indexing = {text_for_indexing}")
+# """ test2 """

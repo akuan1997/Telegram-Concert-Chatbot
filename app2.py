@@ -449,6 +449,11 @@ Have Fun!
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
+    user_id = update.message.chat.id
+    if get_user_language(str(user_id)) == 'zh':
+        await app.bot.send_message(chat_id=user_id, text="對不起，我不太理解。")
+    else:
+        await app.bot.send_message(chat_id=user_id, text="Sorry, I don't understand.")
 
 
 async def send_daily_update():
@@ -663,8 +668,6 @@ if __name__ == '__main__':
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler('start', start_command))
-    # app.add_handler(CommandHandler('help', help_command))
-    # app.add_handler(CommandHandler('custom', custom_command))
     app.add_handler(CommandHandler('switch_language', switch_language_command))
 
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
@@ -672,7 +675,7 @@ if __name__ == '__main__':
     app.add_error_handler(error)
 
     scheduler = AsyncIOScheduler()
-    # scheduler.add_job(send_daily_update, CronTrigger(hour=21))
+    scheduler.add_job(send_daily_update, CronTrigger(hour=21))
     scheduler.start()
 
     print('Go!')

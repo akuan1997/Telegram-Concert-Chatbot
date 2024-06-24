@@ -5,6 +5,7 @@ import logging
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from datetime import datetime
 
 from rasa.core.agent import Agent
 from rasa.shared.utils.cli import print_info, print_success
@@ -49,6 +50,7 @@ def get_user_language(id):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message = update.message
     user_id = update.message.chat.id
+    print(f"user ID = {user_id}")
 
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -61,20 +63,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             if message.reply_to_message:
                 reply_message = message.reply_to_message
                 reply_text = reply_message.text
-                # 您可以在此处对回复的消息内容进行处理
-                await context.bot.send_message(chat_id=update.effective_chat.id, text=f"你回覆的訊息是: {reply_text}")
+                await context.bot.send_message(chat_id=update.effective_chat.id, text=f"你回覆的訊息是: {reply_text}")  # test
             else:
-                await context.bot.send_message(chat_id=update.effective_chat.id, text="你沒有回覆訊息")
+                await context.bot.send_message(chat_id=update.effective_chat.id, text="你沒有回覆訊息")  # test
         else:
             print('english')
             if message.reply_to_message:
                 reply_message = message.reply_to_message
                 reply_text = reply_message.text
-                # 您可以在此处对回复的消息内容进行处理
-                await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Replied to: {reply_text}")
+                await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Replied to: {reply_text}")  # test
             else:
-                await context.bot.send_message(chat_id=update.effective_chat.id, text="This is not a reply msg")
-
+                await context.bot.send_message(chat_id=update.effective_chat.id, text="This is not a reply msg")  # test
 
 
 #
@@ -163,6 +162,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
+    user_id = update.message.chat.id
+    if get_user_language(str(user_id)) == 'zh':
+        await app.bot.send_message(chat_id=user_id, text="對不起，我不太理解。")
+    else:
+        await app.bot.send_message(chat_id=user_id, text="Sorry, I don't understand.")
 
 
 # async def send_daily_update():
@@ -371,6 +375,10 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #
 #     return formatted_str_list
 
+async def send_msg():
+    chat_id = "1048509087"
+    alarm_message = "要記得搶票喔!"
+    await app.bot.send_message(chat_id=chat_id, text=alarm_message)
 
 if __name__ == '__main__':
     print('Starting bot...')
@@ -387,7 +395,8 @@ if __name__ == '__main__':
 
     scheduler = AsyncIOScheduler()
     # scheduler.add_job(send_daily_update, CronTrigger(hour=21))
-    # scheduler.start()
+    scheduler.add_job(send_msg, CronTrigger(hour=14, minute=22))
+    scheduler.start()
 
     print('Go!')
     app.run_polling(poll_interval=3)
