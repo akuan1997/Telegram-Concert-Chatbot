@@ -670,6 +670,7 @@ def en_dates_cities(text, json_file):
     found_cities = []
     found_dates = []
     user_dates_cities = ''
+    matched_tags = []
     # 可以比較簡單處理
     if matched_indexes and city_indexes:
         # 如果城市都在標籤的右手邊或是左手邊
@@ -692,6 +693,7 @@ def en_dates_cities(text, json_file):
             show_info_indexes = [index for index in found_cities if index in found_dates]
 
             user_dates_cities = f"\"Dates: {user_input_dates}\" and \"Cities: {user_input_cities}\""
+            matched_tags.extend(["date", "city"])
 
             print(f'---\nfound_cities: {sorted(found_cities)}')
             print(f'found_dates: {sorted(found_dates)}')
@@ -715,6 +717,7 @@ def en_dates_cities(text, json_file):
         show_info_indexes = found_dates
 
         user_dates_cities = f"\"Dates: {user_input_dates}\""
+        matched_tags.append("date")
 
         print('---\n直接顯示尋找到的日期')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
@@ -733,6 +736,7 @@ def en_dates_cities(text, json_file):
         show_info_indexes = found_cities
 
         user_dates_cities = f"\"Cities: {user_input_cities}\""
+        matched_tags.append("city")
 
         print('---\n直接顯示尋找到的城市')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
@@ -744,7 +748,7 @@ def en_dates_cities(text, json_file):
 
     print(f"user_dates_cities:\n{user_dates_cities}")
 
-    return show_info_indexes, user_dates_cities
+    return show_info_indexes, user_dates_cities, matched_tags
 
 
 def zh_get_until_sdt(found_dates, text, matched_time_lines, data):
