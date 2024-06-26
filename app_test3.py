@@ -5,7 +5,6 @@ from telegram.ext import Application, CallbackQueryHandler, CommandHandler, Mess
 import logging
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
 from rasa.core.agent import Agent
@@ -114,18 +113,20 @@ def reset_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
         job.remove()
 
     job = scheduler.add_job(
-        reset_query_state,
-        # trigger=IntervalTrigger(minutes=30),
+        send_reset_message,
         trigger=IntervalTrigger(seconds=5),
         args=[update, context],
     )
     context.user_data['timeout_job'] = job
 
 
-async def reset_query_state(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['awaiting_new_query'] = False
     context.user_data['queries'] = []
-    await update.message.reply_text("超过30分钟未操作，查询状态已重置。")
+    await update.message.reply_text("Query status has been reset due to 30 minutes of inactivity.")
+    job = context.user_data.pop('timeout_job', None)
+    if job:
+        job.remove()
 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -142,7 +143,6 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)
 
-    # scheduler = AsyncIOScheduler()
     scheduler.start()
 
     print('Go!')

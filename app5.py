@@ -383,8 +383,8 @@ async def get_en_indexes(user_input, json_filename):
         if result['intent']['name'] == "query_ticket_time":
             ticket_time_indexes, user_prompt = en_get_ticket_time(user_input, json_filename)
             print(f"ticket_time_indexes = {ticket_time_indexes}")
-            user_prompt = f"No problem! Searching ticketing time \"{user_prompt}\""
-            return ticket_time_indexes, user_prompt
+            user_prompt = [f"Searching ticketing time \"{user_prompt}\" ..."]
+            return ticket_time_indexes, user_prompt, 'ticketing time'
 
         elif result['intent']['name'] == "query_keyword":
             keywords = []
@@ -434,7 +434,9 @@ async def get_en_indexes(user_input, json_filename):
                     intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
                     print(f"intersection = {intersection}")
 
-                    user_prompt = f"No problem! Searching \"keyword: {keyword}\", {user_dates_cities}"
+                    # user_prompt = f"No problem! Searching \"keyword: {keyword}\", {user_dates_cities}"
+                    user_prompt = [f"\"keyword: {keyword}\""]
+                    user_prompt.extend(user_dates_cities)
                     print(f"user_prompt = {user_prompt}")
                     return intersection, user_prompt, matched_tags
                 else:
@@ -443,7 +445,8 @@ async def get_en_indexes(user_input, json_filename):
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     matched_tags = ["keyword"]
 
-                    user_prompt = f"No problem! Searching \"keyword: {keyword}\""
+                    # user_prompt = f"No problem! Searching \"keyword: {keyword}\""
+                    user_prompt = [f"\"keyword: {keyword}\""]
                     print(f"user_prompt = {user_prompt}")
                     return get_keyword_indexes_en_indexes, user_prompt, matched_tags
             else:
@@ -454,7 +457,8 @@ async def get_en_indexes(user_input, json_filename):
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     print(f"user_dates_times = {user_dates_times}")
 
-                    user_prompt = f"No problem! Searching {user_dates_times}"
+                    # user_prompt = f"No problem! Searching {user_dates_times}"
+                    user_prompt = user_dates_times
                     print(f"user_prompt = {user_prompt}")
                     return en_dates_cities_indexes, user_prompt, matched_tags
                 else:
@@ -463,7 +467,7 @@ async def get_en_indexes(user_input, json_filename):
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     matched_tags = []
 
-                    user_prompt = F"Sorry, we couldn't find any keyword, date or city. We will search relevant information for you."
+                    user_prompt = f"Sorry, we couldn't find any keyword, date or city. We will search relevant information for you."
                     print(f"user_prompt = {user_prompt}")
                     return get_keyword_indexes_en_indexes, user_prompt, matched_tags
 
@@ -629,7 +633,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                         print(f"matched_tags = {matched_tags}")
 
-                        await update.message.reply_text(user_prompt)
+                        await update.message.reply_text(f"Searching {' & '.join(user_prompt)} ...")
 
                         print(f"一共找到{len(found_indexes)}筆資料")
                         await update.message.reply_text(f"We found {len(found_indexes)} results!")
@@ -757,10 +761,10 @@ async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, q
         print(f"matched_tags = {matched_tags}")
 
         # await update.message.reply_text(user_prompt)
-        await message.reply_text(user_prompt)
+        await message.reply_text(f"Searching {' & '.join(user_prompt)}")
 
         print(f"一共找到{len(found_indexes)}筆資料")
-        await message.reply_text(f"We found {len(found_indexes)} results!")
+        # await message.reply_text(f"We found {len(found_indexes)} results!")
 
         for msg in messages:
             await message.reply_text(msg)
@@ -774,7 +778,7 @@ async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, q
 
         messages = show_concert_info(result_indexes, 'en')
         print(f"一共找到{len(result_indexes)}筆資料")
-        await message.reply_text(f"We found {len(result_indexes)} results!")
+        # await message.reply_text(f"We found {len(result_indexes)} results!")
 
         for msg in messages:
             await message.reply_text(msg)
@@ -803,18 +807,19 @@ async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, que
         message = update.message
 
     if len(queries) == 1:
-        found_indexes, _, _ = await get_en_indexes(queries[0], en_json)
+        found_indexes, user_prompt, _ = await get_en_indexes(queries[0], en_json)
         print(f"一共找到{len(found_indexes)}筆資料")
-        await message.reply_text(f"We found {len(found_indexes)} results!")
+        await message.reply_text(f"We found {len(found_indexes)} results by searching {' & '.join(user_prompt)}!")
     else:
-        result_indexes, _, _ = await get_en_indexes(queries[0], en_json)
+        result_indexes, user_prompts, _ = await get_en_indexes(queries[0], en_json)
         for i in range(1, len(queries)):
-            next_indexes, _, _ = await get_en_indexes(queries[i], en_json)
+            next_indexes, user_prompt, _ = await get_en_indexes(queries[i], en_json)
+            user_prompts.extend(user_prompt)
             result_indexes = set(result_indexes) & set(next_indexes)
         result_indexes = list(result_indexes)
         print(f"result_indexes = {result_indexes}")
 
-        await message.reply_text(f"We found {len(result_indexes)} results!")
+        await message.reply_text(f"We found {len(result_indexes)} results by searching {' & '.join(user_prompts)}!")
 
     # 添加選項
     keyboard = [
@@ -823,7 +828,8 @@ async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, que
     reply_markup = InlineKeyboardMarkup(keyboard)
     print(f"reply_markup = {reply_markup}")
     queries_str = '\n'.join(queries)
-    await update.message.reply_text(f'Current queries:\n{queries_str}', reply_markup=reply_markup)
+    # await update.message.reply_text(f'Current queries:\n{queries_str}', reply_markup=reply_markup)
+    await update.message.reply_text(f'You can add more keywords, or', reply_markup=reply_markup)
 
     """"""
 

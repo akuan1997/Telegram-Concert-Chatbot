@@ -361,7 +361,6 @@ async def get_zh_indexes(user_input, json_filename):
 async def get_en_indexes(user_input, json_filename):
     with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
-
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
     names = [name.replace(' ', '') for name in names]
 
@@ -424,7 +423,8 @@ async def get_en_indexes(user_input, json_filename):
 
                 if found_datetime_city:
                     print('有keyword，也有datetime，取集合')
-                    en_dates_cities_indexes, user_dates_cities = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_cities, matched_tags = en_dates_cities(user_input, json_filename)
+                    matched_tags.append("keyword")
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     print(f"user_dates_cities = {user_dates_cities}")
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
@@ -434,34 +434,36 @@ async def get_en_indexes(user_input, json_filename):
 
                     user_prompt = f"No problem! Searching \"keyword: {keyword}\", {user_dates_cities}"
                     print(f"user_prompt = {user_prompt}")
-                    return intersection, user_prompt
+                    return intersection, user_prompt, matched_tags
                 else:
                     print('有keyword，但是沒有datetime，直接顯示keyword indexes')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    matched_tags = ["keyword"]
 
                     user_prompt = f"No problem! Searching \"keyword: {keyword}\""
                     print(f"user_prompt = {user_prompt}")
-                    return get_keyword_indexes_en_indexes, user_prompt
+                    return get_keyword_indexes_en_indexes, user_prompt, matched_tags
             else:
                 print('沒有keyword')
                 if found_datetime_city:
                     print(f"user_input = {user_input}")
-                    en_dates_cities_indexes, user_dates_times = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_times, matched_tags = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     print(f"user_dates_times = {user_dates_times}")
 
                     user_prompt = "No problem! Searching " + user_dates_times
                     print(f"user_prompt = {user_prompt}")
-                    return en_dates_cities_indexes, user_prompt
+                    return en_dates_cities_indexes, user_prompt, matched_tags
                 else:
                     print('沒有keyword，也沒有日期，直接把user_input拿去keyword搜尋')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(user_input, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    matched_tags = []
 
                     user_prompt = "Sorry, we couldn't find any keyword, date or city. We will search relevant information for you."
                     print(f"user_prompt = {user_prompt}")
-                    return get_keyword_indexes_en_indexes, user_prompt
+                    return get_keyword_indexes_en_indexes, user_prompt, matched_tags
 
 
 # 定義三個處理不同指令的異步函式
@@ -603,13 +605,24 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 #                                         second=new_date_time.second), args=[user_id, "你好呀"])
             # eng, direct msg
             else:
-                found_indexes, user_prompt = await get_en_indexes(user_input, en_json)
+                found_indexes, user_prompt, matched_tags = await get_en_indexes(user_input, en_json)
                 messages = show_concert_info(found_indexes, 'en')
 
-                print(f"一共找到{len(found_indexes)}筆資料")
+                print(f"matched_tags = {matched_tags}")
+
                 await update.message.reply_text(user_prompt)
+
+                print(f"一共找到{len(found_indexes)}筆資料")
+                await update.message.reply_text(f"We found {len(found_indexes)} results!")
+
                 # if len(found_indexes) > N:
                 # to do
+                all_tags = ['keyword', 'date', 'city']
+                further_search_tags = [tag for tag in all_tags if tag not in matched_tags]
+                print(f"further_search_tags = {further_search_tags}")
+                await update.message.reply_text(
+                    f"You can refine your search by specifying more details: {', '.join(further_search_tags)}")
+
                 for msg in messages:
                     await update.message.reply_text(msg)
 
