@@ -114,7 +114,7 @@ def reset_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     job = scheduler.add_job(
         send_reset_message,
-        trigger=IntervalTrigger(seconds=5),
+        trigger=IntervalTrigger(seconds=100),
         args=[update, context],
     )
     context.user_data['timeout_job'] = job

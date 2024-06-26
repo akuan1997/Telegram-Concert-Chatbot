@@ -6,6 +6,7 @@ import logging
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 
 from rasa.core.agent import Agent
 from rasa.shared.utils.cli import print_info, print_success
@@ -23,6 +24,9 @@ from read_json_function import *
 
 TOKEN: Final = '7219739601:AAEYdGgpr4DOxH6YrIKbtm7eCQeXoOCqyTY'  # 定義Telegram Bot的token作為常量
 BOT_USERNAME: Final = '@Concert_info_chat_bot'  # 定義機器人的使用者名稱作為常量
+
+# 创建调度器
+scheduler = AsyncIOScheduler()
 
 user_language_preferences = {}
 user_status = {}
@@ -727,6 +731,9 @@ Have Fun!
     else:
         await update.message.reply_text("請先設置語言!\nPlease set the language first!")
 
+    # 重置计时器
+    reset_timeout(update, context)
+
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
@@ -832,7 +839,6 @@ async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, que
     await update.message.reply_text(f'You can add more keywords, or', reply_markup=reply_markup)
 
     """"""
-
 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1051,6 +1057,28 @@ async def get_daily_msg(language):
     return formatted_str_list
 
 
+def reset_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    job = context.user_data.get('timeout_job')
+    if job:
+        job.remove()
+
+    job = scheduler.add_job(
+        send_reset_message,
+        trigger=IntervalTrigger(minutes=30),
+        args=[update, context],
+    )
+    context.user_data['timeout_job'] = job
+
+
+async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data['awaiting_new_query'] = False
+    context.user_data['queries'] = []
+    await update.message.reply_text("Query status has been reset due to 30 minutes of inactivity.")
+    job = context.user_data.pop('timeout_job', None)
+    if job:
+        job.remove()
+
+
 if __name__ == '__main__':
     print('Starting bot...')
     app = Application.builder().token(TOKEN).build()
@@ -1062,7 +1090,7 @@ if __name__ == '__main__':
 
     app.add_error_handler(error)
 
-    scheduler = AsyncIOScheduler()
+    # scheduler = AsyncIOScheduler()
     scheduler.add_job(send_daily_update, CronTrigger(hour=21))
     scheduler.start()
 
