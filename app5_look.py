@@ -592,7 +592,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # to do
                 for msg in messages:
                     await update.message.reply_text(msg)
-        # eng
         else:
             # eng, reply
             if message.reply_to_message:
