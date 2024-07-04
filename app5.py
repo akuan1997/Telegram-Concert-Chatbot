@@ -289,9 +289,10 @@ async def get_zh_indexes(user_input, json_filename):
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
-            ticket_time_indexes = zh_get_ticket_time(user_input, json_filename)
+            ticket_time_indexes, user_prompt = zh_get_ticket_time(user_input, json_filename)
             found_keyword = False
             keyword_indexes = []
+            keywords = []
 
             for i in range(len(result['entities'])):
                 if result['entities'][i]['value']:
@@ -301,66 +302,96 @@ async def get_zh_indexes(user_input, json_filename):
                         keyword_index = get_keyword_indexes_zh(result['entities'][i]['value'], json_filename)
                         print(f"keyword_index = {keyword_index}")
                         keyword_indexes.extend(keyword_index)
+                        keywords.append(result['entities'][i]['value'])
 
             if found_keyword and ticket_time_indexes:
                 print('取集合')
                 print(f"ticket_time_indexes = {ticket_time_indexes}")
                 print(f"keyword_indexes = {keyword_indexes}")
                 intersection = [item for item in keyword_indexes if item in ticket_time_indexes]
+                user_prompt = [f"\"{user_prompt}\"且關鍵字為\"{', '.join(keywords)}\"的售票時間"]
                 print(f"intersection = {intersection}")
-                return intersection
+                return intersection, user_prompt
             elif not found_keyword and ticket_time_indexes:
                 print('直接搜尋售票時間')
                 print(f"ticket_time_indexes = {ticket_time_indexes}")
-                return ticket_time_indexes
+                user_prompt = [f"\"{user_prompt}\"的售票時間"]
+                return ticket_time_indexes, user_prompt
             elif found_keyword and not ticket_time_indexes:
                 print('直接搜尋keyword')
                 print(f"keyword_indexes = {keyword_indexes}")
-                return keyword_indexes
+                user_prompt = [f"關鍵字為\"{', '.join(keywords)}\"的售票時間"]
+                return keyword_indexes, user_prompt
             else:
                 print('直接回傳找不到')
-                return []
+                user_prompt = ["抱歉，我找不到任何資訊"]
+                return user_prompt
+
 
         elif result['intent']['name'] == "query_keyword":
+
             found_datetime_city = False
+
             found_keyword = False
+
             keyword_indexes = []
+
+            keywords = []
+
             for i in range(len(result['entities'])):
+
                 if result['entities'][i]['value']:
+
                     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
 
                     if result['entities'][i]['entity'] == 'datetime' or result['entities'][i]['entity'] == 'city':
                         found_datetime_city = True
+
                         print(f"found_datetime_city = {found_datetime_city}")
 
                     if result['entities'][i]['entity'] == 'keyword':
                         found_keyword = True
+
                         keyword_index = get_keyword_indexes_zh(result['entities'][i]['value'], json_filename)
                         print(f"keyword_index = {keyword_index}")
+
                         keyword_indexes.extend(keyword_index)
+                        keywords.append(result['entities'][i]['value'])
 
             if found_keyword and found_datetime_city:
                 print('取集合')
                 print(f"keyword_indexes = {keyword_indexes}")
-                dates_cities_indexes = zh_dates_cities(user_input, json_filename)
+                dates_cities_indexes, user_dates_cities = zh_dates_cities(user_input, json_filename)
                 print(f"dates_cities_indexes = {dates_cities_indexes}")
                 intersection = [item for item in keyword_indexes if item in dates_cities_indexes]
                 print(f"intersection = {intersection}")
-                return intersection
+                user_prompt = 'a2'
+                print(f"user_dates_cities = {user_dates_cities}")
+                user_prompt = [f"\"關鍵字: {', '.join(keywords)}\""]
+                user_prompt.extend(user_dates_cities)
+                print(f"user_prompt = {user_prompt}")
+                return intersection, user_prompt
             elif not found_keyword and found_datetime_city:
                 print('只搜尋日期')
-                dates_cities_indexes = zh_dates_cities(user_input, json_filename)
+                dates_cities_indexes, user_dates_cities = zh_dates_cities(user_input, json_filename)
                 print(f"dates_cities_indexes = {dates_cities_indexes}")
-                return dates_cities_indexes
+                print(f"user_dates_cities = {user_dates_cities}")
+                user_prompt = user_dates_cities
+                print(f"user_prompt = {user_prompt}")
+                return dates_cities_indexes, user_prompt
             elif found_keyword and not found_datetime_city:
                 print('只搜尋關鍵字')
                 print(f"keyword_indexes = {keyword_indexes}")
-                return keyword_indexes
+                user_prompt = [f"\"關鍵字: {', '.join(keywords)}\""]
+                print(f"user_prompt = {user_prompt}")
+                return keyword_indexes, user_prompt
             else:
                 print('找不到關鍵字，也找不到日期，那就直接搜尋keyword_indexes')
                 keyword_index = get_keyword_indexes_zh(user_input, json_filename)
                 print(f"keyword_index = {keyword_index}")
-                return keyword_index
+                user_prompt = ["不好意思，我找不到任何的關鍵字、日期以及城市。我將會透過您的句子直接搜尋相關的資訊。"]
+                print(f"user_prompt = {user_prompt}")
+                return keyword_index, user_prompt
 
 
 async def get_en_indexes(user_input, json_filename):
@@ -524,6 +555,10 @@ async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_
                 f.writelines(lines)
             break
 
+    context.user_data['queries'] = []
+    context.user_data['awaiting_new_query'] = False
+    print('重製quries')
+
 
 async def send_msg(chat_id, message):
     await app.bot.send_message(chat_id=chat_id, text=message)
@@ -572,7 +607,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                             hour=alarm_date_time.hour,
                                                             minute=alarm_date_time.minute,
                                                             second=alarm_date_time.second),
-                                                            args=[user_id, alarm_msg])
+                                      args=[user_id, alarm_msg])
                     await update.message.reply_text(
                         f"沒問題！ 我將會在售票時間前 {format_seconds_zh(total_seconds)} 傳送一個訊息提醒您記得注意售票時間！")
                 else:
@@ -585,13 +620,42 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 #                                         second=new_date_time.second), args=[user_id, "你好呀"])
             # chi, direct msg
             else:
-                found_indexes = await get_zh_indexes(user_input, zh_json)
-                messages = show_concert_info(found_indexes, 'zh')
+                # 检查是否在等待新查询
+                if context.user_data.get('awaiting_new_query'):
+                    await handle_new_search(update, context, user_input, 'zh')
+                else:
+                    # 存儲用戶輸入
+                    context.user_data['queries'].append(user_input)
 
-                print(f"一共找到{len(found_indexes)}筆資料")
-                # to do
-                for msg in messages:
-                    await update.message.reply_text(msg)
+                    found_indexes, user_prompt = await get_zh_indexes(user_input, zh_json)
+
+                    # <= 30 results
+                    if len(found_indexes) <= 30:
+                        context.user_data['queries'] = []
+                        context.user_data['awaiting_new_query'] = False
+
+                        messages = show_concert_info(found_indexes, 'zh')
+
+                        await update.message.reply_text(f"正在查詢 {' & '.join(user_prompt)}")
+
+                        print(f"一共找到{len(found_indexes)}筆資料")
+                        await update.message.reply_text(f"一共找到 {len(found_indexes)} 筆資料")
+
+                        for msg in messages:
+                            await update.message.reply_text(msg)
+                    # > 30 results
+                    else:
+                        # 添加選項
+                        keyboard = [
+                            [InlineKeyboardButton("顯示全部", callback_data='show_all')],
+                            [InlineKeyboardButton("繼續搜尋", callback_data='continue_searching')],
+                        ]
+                        reply_markup = InlineKeyboardMarkup(keyboard)
+                        print(f"reply_markup = {reply_markup}")
+                        # await update.message.reply_text('請選擇下一步操作：', reply_markup=reply_markup)
+                        await update.message.reply_text(
+                            f'找到 {len(found_indexes)} 筆資料，您想要顯示全部還是繼續新增像是曲風、日期、城市 ... 等等的關鍵字呢?',
+                            reply_markup=reply_markup)
         # eng
         else:
             # eng, reply
@@ -617,7 +681,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                             hour=alarm_date_time.hour,
                                                             minute=alarm_date_time.minute,
                                                             second=alarm_date_time.second),
-                                                            args=[user_id, alarm_msg])
+                                      args=[user_id, alarm_msg])
                     await update.message.reply_text(
                         f"No problem! we will send you a message {format_seconds(total_seconds)} before tickets start selling!")
                 else:
@@ -632,7 +696,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 # 检查是否在等待新查询
                 if context.user_data.get('awaiting_new_query'):
-                    await handle_new_search(update, context, user_input)
+                    await handle_new_search(update, context, user_input, 'en')
                 else:
                     # 存儲用戶輸入
                     context.user_data['queries'].append(user_input)
@@ -668,14 +732,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         await update.message.reply_text(
                             f'We found {len(found_indexes)} results, would you like to show all the results or add more keyword like genre, date or city?',
                             reply_markup=reply_markup)
-
-                    # # if len(found_indexes) > N:
-                    # # to do
-                    # all_tags = ['keyword', 'date', 'city']
-                    # further_search_tags = [tag for tag in all_tags if tag not in matched_tags]
-                    # print(f"further_search_tags = {further_search_tags}")
-                    # await update.message.reply_text(
-                    #     f"You can refine your search by specifying more details: {', '.join(further_search_tags)}")
 
     elif user_input.strip() in ('1', '2'):
         user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
@@ -748,70 +804,121 @@ Have Fun!
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
+    user_id = query.message.chat.id
+
     await query.answer()
     choice = query.data
 
-    if choice == 'show_all':
-        queries = context.user_data.get('queries', [])
-        await query.edit_message_text(text="Show All Results.")
-        await show_all_results(update, context, queries)
-        # 繼續之前的查詢邏輯
-    elif choice == 'continue_searching':
-        await query.edit_message_text(
-            text="No problem! Please tell me what keyword, date or city you would like to search.\n"
-                 "Remember, the search mode will be terminated after 30 minutes of inactivity or when you click 'show all':")
-        # 等待用戶新的輸入
-        context.user_data['awaiting_new_query'] = True
+    # en
+    if get_user_language(str(user_id)) == 'en':
+        if choice == 'show_all':
+            queries = context.user_data.get('queries', [])
+            await query.edit_message_text(text="Show All Results.")
+            await show_all_results(update, context, queries, 'en')
+            # 繼續之前的查詢邏輯
+        elif choice == 'continue_searching':
+            await query.edit_message_text(
+                text="No problem! Please tell me what keyword, date or city you would like to search.\n"
+                     "Remember, the search mode will be terminated after 30 minutes of inactivity or when you click 'show all':")
+            # 等待用戶新的輸入
+            context.user_data['awaiting_new_query'] = True
+    # zh
+    else:
+        if choice == 'show_all':
+            queries = context.user_data.get('queries', [])
+            await query.edit_message_text(text="顯示全部結果")
+            await show_all_results(update, context, queries, 'zh')
+            # 繼續之前的查詢邏輯
+        elif choice == 'continue_searching':
+            await query.edit_message_text(
+                text="沒問題! 請輸入你想要查詢的關鍵字、日期或是城市\n"
+                     "請記得，閒置30分鐘或是按下顯示全部後將會重置目前的搜尋。")
+            # 等待用戶新的輸入
+            context.user_data['awaiting_new_query'] = True
 
 
-async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, queries):
+async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, queries, language):
     # 获取回调查询的消息对象
     message = update.callback_query.message
 
     # 重置查询列表
     print(f"queries = {queries}")
 
-    # found_indexes, user_prompt, matched_tags = await get_en_indexes(user_input, en_json)
-    if len(queries) == 1:
-        found_indexes, user_prompt, matched_tags = await get_en_indexes(queries[0], en_json)
+    if language == 'en':
+        # found_indexes, user_prompt, matched_tags = await get_en_indexes(user_input, en_json)
+        if len(queries) == 1:
+            found_indexes, user_prompt, matched_tags = await get_en_indexes(queries[0], en_json)
 
-        messages = show_concert_info(found_indexes, 'en')
-        print(f"matched_tags = {matched_tags}")
+            messages = show_concert_info(found_indexes, 'en')
+            print(f"matched_tags = {matched_tags}")
 
-        # await update.message.reply_text(user_prompt)
-        await message.reply_text(f"Searching {' & '.join(user_prompt)}")
+            # await update.message.reply_text(user_prompt)
+            await message.reply_text(f"Searching {' & '.join(user_prompt)}")
 
-        print(f"一共找到{len(found_indexes)}筆資料")
-        # await message.reply_text(f"We found {len(found_indexes)} results!")
+            print(f"一共找到{len(found_indexes)}筆資料")
+            # await message.reply_text(f"We found {len(found_indexes)} results!")
 
-        for msg in messages:
-            await message.reply_text(msg)
+            for msg in messages:
+                await message.reply_text(msg)
+        else:
+            result_indexes, _, _ = await get_en_indexes(queries[0], en_json)
+            for i in range(1, len(queries)):
+                next_indexes, _, _ = await get_en_indexes(queries[i], en_json)
+                result_indexes = set(result_indexes) & set(next_indexes)
+            result_indexes = list(result_indexes)
+            print(f"result_indexes = {result_indexes}")
+
+            messages = show_concert_info(result_indexes, 'en')
+            print(f"一共找到{len(result_indexes)}筆資料")
+            # await message.reply_text(f"We found {len(result_indexes)} results!")
+
+            for msg in messages:
+                await message.reply_text(msg)
     else:
-        result_indexes, _, _ = await get_en_indexes(queries[0], en_json)
-        for i in range(1, len(queries)):
-            next_indexes, _, _ = await get_en_indexes(queries[i], en_json)
-            result_indexes = set(result_indexes) & set(next_indexes)
-        result_indexes = list(result_indexes)
-        print(f"result_indexes = {result_indexes}")
+        # found_indexes, user_prompt, matched_tags = await get_en_indexes(user_input, en_json)
+        if len(queries) == 1:
+            found_indexes, user_prompt = await get_zh_indexes(queries[0], zh_json)
 
-        messages = show_concert_info(result_indexes, 'en')
-        print(f"一共找到{len(result_indexes)}筆資料")
-        # await message.reply_text(f"We found {len(result_indexes)} results!")
+            messages = show_concert_info(found_indexes, 'zh')
 
-        for msg in messages:
-            await message.reply_text(msg)
+            # await update.message.reply_text(user_prompt)
+            await message.reply_text(f"Searching {' & '.join(user_prompt)}")
 
-    context.user_data['queries'] = []
-    context.user_data['awaiting_new_query'] = False
-    await update.callback_query.edit_message_text(text="Show All Results. Search has been reset.")
+            print(f"一共找到{len(found_indexes)}筆資料")
+            # await message.reply_text(f"We found {len(found_indexes)} results!")
+
+            for msg in messages:
+                await message.reply_text(msg)
+
+            context.user_data['queries'] = []
+            context.user_data['awaiting_new_query'] = False
+            await update.callback_query.edit_message_text(text="Show All Results. Search has been reset.")
+        else:
+            result_indexes, _ = await get_zh_indexes(queries[0], zh_json)
+            for i in range(1, len(queries)):
+                next_indexes, _ = await get_zh_indexes(queries[i], zh_json)
+                result_indexes = set(result_indexes) & set(next_indexes)
+            result_indexes = list(result_indexes)
+            print(f"result_indexes = {result_indexes}")
+
+            messages = show_concert_info(result_indexes, 'zh')
+            print(f"一共找到{len(result_indexes)}筆資料")
+            # await message.reply_text(f"We found {len(result_indexes)} results!")
+
+            for msg in messages:
+                await message.reply_text(msg)
+
+        context.user_data['queries'] = []
+        context.user_data['awaiting_new_query'] = False
+        await update.callback_query.edit_message_text(text="顯示全部結果，搜尋已重置。")
 
 
-async def handle_new_search(update: Update, context: ContextTypes.DEFAULT_TYPE, new_query: str):
+async def handle_new_search(update: Update, context: ContextTypes.DEFAULT_TYPE, new_query: str, language):
     context.user_data['queries'].append(new_query)
-    await perform_search(update, context, new_query)
+    await perform_search(update, context, language)
 
 
-async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, query: str):
+async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, language):
     # 在這裡執行你的搜索邏輯，例如調用Rasa模型或查詢數據庫
     queries = context.user_data.get('queries', [])
     # print(f"queries = {queries}")
@@ -824,30 +931,56 @@ async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, que
     else:
         message = update.message
 
-    if len(queries) == 1:
-        found_indexes, user_prompt, _ = await get_en_indexes(queries[0], en_json)
-        print(f"一共找到{len(found_indexes)}筆資料")
-        await message.reply_text(f"We found {len(found_indexes)} results by searching {' & '.join(user_prompt)}!")
+    if language == 'en':
+        if len(queries) == 1:
+            found_indexes, user_prompt, _ = await get_en_indexes(queries[0], en_json)
+            print(f"一共找到{len(found_indexes)}筆資料")
+            await message.reply_text(f"We found {len(found_indexes)} results by searching {' & '.join(user_prompt)}!")
+        else:
+            result_indexes, user_prompts, _ = await get_en_indexes(queries[0], en_json)
+            for i in range(1, len(queries)):
+                next_indexes, user_prompt, _ = await get_en_indexes(queries[i], en_json)
+                user_prompts.extend(user_prompt)
+                result_indexes = set(result_indexes) & set(next_indexes)
+            result_indexes = list(result_indexes)
+            print(f"result_indexes = {result_indexes}")
+
+            await message.reply_text(f"We found {len(result_indexes)} results by searching {' & '.join(user_prompts)}!")
+
+        # 添加選項
+        keyboard = [
+            [InlineKeyboardButton("Show All", callback_data='show_all')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        print(f"reply_markup = {reply_markup}")
+        # queries_str = '\n'.join(queries)
+        # await update.message.reply_text(f'Current queries:\n{queries_str}', reply_markup=reply_markup)
+        await update.message.reply_text(f'You can add more keywords, or', reply_markup=reply_markup)
     else:
-        result_indexes, user_prompts, _ = await get_en_indexes(queries[0], en_json)
-        for i in range(1, len(queries)):
-            next_indexes, user_prompt, _ = await get_en_indexes(queries[i], en_json)
-            user_prompts.extend(user_prompt)
-            result_indexes = set(result_indexes) & set(next_indexes)
-        result_indexes = list(result_indexes)
-        print(f"result_indexes = {result_indexes}")
+        if len(queries) == 1:
+            found_indexes, user_prompt = await get_zh_indexes(queries[0], zh_json)
+            print(f"一共找到{len(found_indexes)}筆資料")
+            await message.reply_text(f"透過搜尋 {' & '.join(user_prompt)} 一共找到 {len(found_indexes)} 筆資料!")
+        else:
+            result_indexes, user_prompts = await get_zh_indexes(queries[0], zh_json)
+            for i in range(1, len(queries)):
+                next_indexes, user_prompt = await get_zh_indexes(queries[i], zh_json)
+                user_prompts.extend(user_prompt)
+                result_indexes = set(result_indexes) & set(next_indexes)
+            result_indexes = list(result_indexes)
+            print(f"result_indexes = {result_indexes}")
 
-        await message.reply_text(f"We found {len(result_indexes)} results by searching {' & '.join(user_prompts)}!")
+            await message.reply_text(f"透過搜尋 {' & '.join(user_prompts)} 一共找到 {len(result_indexes)} 筆資料!")
 
-    # 添加選項
-    keyboard = [
-        [InlineKeyboardButton("Show All", callback_data='show_all')],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    print(f"reply_markup = {reply_markup}")
-    queries_str = '\n'.join(queries)
-    # await update.message.reply_text(f'Current queries:\n{queries_str}', reply_markup=reply_markup)
-    await update.message.reply_text(f'You can add more keywords, or', reply_markup=reply_markup)
+        # 添加選項
+        keyboard = [
+            [InlineKeyboardButton("顯示全部", callback_data='show_all')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        print(f"reply_markup = {reply_markup}")
+        # queries_str = '\n'.join(queries)
+        # await update.message.reply_text(f'Current queries:\n{queries_str}', reply_markup=reply_markup)
+        await update.message.reply_text(f'你可以新增更多關鍵字，或是', reply_markup=reply_markup)
 
     """"""
 
@@ -1084,7 +1217,7 @@ def reset_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['awaiting_new_query'] = False
     context.user_data['queries'] = []
-    await update.message.reply_text("Query status has been reset due to 30 minutes of inactivity.")
+    # await update.message.reply_text("Query status has been reset due to 30 minutes of inactivity.")
     job = context.user_data.pop('timeout_job', None)
     if job:
         job.remove()
