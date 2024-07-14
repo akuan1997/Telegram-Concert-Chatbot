@@ -22,23 +22,23 @@ from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 from read_json_function import *
 
-TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
-BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
+TOKEN: Final = '7219739601:AAEYdGgpr4DOxH6YrIKbtm7eCQeXoOCqyTY'  # 定義Telegram Bot的token作為常量
+BOT_USERNAME: Final = '@Concert_info_chat_bot'  # 定義機器人的使用者名稱作為常量
 
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
 user_language_preferences = {}
 user_status = {}
-user_language_file = "user_preferred_language.txt"
+user_language_file = "../user_preferred_language.txt"
 
 """ zh config """
-zh_model_path = r'models\nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
+zh_model_path = r'../models/nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
 zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
-en_model_path = r'en_models\nlu-20240606-141412-glum-skirmish.tar.gz'
+en_model_path = r'../en_models/nlu-20240606-141412-glum-skirmish.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
@@ -197,9 +197,9 @@ def show_concert_info(indexes, language):
 
     formatted_str_list = []
     if language == 'zh':
-        data = read_json("concert_zh.json")
+        data = read_json("../concert_zh.json")
     elif language == 'en':
-        data = read_json("concert_en.json")
+        data = read_json("../concert_en.json")
 
     for index in indexes:
         if index >= len(data):
@@ -250,7 +250,7 @@ def show_concert_info(indexes, language):
 
 
 def keyword_adjustment_optimized(user_input):
-    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -395,7 +395,7 @@ async def get_zh_indexes(user_input, json_filename):
 
 
 async def get_en_indexes(user_input, json_filename):
-    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
     names = [name.replace(' ', '') for name in names]
@@ -1127,7 +1127,7 @@ async def get_daily_msg(language):
     formatted_str_list = []
 
     if language == 'zh':
-        zh_data = read_json("concert_zh.json")
+        zh_data = read_json("../concert_zh.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"new_concerts/{new_file}")
@@ -1203,7 +1203,7 @@ async def get_daily_msg(language):
                 formatted_str_list.append(formatted_str.strip())
 
     if language == 'en':
-        en_data = read_json("concert_en.json")
+        en_data = read_json("../concert_en.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"new_concerts/{new_file}")

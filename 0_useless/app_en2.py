@@ -347,7 +347,7 @@ model_path = r'../en_models/nlu-20240511-033142-brilliant-set.tar.gz'
 # run_cmdline1(model_path, words4)
 # run_cmdline(model_path)
 
-with open('../z1.txt', 'r', encoding='utf-8') as f:
+with open('z1.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 lines = [line.replace('\n', '') for line in lines]
 run_cmdline1(model_path, lines)

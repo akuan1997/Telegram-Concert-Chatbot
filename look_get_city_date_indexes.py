@@ -1581,7 +1581,7 @@ def en_get_ticket_time(text, json_filename):
 
 
 # """ test 1 """
-# en_dates_cities("June", "concert_en.json")
+en_dates_cities("June", "concert_en.json")
 # print('---')
 # en_dates_cities("June in taipei", "concert_en.json")
 # print('---')

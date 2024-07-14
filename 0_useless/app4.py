@@ -1,4 +1,3 @@
-# https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1022s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
 from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
@@ -14,14 +13,15 @@ from rasa.shared.utils.io import json_to_string
 from fuzzywuzzy import fuzz
 import yaml
 import re
+from datetime import datetime, timedelta
 
 from get_keyword_indexes_en import *
 from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 from read_json_function import *
 
-TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
-BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
+TOKEN: Final = '7219739601:AAEYdGgpr4DOxH6YrIKbtm7eCQeXoOCqyTY'  # 定義Telegram Bot的token作為常量
+BOT_USERNAME: Final = '@Concert_info_chat_bot'  # 定義機器人的使用者名稱作為常量
 
 user_language_preferences = {}
 user_status = {}
@@ -36,6 +36,145 @@ zh_json = "concert_zh.json"
 en_model_path = r'../en_models/nlu-20240606-141412-glum-skirmish.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
+
+time_units = {
+    'second': 1,
+    'seconds': 1,
+    'sec': 1,
+    'secs': 1,
+    'minute': 60,
+    'minutes': 60,
+    'min': 60,
+    'mins': 60,
+    'hour': 3600,
+    'hours': 3600,
+    'day': 86400,
+    'days': 86400,
+    'week': 604800,
+    'weeks': 604800,
+    'month': 2592000,
+    'months': 2592000,
+}
+
+
+def convert_time_to_seconds(sentence):
+    # 使用正则表达式提取时间
+    pattern = r'(\d+)\s*(seconds?|secs?|minutes?|mins?|hours?|days?|weeks?|months?)'
+    matches = re.findall(pattern, sentence, re.IGNORECASE)
+
+    total_seconds = 0
+    for match in matches:
+        value = int(match[0])
+        unit = match[1].lower()
+        total_seconds += value * time_units[unit]
+
+    return total_seconds
+
+
+def format_seconds(seconds):
+    units = [
+        ('year', 60 * 60 * 24 * 365),
+        ('month', 60 * 60 * 24 * 30),
+        ('week', 60 * 60 * 24 * 7),
+        ('day', 60 * 60 * 24),
+        ('hour', 60 * 60),
+        ('minute', 60),
+        ('second', 1),
+    ]
+
+    result = []
+    for name, count in units:
+        value = seconds // count
+        if value:
+            seconds -= value * count
+            unit_name = name if value == 1 else name + 's'
+            result.append(f"{value} {unit_name}")
+
+    return ', '.join(result) if result else "0 seconds"
+
+
+time_units_zh = {
+    '秒': 1,
+    '秒鐘': 1,
+    '分': 60,
+    '分鐘': 60,
+    '小時': 3600,
+    '天': 86400,
+    '周': 604800,
+    '週': 604800,
+    '月': 2592000,
+}
+
+
+def chinese_to_arabic(chinese_number):
+    chinese_numerals = {
+        '零': 0,
+        '一': 1,
+        '二': 2,
+        '三': 3,
+        '四': 4,
+        '五': 5,
+        '六': 6,
+        '七': 7,
+        '八': 8,
+        '九': 9,
+        '十': 10,
+    }
+
+    num = 0
+    if '十' in chinese_number:
+        parts = chinese_number.split('十')
+        if parts[0] == '':
+            num += 10
+        else:
+            num += chinese_numerals[parts[0]] * 10
+        if len(parts) > 1 and parts[1] != '':
+            num += chinese_numerals[parts[1]]
+    else:
+        num = chinese_numerals[chinese_number]
+
+    return num
+
+
+def extract_chinese_number(chinese_time):
+    pattern = r'(\d+|[\u4e00-\u9fff]+)\s*(秒鐘?|分鐘?|小時|天|周|週|月)'
+    matches = re.findall(pattern, chinese_time)
+
+    total_seconds = 0
+    for match in matches:
+        number, unit = match
+        if number.isdigit():
+            value = int(number)
+        else:
+            value = chinese_to_arabic(number)
+        total_seconds += value * time_units_zh[unit]
+
+    return total_seconds
+
+
+def convert_time_to_seconds_zh(sentence):
+    return extract_chinese_number(sentence)
+
+
+def format_seconds_zh(seconds):
+    units = [
+        ('年', 60 * 60 * 24 * 365),
+        ('月', 60 * 60 * 24 * 30),
+        ('周', 60 * 60 * 24 * 7),
+        ('天', 60 * 60 * 24),
+        ('小時', 60 * 60),
+        ('分鐘', 60),
+        ('秒', 1),
+    ]
+
+    result = []
+    for name, count in units:
+        value = seconds // count
+        if value:
+            seconds -= value * count
+            result.append(f"{value} {name}")
+
+    return ', '.join(result) if result else "0 秒"
 
 
 def get_user_language(id):
@@ -222,7 +361,6 @@ async def get_zh_indexes(user_input, json_filename):
 async def get_en_indexes(user_input, json_filename):
     with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
-
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
     names = [name.replace(' ', '') for name in names]
 
@@ -242,9 +380,11 @@ async def get_en_indexes(user_input, json_filename):
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
-            ticket_time_indexes = en_get_ticket_time(user_input, json_filename)
+            ticket_time_indexes, user_prompt = en_get_ticket_time(user_input, json_filename)
             print(f"ticket_time_indexes = {ticket_time_indexes}")
-            return ticket_time_indexes
+            user_prompt = f"No problem! Searching ticketing time \"{user_prompt}\""
+            return ticket_time_indexes, user_prompt
+
         elif result['intent']['name'] == "query_keyword":
             keywords = []
             found_datetime_city = False
@@ -283,30 +423,47 @@ async def get_en_indexes(user_input, json_filename):
 
                 if found_datetime_city:
                     print('有keyword，也有datetime，取集合')
-                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_cities, matched_tags = en_dates_cities(user_input, json_filename)
+                    matched_tags.append("keyword")
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
+                    print(f"user_dates_cities = {user_dates_cities}")
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
                     intersection = [item for item in get_keyword_indexes_en_indexes if item in en_dates_cities_indexes]
                     print(f"intersection = {intersection}")
-                    return intersection
+
+                    user_prompt = f"No problem! Searching \"keyword: {keyword}\", {user_dates_cities}"
+                    print(f"user_prompt = {user_prompt}")
+                    return intersection, user_prompt, matched_tags
                 else:
                     print('有keyword，但是沒有datetime，直接顯示keyword indexes')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(keyword, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
-                    return get_keyword_indexes_en_indexes
+                    matched_tags = ["keyword"]
+
+                    user_prompt = f"No problem! Searching \"keyword: {keyword}\""
+                    print(f"user_prompt = {user_prompt}")
+                    return get_keyword_indexes_en_indexes, user_prompt, matched_tags
             else:
                 print('沒有keyword')
                 if found_datetime_city:
                     print(f"user_input = {user_input}")
-                    en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
+                    en_dates_cities_indexes, user_dates_times, matched_tags = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
-                    return en_dates_cities_indexes
+                    print(f"user_dates_times = {user_dates_times}")
+
+                    user_prompt = "No problem! Searching " + user_dates_times
+                    print(f"user_prompt = {user_prompt}")
+                    return en_dates_cities_indexes, user_prompt, matched_tags
                 else:
                     print('沒有keyword，也沒有日期，直接把user_input拿去keyword搜尋')
                     get_keyword_indexes_en_indexes = get_keyword_indexes_en(user_input, json_filename)
                     print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
-                    return get_keyword_indexes_en_indexes
+                    matched_tags = []
+
+                    user_prompt = "Sorry, we couldn't find any keyword, date or city. We will search relevant information for you."
+                    print(f"user_prompt = {user_prompt}")
+                    return get_keyword_indexes_en_indexes, user_prompt, matched_tags
 
 
 # 定義三個處理不同指令的異步函式
@@ -358,31 +515,119 @@ async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_
             break
 
 
+async def send_msg(chat_id, message):
+    await app.bot.send_message(chat_id=chat_id, text=message)
+
+
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
-    text: str = update.message.text
+    message = update.message  # to detect reply
+    user_input: str = update.message.text  # user input
     user_id = update.message.chat.id
-    print(f'User ({user_id}) in {message_type}: "{text}"')
+    print(f'User ({user_id}): "{user_input}"')
 
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
     lines = [line.replace('\n', '').split('|||')[0] for line in lines]
-    # print('handle message', lines)  # test
+    # print('handle message', lines)
 
     if str(user_id) in lines:
         if get_user_language(str(user_id)) == 'zh':
-            found_indexes = await get_zh_indexes(text, zh_json)
-            messages = show_concert_info(found_indexes, 'zh')
+            # chi, reply
+            if message.reply_to_message:
+                reply_message = message.reply_to_message
+                reply_text = reply_message.text
+                title = reply_text.split("\n")[0].replace('- ', '')
+                print(f"title = {title}")
+                sale_date_time = reply_text.split("\n")[1].split('- 售票日期: ')[1]
+                print(f"sale_date_time = {sale_date_time}")
+                if ":" in sale_date_time:
+                    # print(f"original user input = {user_input}")
+                    # print(f"with function = {chinese_to_arabic(user_input)}")
+                    user_input = user_input.replace('半小時', '30分鐘')
+                    total_seconds = convert_time_to_seconds_zh(user_input)
+                    reply_text_sale_date_time = datetime.strptime(sale_date_time, "%Y/%m/%d %H:%M")
+                    alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+                    print(alarm_date_time)
+                    alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
+                    print(f"alarm_msg = {alarm_msg}")
+
+                    scheduler.add_job(send_msg, CronTrigger(hour=alarm_date_time.hour, minute=alarm_date_time.minute,
+                                                            second=alarm_date_time.second), args=[user_id, alarm_msg])
+                    await update.message.reply_text(
+                        f"沒問題！ 我將會在售票時間前 {format_seconds_zh(total_seconds)} 傳送一個訊息提醒您記得注意售票時間！")
+                else:
+                    await update.message.reply_text("不好意思，你回覆的這則訊息沒有售票時間 :(")
+                # await context.bot.send_message(chat_id=update.effective_chat.id,
+                #                                text=f"你回覆的訊息是:\n{reply_text}\n輸入文字:\n{user_input}")  # test
+                # now = datetime.now()
+                # new_date_time = now + timedelta(seconds=5)
+                # scheduler.add_job(send_msg, CronTrigger(hour=new_date_time.hour, minute=new_date_time.minute,
+                #                                         second=new_date_time.second), args=[user_id, "你好呀"])
+            # chi, direct msg
+            else:
+                found_indexes = await get_zh_indexes(user_input, zh_json)
+                messages = show_concert_info(found_indexes, 'zh')
+
+                print(f"一共找到{len(found_indexes)}筆資料")
+                # to do
+                for msg in messages:
+                    await update.message.reply_text(msg)
         else:
-            found_indexes = await get_en_indexes(text, en_json)
-            messages = show_concert_info(found_indexes, 'en')
+            # eng, reply
+            if message.reply_to_message:
+                reply_message = message.reply_to_message
+                reply_text = reply_message.text
+                title = reply_text.split("\n")[0].replace('- ', '')
+                print(f"title = {title}")
+                # sale_date_time = reply_text.split("\n")[1].replace('\n', '')
+                sale_date_time = reply_text.split("\n")[1].split('- Sale Date: ')[1]
+                print(f"sale_date_time = {sale_date_time}")
+                if ":" in sale_date_time:
+                    total_seconds = convert_time_to_seconds(user_input)
+                    reply_text_sale_date_time = datetime.strptime(sale_date_time, "%Y/%m/%d %H:%M")
+                    alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+                    print(alarm_date_time)
+                    alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
+                    print(f"alarm_msg = {alarm_msg}")
 
-        print(f"一共找到{len(found_indexes)}筆資料")
-        for msg in messages:
-            await update.message.reply_text(msg)
+                    scheduler.add_job(send_msg, CronTrigger(hour=alarm_date_time.hour, minute=alarm_date_time.minute,
+                                                            second=alarm_date_time.second), args=[user_id, alarm_msg])
+                    await update.message.reply_text(
+                        f"No problem! we will send you a message {format_seconds(total_seconds)} before tickets start selling!")
+                else:
+                    await update.message.reply_text("Sorry, this message does not contain selling time :(")
+                # await context.bot.send_message(chat_id=update.effective_chat.id,
+                #                                text=f"Replied to:\n{reply_text}\nYour input:\n{user_input}")  # test
+                # now = datetime.now()
+                # new_date_time = now + timedelta(seconds=5)
+                # scheduler.add_job(send_msg, CronTrigger(hour=new_date_time.hour, minute=new_date_time.minute,
+                #                                         second=new_date_time.second), args=[user_id, "你好呀"])
+            # eng, direct msg
+            else:
+                found_indexes, user_prompt, matched_tags = await get_en_indexes(user_input, en_json)
+                messages = show_concert_info(found_indexes, 'en')
 
-    elif text.strip() in ('1', '2'):
-        user_language_preferences[user_id] = 'Chinese' if text.strip() == '1' else 'English'
+                print(f"matched_tags = {matched_tags}")
+
+                await update.message.reply_text(user_prompt)
+
+                print(f"一共找到{len(found_indexes)}筆資料")
+                await update.message.reply_text(f"We found {len(found_indexes)} results!")
+
+                # if len(found_indexes) > N:
+                # to do
+                all_tags = ['keyword', 'date', 'city']
+                further_search_tags = [tag for tag in all_tags if tag not in matched_tags]
+                print(f"further_search_tags = {further_search_tags}")
+                await update.message.reply_text(
+                    f"You can refine your search by specifying more details: {', '.join(further_search_tags)}")
+
+                for msg in messages:
+                    await update.message.reply_text(msg)
+
+    elif user_input.strip() in ('1', '2'):
+        user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
         if user_language_preferences[user_id] == 'Chinese':
             txt = """
 沒問題! 你的偏好語言已設定為中文!

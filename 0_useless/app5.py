@@ -22,23 +22,23 @@ from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 from read_json_function import *
 
-TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
-BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
+TOKEN: Final = '7219739601:AAEYdGgpr4DOxH6YrIKbtm7eCQeXoOCqyTY'  # 定義Telegram Bot的token作為常量
+BOT_USERNAME: Final = '@Concert_info_chat_bot'  # 定義機器人的使用者名稱作為常量
 
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
 user_language_preferences = {}
 user_status = {}
-user_language_file = "user_preferred_language.txt"
+user_language_file = "../user_preferred_language.txt"
 
 """ zh config """
-zh_model_path = r'models\nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
+zh_model_path = r'../models/nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
 zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
-en_model_path = r'en_models\nlu-20240606-141412-glum-skirmish.tar.gz'
+en_model_path = r'../en_models/nlu-20240606-141412-glum-skirmish.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
@@ -197,9 +197,9 @@ def show_concert_info(indexes, language):
 
     formatted_str_list = []
     if language == 'zh':
-        data = read_json("concert_zh.json")
+        data = read_json("../concert_zh.json")
     elif language == 'en':
-        data = read_json("concert_en.json")
+        data = read_json("../concert_en.json")
 
     for index in indexes:
         if index >= len(data):
@@ -250,7 +250,7 @@ def show_concert_info(indexes, language):
 
 
 def keyword_adjustment_optimized(user_input):
-    with open('data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
@@ -395,7 +395,7 @@ async def get_zh_indexes(user_input, json_filename):
 
 
 async def get_en_indexes(user_input, json_filename):
-    with open('en_data/keyword.yml', 'r', encoding='utf-8') as f:
+    with open('../en_data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
     names = [name.replace(' ', '') for name in names]
@@ -509,34 +509,21 @@ async def get_en_indexes(user_input, json_filename):
 
 # 定義三個處理不同指令的異步函式
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#     txt = f"""
-# 歡迎！ 請選擇你偏好的語言。
-# 輸入1 (中文)
-# 輸入2 (英文)
-# 語言可以隨時在左下角的menu當中選擇切換。
-# 如果沒有輸入我們將使用預設語言: 中文
-#
-# Welcome! Please choose your preferred language.
-# Enter 1 (Chinese)
-# Enter 2 (English)
-# You can always switch languages in the menu at the bottom left.
-# If no input is provided, we will use the default language: Chinese.
-# """
-    # 添加選項
-    keyboard = [
-        [InlineKeyboardButton("English🇺🇸", callback_data='start_english')],
-        [InlineKeyboardButton("繁體中文🇹🇼", callback_data='start_chinese')],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    txt1 = f"""
+    txt = f"""
 歡迎！ 請選擇你偏好的語言。
+輸入1 (中文)
+輸入2 (英文)
 語言可以隨時在左下角的menu當中選擇切換。
+如果沒有輸入我們將使用預設語言: 中文
 
 Welcome! Please choose your preferred language.
+Enter 1 (Chinese)
+Enter 2 (English)
 You can always switch languages in the menu at the bottom left.
+If no input is provided, we will use the default language: Chinese.
 """
-    # await update.message.reply_text(txt)
-    await update.message.reply_text(txt1, reply_markup=reply_markup)
+
+    await update.message.reply_text(txt)
 
 
 # async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -570,7 +557,7 @@ async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_
 
     context.user_data['queries'] = []
     context.user_data['awaiting_new_query'] = False
-    print('reset queries')
+    print('重製quries')
 
 
 async def send_msg(chat_id, message):
@@ -746,70 +733,70 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             f'We found {len(found_indexes)} results, would you like to show all the results or add more keyword like genre, date or city?',
                             reply_markup=reply_markup)
 
-#     elif user_input.strip() in ('1', '2'):
-#         user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
-#         if user_language_preferences[user_id] == 'Chinese':
-#             txt = """
-# 沒問題! 你的偏好語言已設定為中文!
-#
-# ---
-#
-# 你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
-# 示例輸入：
-# "周杰倫"
-# "饒舌"
-# "台北"
-# "明天"
-#
-# 你也可以同時指定多個條件
-# 範例：
-# "蔡依林在台北的音樂會"
-# "Post Malone，下個月"
-# "嘻哈，這周，台南"
-#
-# 此外，你還可以查詢即將開始售票的音樂會
-# 範例：
-# "查找明天開始售票的音樂會"
-# "售票時間，今天和明天"
-#
-# 祝您演唱會玩得開心！
-# """
-#             await update.message.reply_text(txt)
-#             with open(user_language_file, 'a', encoding='utf-8') as f:
-#                 f.write(f"{user_id}|||zh\n")
-#         else:
-#             txt = """
-# No problem! Your preferred language has been set to English!
-#
-# ---
-#
-# Usage Instructions:
-#
-# You can inquire upcoming concerts by artist name, genre, city, or specific time.
-# Example inputs:
-# "Taylor Swift"
-# "Rap"
-# "Taipei"
-# "Tomorrow"
-#
-# You can also specify multiple criteria simultaneously.
-# Example inputs:
-# "Taylor Swift concerts in Taipei"
-# "Post Malone, next month"
-# "Hip-Hop, this week, and in Tainan city"
-#
-# Further more, you can inquire which concerts are going to start selling the tickets.
-# Example inputs:
-# "Find out which concerts are open for sale tomorrow"
-# "Ticketing time, today and tomorrow"
-#
-# Have Fun!
-# """
-#             await update.message.reply_text(txt)
-#             with open(user_language_file, 'a', encoding='utf-8') as f:
-#                 f.write(f"{user_id}|||en\n")
+    elif user_input.strip() in ('1', '2'):
+        user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
+        if user_language_preferences[user_id] == 'Chinese':
+            txt = """
+沒問題! 你的偏好語言已設定為中文!
+
+---
+
+你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
+示例輸入：
+"周杰倫"
+"饒舌"
+"台北"
+"明天"
+
+你也可以同時指定多個條件
+範例：
+"蔡依林在台北的音樂會"
+"Post Malone，下個月"
+"嘻哈，這周，台南"
+
+此外，你還可以查詢即將開始售票的音樂會
+範例：
+"查找明天開始售票的音樂會"
+"售票時間，今天和明天"
+
+祝您演唱會玩得開心！
+"""
+            await update.message.reply_text(txt)
+            with open(user_language_file, 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|||zh\n")
+        else:
+            txt = """
+No problem! Your preferred language has been set to English!
+
+---
+
+Usage Instructions:
+
+You can inquire upcoming concerts by artist name, genre, city, or specific time.
+Example inputs:
+"Taylor Swift"
+"Rap"
+"Taipei"
+"Tomorrow"
+
+You can also specify multiple criteria simultaneously.
+Example inputs:
+"Taylor Swift concerts in Taipei"
+"Post Malone, next month"
+"Hip-Hop, this week, and in Tainan city"
+
+Further more, you can inquire which concerts are going to start selling the tickets.
+Example inputs:
+"Find out which concerts are open for sale tomorrow"
+"Ticketing time, today and tomorrow"
+
+Have Fun!
+"""
+            await update.message.reply_text(txt)
+            with open(user_language_file, 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|||en\n")
     else:
-        await update.message.reply_text("請先幫我設定您偏好的語言。\nPlease help me set your preferred language first.")
+        await update.message.reply_text("請先設置語言!\nPlease set the language first!")
 
     # 重置计时器
     reset_timeout(update, context)
@@ -835,12 +822,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                      "Remember, the search mode will be terminated after 30 minutes of inactivity or when you click 'show all':")
             # 等待用戶新的輸入
             context.user_data['awaiting_new_query'] = True
-        elif choice == 'start_english':
-            await query.edit_message_text(text="You already set your preferred language to English.")
-        elif choice == 'start_chinese':
-            await query.edit_message_text(text="沒問題! 你的偏好語言已設定為中文!")
     # zh
-    elif get_user_language(str(user_id)) == 'zh':
+    else:
         if choice == 'show_all':
             queries = context.user_data.get('queries', [])
             await query.edit_message_text(text="顯示全部結果")
@@ -852,68 +835,6 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                      "請記得，閒置30分鐘或是按下顯示全部後將會重置目前的搜尋。")
             # 等待用戶新的輸入
             context.user_data['awaiting_new_query'] = True
-        elif choice == 'start_english':
-            await query.edit_message_text(text="No problem! Your preferred language has been set to English!")
-        elif choice == 'start_chinese':
-            await query.edit_message_text(text="你已經將偏好語言設置為中文!")
-    else:
-        if choice == 'start_english':
-            txt = """
-No problem! Your preferred language has been set to English!
-
----
-
-Usage Instructions:
-
-1. You can search for upcoming concerts by artist name, music genre, city, or specific date.
-   Example: "Jay Chou", "rap", "Taipei", "tomorrow"
-
-2. You can also search using multiple criteria in one sentence.
-   Example: "Taylor Swift Taipei", "Post Malone next month", "hip-hop this week Tainan"
-
-3. You can search using any keyword and then add more keywords based on the number of search results. We will continue to search for results that match the conditions and present them to you based on the existing keywords.
-
-4. Additionally, you can search for concerts that will start selling tickets soon.
-   Example: "Find concerts starting ticket sales tomorrow", "ticket sales time, today and tomorrow"
-
-5. You can reply to concert information with a specific time, and the chatbot will remind you to pay attention to the ticket sale time before it starts.
-
-6. Every night at 9 PM, I will send you today's announcements and additional concert information!
-
-7. If the chat room is idle for 30 minutes, it will reset your current search. However, the chatbot will not send a message specifically to remind you that the search has been reset.
-
-Have Fun!
-            """
-            await query.edit_message_text(text=txt)
-            with open(user_language_file, 'a', encoding='utf-8') as f:
-                f.write(f"{user_id}|||en\n")
-        elif choice == 'start_chinese':
-            txt = """
-沒問題! 你的偏好語言已設定為中文! 以下是聊天機器人使用的教學，幫助您更快地了解如何使用。
-
----
-
-1. 你可以通過搜尋歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會。
-範例："周杰倫", "饒舌", "台北", "明天"
-
-2. 你也可以在一個句子當中同時搜尋多個條件。
-範例："蔡依林 台北", "Post Malone 下個月", "嘻哈 這周 台南"
-
-3. 您也可以先搜巡任意的關鍵字並根據搜尋結果的數量新增關鍵字，我們將會在現有的關鍵字繼續搜尋符合條件的結果並呈現給您。
-
-4. 此外，你還可以搜尋即將開始售票的音樂會。範例："查找明天開始售票的音樂會", "售票時間，今天和明天"
-
-5. 您可以回覆演唱會訊息並輸入時間，聊天機器人將會在售票時間前提醒您要記得注意搶票時間。
-
-6. 每天晚上九點，我將會傳送今日宣布以及加場的演唱會資訊給您!
-
-7. 如果聊天室閒置30分鐘，聊天室將會重置您目前的搜尋。但是聊天機器人並不會特別發出消息提醒您目前的搜尋已經重置。
-
-祝您演唱會玩得開心！
-            """
-            await query.edit_message_text(text=txt)
-            with open(user_language_file, 'a', encoding='utf-8') as f:
-                f.write(f"{user_id}|||zh\n")
 
 
 async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, queries, language):
@@ -987,9 +908,9 @@ async def show_all_results(update: Update, context: ContextTypes.DEFAULT_TYPE, q
             for msg in messages:
                 await message.reply_text(msg)
 
-    context.user_data['queries'] = []
-    context.user_data['awaiting_new_query'] = False
-    await update.callback_query.edit_message_text(text="顯示全部結果，搜尋已重置。")
+        context.user_data['queries'] = []
+        context.user_data['awaiting_new_query'] = False
+        await update.callback_query.edit_message_text(text="顯示全部結果，搜尋已重置。")
 
 
 async def handle_new_search(update: Update, context: ContextTypes.DEFAULT_TYPE, new_query: str, language):
@@ -1127,7 +1048,7 @@ async def get_daily_msg(language):
     formatted_str_list = []
 
     if language == 'zh':
-        zh_data = read_json("concert_zh.json")
+        zh_data = read_json("../concert_zh.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"new_concerts/{new_file}")
@@ -1203,14 +1124,14 @@ async def get_daily_msg(language):
                 formatted_str_list.append(formatted_str.strip())
 
     if language == 'en':
-        en_data = read_json("concert_en.json")
+        en_data = read_json("../concert_en.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"new_concerts/{new_file}")
             new_pins = [item['pin'] for item in new_data]
             new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
 
-            formatted_str_list.append('Here\'s the New Concert Information for Today!')
+            formatted_str_list.append('New Concert Information!')
             for index in new_pin_indexes:
                 concert = en_data[index]
 

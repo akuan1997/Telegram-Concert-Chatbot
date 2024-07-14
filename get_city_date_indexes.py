@@ -174,67 +174,6 @@ def get_text_before_next_tag(text):
 #
 #     return city_indexes
 
-
-def zh_get_until_pdt(found_dates, text, matched_time_lines, data):
-    matches = re.findall(
-        r'(?:year|month|week|day|hour|minute|second|range).*?到.*?(?:year|month|week|day|hour|minute|second|range)',
-        text)
-    # tag1到tag2
-    for match in matches:
-        print(f'>> 處理期間 {match}')
-        # 鼠標往後移動到tag結束
-        text = text[text.index(match) + len(match):]
-
-        tag1, tag2 = zh_get_until_tags(match)
-        print(f'until {tag1}, {tag2}')
-
-        # tag1 的開頭都會是 matched_time_lines[0][0]
-        start_time = matched_time_lines[0][0]
-        start_time_obj = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-
-        # tag2 都取[1][0]
-        end_time = matched_time_lines[1][0]
-        # 但如果是range 就取[1][1]
-        if tag2[0] == 'range':
-            end_time = matched_time_lines[1][1]
-        if tag2[0] == 'year':
-            next_year = int(end_time.split('-')[0]) + 1
-            end_time = end_time.replace(end_time.split('-')[0], str(next_year))
-            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") - timedelta(seconds=1)
-        elif tag2[0] == 'month':
-            next_month = int(end_time.split('-')[1]) + 1
-            end_time = end_time.replace(end_time.split('-')[1], str(next_month))
-            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") - timedelta(seconds=1)
-        elif tag2[0] == 'week':
-            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") + timedelta(
-                days=7) - timedelta(
-                seconds=1)
-        elif tag2[0] == 'day':
-            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") + timedelta(
-                days=1) - timedelta(
-                seconds=1)
-        else:
-            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
-
-        if start_time_obj > end_time_obj:
-            print('你輸入的日期好像怪怪的 你可以再重新輸入一次嗎')
-        else:
-            print(f'篩選 {start_time_obj} <= something <= {end_time_obj}')
-            for i in range(len(data)):
-                if len(data[i]['pdt']) > 0:
-                    if '~' not in data[i]['pdt'][0]:
-                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
-                        if start_time_obj <= pdt_obj <= end_time_obj:
-                            found_dates.append(i)
-                    # else:
-                    #     print('zh_get_until_pdt / 有~ 晚點處理')
-
-        for i in range(2):
-            del matched_time_lines[0]
-
-    return found_dates, text, matched_time_lines
-
-
 def zh_get_single_pdt(found_dates, text, matched_time_lines, data):
     matches = re.findall(r'year|month|week|day|hour|minute|second|range', text)
     # 單獨
@@ -390,6 +329,66 @@ def zh_get_single_pdt(found_dates, text, matched_time_lines, data):
         # print(f'---\n剩餘字串 "{text}"\n---')
 
         del matched_time_lines[0]
+
+    return found_dates, text, matched_time_lines
+
+
+def zh_get_until_pdt(found_dates, text, matched_time_lines, data):
+    matches = re.findall(
+        r'(?:year|month|week|day|hour|minute|second|range).*?到.*?(?:year|month|week|day|hour|minute|second|range)',
+        text)
+    # tag1到tag2
+    for match in matches:
+        print(f'>> 處理期間 {match}')
+        # 鼠標往後移動到tag結束
+        text = text[text.index(match) + len(match):]
+
+        tag1, tag2 = zh_get_until_tags(match)
+        print(f'until {tag1}, {tag2}')
+
+        # tag1 的開頭都會是 matched_time_lines[0][0]
+        start_time = matched_time_lines[0][0]
+        start_time_obj = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+
+        # tag2 都取[1][0]
+        end_time = matched_time_lines[1][0]
+        # 但如果是range 就取[1][1]
+        if tag2[0] == 'range':
+            end_time = matched_time_lines[1][1]
+        if tag2[0] == 'year':
+            next_year = int(end_time.split('-')[0]) + 1
+            end_time = end_time.replace(end_time.split('-')[0], str(next_year))
+            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") - timedelta(seconds=1)
+        elif tag2[0] == 'month':
+            next_month = int(end_time.split('-')[1]) + 1
+            end_time = end_time.replace(end_time.split('-')[1], str(next_month))
+            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") - timedelta(seconds=1)
+        elif tag2[0] == 'week':
+            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") + timedelta(
+                days=7) - timedelta(
+                seconds=1)
+        elif tag2[0] == 'day':
+            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S") + timedelta(
+                days=1) - timedelta(
+                seconds=1)
+        else:
+            end_time_obj = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
+
+        if start_time_obj > end_time_obj:
+            print('你輸入的日期好像怪怪的 你可以再重新輸入一次嗎')
+        else:
+            print(f'篩選 {start_time_obj} <= something <= {end_time_obj}')
+            for i in range(len(data)):
+                if len(data[i]['pdt']) > 0:
+                    if '~' not in data[i]['pdt'][0]:
+                        pdt_obj = datetime.strptime(data[i]['pdt'][0], "%Y/%m/%d %H:%M")
+                        if start_time_obj <= pdt_obj <= end_time_obj:
+                            found_dates.append(i)
+                    # else:
+                    #     print('zh_get_until_pdt / 有~ 晚點處理')
+
+        for i in range(2):
+            del matched_time_lines[0]
 
     return found_dates, text, matched_time_lines
 
@@ -1223,12 +1222,14 @@ def zh_dates_cities(text, json_file):
     # print(f'tag & cit str -> {text}\n---')
     """ 日期處理完畢 """
 
+    user_input_dates = ", ".join(matched_texts).title()
+    user_input_cities = ", ".join(cities).title()
+
     """ 開始處理日期以及城市 """
     found_cities = []
     found_dates = []
-    """
+    user_dates_cities = []
 
-    """
     # 可以比較簡單處理
     if matched_indexes and city_indexes:
         # 如果城市都在標籤的右手邊
@@ -1243,10 +1244,12 @@ def zh_dates_cities(text, json_file):
 
             # until
             found_dates, text, matched_time_lines = zh_get_until_pdt(found_dates, text, matched_time_lines, data)
-            after_until_text = text  # test
+            # after_until_text = text  # test
+
             # single
             found_dates, text, matched_time_lines = zh_get_single_pdt(found_dates, text, matched_time_lines, data)
 
+            # user_dates_cities.extend(cities)
             # after_single_text = text  # test
             # print(f'after_until_text = {after_until_text}')  # test
             # print(f'after_single_text = {after_single_text}')  # test
@@ -1254,6 +1257,7 @@ def zh_dates_cities(text, json_file):
             ''''''
 
             show_info_indexes = [index for index in found_cities if index in found_dates]
+            user_dates_cities.extend([f"\"日期: {user_input_dates}\"", f"\"城市: {user_input_cities}\""])
 
             print(f'---\nfound_cities: {sorted(found_cities)}')
             print(f'found_dates: {sorted(found_dates)}')
@@ -1319,6 +1323,10 @@ def zh_dates_cities(text, json_file):
 
             ''''''
 
+            section_dates = []
+            section_cities = []
+            user_dates_cities = []
+
             current_index = 0
             show_info_indexes = []
             # 每一段文字的城市以及日期
@@ -1336,6 +1344,7 @@ def zh_dates_cities(text, json_file):
                 for sim_city_index in sim_city_indexes:
                     if current_index <= sim_city_index < split_number:
                         sim_cities.append(cities[0])
+                        section_cities.append(cities[0])
                         del cities[0]
                 print(f'sim_cities = {sim_cities}')
 
@@ -1351,7 +1360,9 @@ def zh_dates_cities(text, json_file):
                 for sim_date_index in sim_date_indexes:
                     if current_index <= sim_date_index < split_number:
                         sim_time_lines.append(matched_time_lines[0])
+                        section_dates.append(matched_texts[0])
                         del matched_time_lines[0]
+                        del matched_texts[0]
                 print(f'sim_time_lines = {sim_time_lines}')
 
                 # until
@@ -1365,6 +1376,7 @@ def zh_dates_cities(text, json_file):
                 # print(f'after_until_text = {after_until_text}')  # test
                 # print(f'after_single_text = {after_single_text}')  # test
 
+
                 ''''''
 
                 section_show_info_indexes = [index for index in found_cities if index in found_dates]
@@ -1376,6 +1388,19 @@ def zh_dates_cities(text, json_file):
                 print(f'show_info_indexes = {sorted(section_show_info_indexes)}')
                 print('@@@')
                 current_index = split_indexes[i + 1]
+
+                """ test """
+                print('123')
+                print(f"section_dates = {section_dates}")
+                print(f"section_cities = {section_cities}")
+                user_input_dates = ", ".join(section_dates).title()
+                user_input_cities = ", ".join(section_cities).title()
+                user_dates_cities.append(f"\"日期: {user_input_dates} & 城市: {user_input_cities}\"")
+                print(f"user_dates_cities = {user_dates_cities}")
+                print('456')
+
+                section_dates = []
+                section_cities = []
 
             # 最後一段
             section_text = text[current_index:]
@@ -1411,7 +1436,17 @@ def zh_dates_cities(text, json_file):
             print(f'found_dates = {sorted(found_dates)}')
             print(f'show_info_indexes = {sorted(section_show_info_indexes)}')
 
-            ''''''
+            """ test """
+            print('789')
+            section_dates = matched_texts
+            section_cities = cities
+            print(f"section_dates = {section_dates}")  # test
+            print(f"section_cities = {section_cities}")  # test
+            user_input_dates = ", ".join(section_dates).title()
+            user_input_cities = ", ".join(section_cities).title()
+            user_dates_cities.append(f"\"日期: {user_input_dates} & 城市: {user_input_cities}\"")
+            print(f"user_dates_cities = {user_dates_cities}")
+            print('012')
 
             print(f'show_all_info_indexes = {sorted(show_info_indexes)}')
 
@@ -1430,6 +1465,8 @@ def zh_dates_cities(text, json_file):
         ''''''
 
         show_info_indexes = found_dates
+        user_dates_cities.append(f"\"日期: {user_input_dates}\"")
+
         print('---\n直接顯示尋找到的日期')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
 
@@ -1444,6 +1481,7 @@ def zh_dates_cities(text, json_file):
         ''''''
 
         show_info_indexes = found_cities
+        user_dates_cities.append(f"\"城市: {user_input_cities}\"")
         print('---\n直接顯示尋找到的城市')
         print(f'show_info_indexes: {sorted(show_info_indexes)}')
 
@@ -1451,7 +1489,9 @@ def zh_dates_cities(text, json_file):
         print('找不到城市以及日期')
         show_info_indexes = None
 
-    return show_info_indexes
+    # print(f"user_dates_cities:\n{user_dates_cities}")
+
+    return show_info_indexes, user_dates_cities
 
     # except Exception as e:
     #     print('!!!')
@@ -1475,12 +1515,15 @@ def zh_get_ticket_time(text, json_filename):
         print(data[index]['sdt'])
     # single
     found_dates, text, matched_time_lines = zh_get_single_sdt(found_dates, text, matched_time_lines, data)
+
+    user_input_dates = ", ".join(matched_texts).title()
+    print(f"user_input_dates = {user_input_dates}")
     # after_single_text = text  # test
     # print(after_single_text)
     # for index in found_dates:
     #     print(data[index]['sdt'])
 
-    return found_dates
+    return found_dates, user_input_dates
 
 
 def en_get_dates(text):
@@ -1579,16 +1622,31 @@ def en_get_ticket_time(text, json_filename):
     user_input_dates = ", ".join(matched_texts).title()
     return list(set(found_dates)), user_input_dates
 
-
 # """ test 1 """
 # en_dates_cities("June", "concert_en.json")
 # print('---')
 # en_dates_cities("June in taipei", "concert_en.json")
+# en_dates_cities("June and July in taipei", "concert_en.json")
 # print('---')
 # en_dates_cities("June in taipei and taoyuan", "concert_en.json")
 # print('---')
 # en_dates_cities("between may and june in taipei", "concert_en.json")
 # """ test 2 """
+
+# _, a = zh_dates_cities("六月", "concert_zh.json")
+# _, b = zh_dates_cities("六月在台北", "concert_zh.json")
+# _, c = zh_dates_cities("六月在台北以及桃園", "concert_zh.json")
+# _, d = zh_dates_cities("六月以及七月在台北", "concert_zh.json")
+# _, e = zh_dates_cities("六月的台北以及七月的台中", "concert_zh.json")
+# _, f = zh_dates_cities("六月的台南、七月的台中以及八月的桃園", "concert_zh.json")
+# _, g = zh_get_ticket_time("七月底", "concert_zh.json")
+# print(' & '.join(a))
+# print(' & '.join(b))
+# print(' & '.join(c))
+# print(' & '.join(d))
+# print(' & '.join(e))
+# print(' & '.join(f))
+# print(g)
 
 # """ test1 """
 # print(f"time_tags = {time_tags}")

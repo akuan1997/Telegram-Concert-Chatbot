@@ -1,12 +1,10 @@
-# https://www.youtube.com/watch?v=vZtm1wuA2yc&t=1183s&ab_channel=Indently
 from typing import Final  # 引入Final類型，用於定義常量
-
-from telegram import Update  # 從telegram模組引入Update類
+from telegram import Update, Bot  # 從telegram模組引入Update類
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes  # 從telegram.ext模組引入多個類和模組
-
-import asyncio
 import logging
-from typing import Text
+import asyncio
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from rasa.core.agent import Agent
 from rasa.shared.utils.cli import print_info, print_success
@@ -21,8 +19,8 @@ from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 from read_json_function import *
 
-TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
-BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
+TOKEN: Final = '7219739601:AAEYdGgpr4DOxH6YrIKbtm7eCQeXoOCqyTY'  # 定義Telegram Bot的token作為常量
+BOT_USERNAME: Final = '@Concert_info_chat_bot'  # 定義機器人的使用者名稱作為常量
 
 user_language_preferences = {}
 user_status = {}
@@ -34,7 +32,7 @@ zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
-en_model_path = r'../en_models/nlu-20240511-033142-brilliant-set.tar.gz'
+en_model_path = r'../en_models/nlu-20240606-141412-glum-skirmish.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
@@ -47,162 +45,106 @@ def get_user_language(id):
             return line[line.index('|||') + 3:line.index('|||') + 5]
 
 
-# def show_concert_info(indexes):
-#     formatted_str_list = []
-#     for index in indexes:
-#         concert = data[index]
-#         if concert['prc']:
-#             sorted_prices = sorted(concert['prc'], reverse=True)
-#             sorted_prices_str = ', '.join(map(str, sorted_prices))
-#         else:
-#             sorted_prices_str = '-'
-#         concert_date_str = ', '.join(concert['pdt'])
-#         if concert['sdt']:
-#             sale_date_str = ', '.join(concert['sdt'])
-#         else:
-#             sale_date_str = '-'
-#
-#         formatted_str = f"""
-# - {concert['tit']}
-# - 日期: {concert_date_str}
-# - 票價: {sorted_prices_str}
-# - 售票日期: {sale_date_str}
-# - {concert['url']}
-#     """
-#         formatted_str_list.append(formatted_str)
-#
-#     final_str = "\n".join(formatted_str_list)
-#     print(final_str)
-#
-#     return final_str
-
-
-# def show_concert_info(indexes, language):
-#     formatted_str_list = []
-#     for index in indexes:
-#         concert = data[index]
-#         if concert['prc']:
-#             sorted_prices = sorted(concert['prc'], reverse=True)
-#             sorted_prices_str = ', '.join(map(str, sorted_prices))
-#         else:
-#             sorted_prices_str = '-'
-#         concert_date_str = ', '.join(concert['pdt'])
-#         if concert['sdt']:
-#             sale_date_str = ', '.join(concert['sdt'])
-#         else:
-#             sale_date_str = '-'
-#
-#         if language == 'zh':
-#             formatted_str = f"""
-#     - {concert['tit']}
-#     - 日期: {concert_date_str}
-#     - 票價: {sorted_prices_str}
-#     - 售票日期: {sale_date_str}
-#     - {concert['url']}
-#         """
-#             formatted_str_list.append(formatted_str)
-#         elif language == 'en':
-#             formatted_str = f"""
-#     - {concert['tit']}
-#     - Date: {concert_date_str}
-#     - Ticket Price: {sorted_prices_str}
-#     - Sale Date: {sale_date_str}
-#     - {concert['url']}
-#         """
-#             formatted_str_list.append(formatted_str)
-#
-#     final_str = "\n".join(formatted_str_list)
-#     print(final_str)
-#
-#     return final_str
-
 def show_concert_info(indexes, language):
+    if not indexes:
+        return [
+            "對不起，我沒有找到相關的演唱會資訊。" if language == 'zh' else "Sorry, I couldn't find any relevant concert information."]
+
     formatted_str_list = []
+    if language == 'zh':
+        data = read_json("../concert_zh.json")
+    elif language == 'en':
+        data = read_json("../concert_en.json")
+
     for index in indexes:
+        if index >= len(data):
+            print(f"索引 {index} 超出範圍，最大索引值應該小於 {len(data)}")
+            continue
+
         concert = data[index]
+
         if concert['prc']:
             sorted_prices = sorted(concert['prc'], reverse=True)
             sorted_prices_str = ', '.join(map(str, sorted_prices))
         else:
             sorted_prices_str = '-'
         concert_date_str = ', '.join(concert['pdt'])
+
         if concert['sdt']:
             sale_date_str = ', '.join(concert['sdt'])
         else:
             sale_date_str = '-'
 
+        if concert['loc']:
+            location_str = ', '.join(concert['loc'])
+        else:
+            location_str = '-'
+
         if language == 'zh':
             formatted_str = f"""
 - {concert['tit']}
-- 日期: {concert_date_str}
-- 票價: {sorted_prices_str}
 - 售票日期: {sale_date_str}
-- {concert['url']}
-        """
-            formatted_str_list.append(formatted_str)
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 地點: {location_str}
+{concert['url']}
+            """
         elif language == 'en':
             formatted_str = f"""
 - {concert['tit']}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Ticket Price: {sorted_prices_str}
-- Sale Date: {sale_date_str}
-- {concert['url']}
-        """
-            formatted_str_list.append(formatted_str)
+- Location: {location_str}
+{concert['url']}
+            """
 
-    final_str = "\n".join(formatted_str_list)
-    print(final_str)
+        formatted_str_list.append(formatted_str.strip())
 
-    return final_str
+    return formatted_str_list
+
 
 def keyword_adjustment_optimized(user_input):
     with open('../data/keyword.yml', 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     names = data['nlu'][0]['examples'].replace('- ', '').split('\n')
-    # names_without_space = [name.replace(' ', '') for name in names]
-
-    # 創建名字的小寫版本set以提高查找效率
     names_set = {name.lower() for name in names}
-
-    # 提取用戶輸入中的英文字詞並轉成小寫
     english_words = re.findall(r'[A-Za-z0-9]+', user_input.lower())
     print(f"english_words = {english_words}")
 
-    # 基本匹配檢查
     for word in english_words:
         if word in names_set:
-            return user_input, True  # 如果找到精確匹配，直接返回
+            return user_input, True
 
-    # 如果基本匹配未找到，進行模糊匹配
     for word in english_words:
         for name in names:
             if fuzz.partial_ratio(word, name.lower()) > 80:
                 user_input = user_input.replace(word, name)
                 return user_input, True
 
-    return user_input, False  # 如果都沒找到匹配，返回原輸入
+    return user_input, False
 
 
 async def get_zh_indexes(user_input, json_filename):
     print(f"原本的輸入: {user_input}")
     user_input, find_singer = keyword_adjustment_optimized(user_input)
     print(f"經過方程式後的輸入: {user_input}")
-    result = await zh_agent.parse_message(user_input)  # 使用 await
+    result = await zh_agent.parse_message(user_input)
+    print(result['entities'])
     print('zh', result)
-    print(f'find singer?', find_singer)  # from function
+    print(f'find singer?', find_singer)
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
-    if result['intent']['confidence'] > 0.6:
-        print('信心程度大於六成')
-    print('--')
+    # if result['intent']['confidence'] > 0.6:
+    #     print('信心程度大於六成')
+    # print('--')
 
     if len(result['entities']) == 0:
         print('No Entities')
     else:
         if result['intent']['name'] == "query_ticket_time":
             ticket_time_indexes = zh_get_ticket_time(user_input, json_filename)
-
             found_keyword = False
             keyword_indexes = []
 
@@ -219,7 +161,6 @@ async def get_zh_indexes(user_input, json_filename):
                 print('取集合')
                 print(f"ticket_time_indexes = {ticket_time_indexes}")
                 print(f"keyword_indexes = {keyword_indexes}")
-                print('取集合')
                 intersection = [item for item in keyword_indexes if item in ticket_time_indexes]
                 print(f"intersection = {intersection}")
                 return intersection
@@ -258,7 +199,6 @@ async def get_zh_indexes(user_input, json_filename):
                 print(f"keyword_indexes = {keyword_indexes}")
                 dates_cities_indexes = zh_dates_cities(user_input, json_filename)
                 print(f"dates_cities_indexes = {dates_cities_indexes}")
-                print('取集合')
                 intersection = [item for item in keyword_indexes if item in dates_cities_indexes]
                 print(f"intersection = {intersection}")
                 return intersection
@@ -272,8 +212,10 @@ async def get_zh_indexes(user_input, json_filename):
                 print(f"keyword_indexes = {keyword_indexes}")
                 return keyword_indexes
             else:
-                print('直接回傳找不到')
-                return []
+                print('找不到關鍵字，也找不到日期，那就直接搜尋keyword_indexes')
+                keyword_index = get_keyword_indexes_zh(user_input, json_filename)
+                print(f"keyword_index = {keyword_index}")
+                return keyword_index
 
 
 async def get_en_indexes(user_input, json_filename):
@@ -285,15 +227,16 @@ async def get_en_indexes(user_input, json_filename):
 
     print_success("NLU model loaded. Type a message and press enter to parse it.")
     message = user_input.lower()
-    print(f'ori msg: {message}')
+    # print(f'ori msg: {message}')
 
-    result = await en_agent.parse_message(message)  # 使用 await
+    result = await en_agent.parse_message(message)
+    print(result['entities'])
 
     print(f"intent: {result['intent']['name']}")
     print(f"score: {result['intent']['confidence']}")
     # if result['intent']['confidence'] > 0.6:
     #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    print('--')
+    # print('--')
     if len(result['entities']) == 0:
         print('No Entities')
     else:
@@ -303,15 +246,23 @@ async def get_en_indexes(user_input, json_filename):
             return ticket_time_indexes
         elif result['intent']['name'] == "query_keyword":
             keywords = []
-            found_datetime = False
+            found_datetime_city = False
+
+            print('test a')
 
             for i in range(len(result['entities'])):
-                if result['entities'][i]['entity'] == 'datetime':
-                    found_datetime = True
+                # print('test b')
+                # if result['entities'][i]['value']:
+                #     print(f"{result['entities'][i]['entity']}: {result['entities'][i]['value']}")
+                # print(result['entities'][i]['value'])
+
+                if result['entities'][i]['entity'] == 'datetime' or result['entities'][i]['entity'] == 'city':
+                    found_datetime_city = True
                 elif result['entities'][i]['entity'] == 'keyword':
                     keywords.append(result['entities'][i]['value'])
 
             if keywords:
+                print(keywords)
                 keyword = max(keywords, key=len)
 
                 found_keyword = False
@@ -327,8 +278,9 @@ async def get_en_indexes(user_input, json_filename):
                 else:
                     print('有在keyword.yml當中找到keyword')
 
-                print(f"keyword = {keyword}")
-                if found_datetime:
+                print(f"keyword = \"{keyword}\"")
+
+                if found_datetime_city:
                     print('有keyword，也有datetime，取集合')
                     en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
@@ -344,13 +296,16 @@ async def get_en_indexes(user_input, json_filename):
                     return get_keyword_indexes_en_indexes
             else:
                 print('沒有keyword')
-                if found_datetime:
+                if found_datetime_city:
+                    print(f"user_input = {user_input}")
                     en_dates_cities_indexes = en_dates_cities(user_input, json_filename)
                     print(f"en_dates_cities_indexes = {en_dates_cities_indexes}")
                     return en_dates_cities_indexes
                 else:
-                    print('什麼都沒有')
-                    return []
+                    print('沒有keyword，也沒有日期，直接把user_input拿去keyword搜尋')
+                    get_keyword_indexes_en_indexes = get_keyword_indexes_en(user_input, json_filename)
+                    print(f"get_keyword_indexes_en_indexes = {get_keyword_indexes_en_indexes}")
+                    return get_keyword_indexes_en_indexes
 
 
 # 定義三個處理不同指令的異步函式
@@ -372,19 +327,19 @@ If no input is provided, we will use the default language: Chinese.
     await update.message.reply_text(txt)
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Execute help command')
+# async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     await update.message.reply_text('Execute help command')
 
 
-async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.message.chat.id
-    user_status[user_id] = ""
-    print(user_status)
-
-    await update.message.reply_text(str(user_id))
-    await update.message.reply_text('Execute custom aaa command')
-
-
+# # async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# #     user_id = update.message.chat.id
+# #     user_status[user_id] = ""
+# #     print(user_status)
+# #
+# #     await update.message.reply_text(str(user_id))
+# #     await update.message.reply_text('Execute custom aaa command')
+#
+#
 async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     with open(user_language_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -397,29 +352,11 @@ async def switch_language_command(update: Update, context: ContextTypes.DEFAULT_
             else:
                 lines[i] = line.replace('en', 'zh')
                 await update.message.reply_text("沒問題! 你的偏好語言已設定為中文!")
-            # print(lines)
             with open(user_language_file, 'w', encoding='utf-8') as f:
                 f.writelines(lines)
             break
 
 
-# 根據用戶的訊息內容，回覆不同的訊息
-# def handle_response(text: str) -> str:
-#     processed: str = text.lower()
-#
-#     if 'hello' in text:
-#         return 'Hey there!'
-#
-#     if 'how are you' in text:
-#         return 'I am good!'
-#
-#     if 'i love python' in text:
-#         return 'I love it too'
-#
-#     return 'I do not understand what you wrote...'
-
-
-# 處理用戶發送的訊息，並回覆相應的訊息
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
     text: str = update.message.text
@@ -433,53 +370,308 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if str(user_id) in lines:
         if get_user_language(str(user_id)) == 'zh':
-            # await update.message.reply_text('中文')
-            found_indexes = await get_zh_indexes(text, zh_json)  # 使用 await
-            show_str = show_concert_info(found_indexes, 'zh')
-            if show_str != '':
-                await update.message.reply_text(show_str)
-            else:
-                await update.message.reply_text("對不起，我沒有找到相關的演唱會資訊。")
+            found_indexes = await get_zh_indexes(text, zh_json)
+            messages = show_concert_info(found_indexes, 'zh')
         else:
-            # await update.message.reply_text('English')
-            found_indexes = await get_en_indexes(text, en_json)  # 使用 await
-            show_str = show_concert_info(found_indexes, 'en')
-            if show_str != '':
-                await update.message.reply_text(show_str)
-            else:
-                await update.message.reply_text("Sorry, I couldn't find any relevant concert information.")
+            found_indexes = await get_en_indexes(text, en_json)
+            messages = show_concert_info(found_indexes, 'en')
+
+        print(f"一共找到{len(found_indexes)}筆資料")
+        for msg in messages:
+            await update.message.reply_text(msg)
+
     elif text.strip() in ('1', '2'):
         user_language_preferences[user_id] = 'Chinese' if text.strip() == '1' else 'English'
         if user_language_preferences[user_id] == 'Chinese':
-            await update.message.reply_text("沒問題! 你的偏好語言已設定為中文!")
+            txt = """
+沒問題! 你的偏好語言已設定為中文!
+
+---
+
+你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
+示例輸入：
+"周杰倫"
+"饒舌"
+"台北"
+"明天"
+
+你也可以同時指定多個條件
+範例：
+"蔡依林在台北的音樂會"
+"Post Malone，下個月"
+"嘻哈，這周，台南"
+
+此外，你還可以查詢即將開始售票的音樂會
+範例：
+"查找明天開始售票的音樂會"
+"售票時間，今天和明天"
+
+祝您演唱會玩得開心！
+"""
+            await update.message.reply_text(txt)
             with open(user_language_file, 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|||zh\n")
         else:
-            await update.message.reply_text("No problem! Your preferred language has been set to English!")
+            txt = """
+No problem! Your preferred language has been set to English!
+
+---
+
+Usage Instructions:
+
+You can inquire upcoming concerts by artist name, genre, city, or specific time.
+Example inputs:
+"Taylor Swift"
+"Rap"
+"Taipei"
+"Tomorrow"
+
+You can also specify multiple criteria simultaneously.
+Example inputs:
+"Taylor Swift concerts in Taipei"
+"Post Malone, next month"
+"Hip-Hop, this week, and in Tainan city"
+
+Further more, you can inquire which concerts are going to start selling the tickets.
+Example inputs:
+"Find out which concerts are open for sale tomorrow"
+"Ticketing time, today and tomorrow"
+
+Have Fun!
+"""
+            await update.message.reply_text(txt)
             with open(user_language_file, 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|||en\n")
     else:
         await update.message.reply_text("請先設置語言!\nPlease set the language first!")
 
 
-# 處理錯誤的異步函式
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(f'Update {update} caused error {context.error}')  # 印出錯誤訊息
+    print(f'Update {update} caused error {context.error}')
 
+
+async def send_daily_update():
+    with open(user_language_file, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    zh_texts = ['中文1', '中文2']
+    en_texts = ['eng1', 'eng2']
+    for line in lines:
+        user_id, language = line.strip().split('|||')
+        user_id = int(user_id)
+        if language == 'zh':
+            msgs = await get_daily_msg('zh')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
+        else:
+            msgs = await get_daily_msg('en')
+            for msg in msgs:
+                await app.bot.send_message(chat_id=user_id, text=msg)
+
+
+def check_if_today(text):
+    pattern = r"concert_(\d{1,2})_(\d{1,2})_(\d{1,2}).json"
+    month_day = re.search(pattern, text)
+    month = int(month_day.group(1))
+    day = int(month_day.group(2))
+
+    # print(month, datetime.now().month)
+    # print(day, datetime.now().day)
+    if month == datetime.now().month and day == datetime.now().day:
+        return True
+    else:
+        return False
+
+
+async def get_daily_msg(language):
+    new_file = get_latest_json_filename("new_concerts")
+    plus_file = get_latest_json_filename("plus_concerts")
+
+    if not (check_if_today(new_file) or check_if_today(plus_file)):
+        if language == 'zh':
+            formatted_str_list = ["今天沒有任何的資訊"]
+        else:
+            formatted_str_list = ["The is no information today."]
+
+        print('no new file and no plus file')
+        return formatted_str_list
+
+    # data = read_json(json_filename)
+    # pins = [item['pin'] for item in data]
+    #
+    # pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in pins]
+
+    formatted_str_list = []
+
+    if language == 'zh':
+        zh_data = read_json("../concert_zh.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('新的演唱會資訊!')
+            for index in new_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 售票日期: {sale_date_str}
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 地點: {location_str}
+{concert['url']}
+                                        """
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
+
+            formatted_str_list.append('新的加場資訊!')
+            for index in plus_pin_indexes:
+                concert = zh_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- 售票日期: {sale_date_str}
+- 表演日期: {concert_date_str}
+- 票價: {sorted_prices_str}
+- 地點: {location_str}
+{concert['url']}
+                                                    """
+                formatted_str_list.append(formatted_str.strip())
+
+    if language == 'en':
+        en_data = read_json("../concert_en.json")
+
+        if check_if_today(new_file):
+            new_data = read_json(f"new_concerts/{new_file}")
+            new_pins = [item['pin'] for item in new_data]
+            new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
+
+            formatted_str_list.append('New Concert Information!')
+            for index in new_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Ticket Date: {sale_date_str}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+        if check_if_today(plus_file):
+            formatted_str_list.append('Additional Concert Announced!')
+            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_pins = [item['pin'] for item in plus_data]
+            plus_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in plus_pins]
+
+            for index in plus_pin_indexes:
+                concert = en_data[index]
+
+                if concert['prc']:
+                    sorted_prices = sorted(concert['prc'], reverse=True)
+                    sorted_prices_str = ', '.join(map(str, sorted_prices))
+                else:
+                    sorted_prices_str = '-'
+                concert_date_str = ', '.join(concert['pdt'])
+
+                if concert['sdt']:
+                    sale_date_str = ', '.join(concert['sdt'])
+                else:
+                    sale_date_str = '-'
+
+                if concert['loc']:
+                    location_str = ', '.join(concert['loc'])
+                else:
+                    location_str = '-'
+
+                formatted_str = f"""
+- {concert['tit']}
+- Ticket Date: {sale_date_str}
+- Date: {concert_date_str}
+- Price: {sorted_prices_str}
+- Location: {location_str}
+{concert['url']}
+"""
+                formatted_str_list.append(formatted_str.strip())
+
+    return formatted_str_list
 
 if __name__ == '__main__':
-    print('Starting bot...')  # 印出機器人啟動訊息
-    app = Application.builder().token(TOKEN).build()  # 建立Telegram應用程式實例
+    print('Starting bot...')
+    app = Application.builder().token(TOKEN).build()
 
-    # 添加處理不同指令的處理器
     app.add_handler(CommandHandler('start', start_command))
-    app.add_handler(CommandHandler('help', help_command))
-    app.add_handler(CommandHandler('custom', custom_command))
+    # app.add_handler(CommandHandler('help', help_command))
+    # app.add_handler(CommandHandler('custom', custom_command))
     app.add_handler(CommandHandler('switch_language', switch_language_command))
 
-    app.add_handler(MessageHandler(filters.TEXT, handle_message))  # 添加處理文字訊息的處理器
+    app.add_handler(MessageHandler(filters.TEXT, handle_message))
 
-    app.add_error_handler(error)  # 添加處理錯誤的處理器
+    app.add_error_handler(error)
 
-    print('Go!')  # 印出輪詢訊息
-    app.run_polling(poll_interval=3)  # 開始輪詢，設定輪詢間隔為3秒
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(send_daily_update, CronTrigger(hour=21))
+    scheduler.start()
+
+    print('Go!')
+    app.run_polling(poll_interval=3)
