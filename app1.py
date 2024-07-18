@@ -602,6 +602,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 title = reply_text.split("\n")[0].replace('- ', '')
                 print(f"title = {title}")
                 sale_date_time = reply_text.split("\n")[1].split('- 售票日期: ')[1]
+                if ',' in sale_date_time:
+                    print('hello')
                 print(f"sale_date_time = {sale_date_time}")
                 if ":" in sale_date_time:
                     # print(f"original user input = {user_input}")
@@ -683,6 +685,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # sale_date_time = reply_text.split("\n")[1].replace('\n', '')
                 sale_date_time = reply_text.split("\n")[1].split('- Sale Date: ')[1]
                 print(f"sale_date_time = {sale_date_time}")
+                if ',' in sale_date_time:
+                    # 分割日期时间字符串并去除前后空格
+                    date_times = [dt.strip() for dt in sale_date_time.split(',')]
+                    print(f"date_times = {date_times}")
+                    # 初始化 keyboard 列表
+                    keyboard = []
+                    # 创建按钮并添加到键盘列表
+                    for i, dt in enumerate(date_times):
+                        context.user_data[f'alarm_{i}_title'] = title
+                        context.user_data[f'alarm_{i}_user_input'] = user_input
+                        keyboard.append([InlineKeyboardButton(dt, callback_data=f'alarm_{i}')])
+                    print(f"keyboard = {keyboard}")
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    print(f"reply_markup = {reply_markup}")
+                    await update.message.reply_text(f'What Time Do You Want to Set the Alarm?',
+                                                    reply_markup=reply_markup)
+
+                    return
+
                 if ":" in sale_date_time:
                     total_seconds = convert_time_to_seconds(user_input)
                     reply_text_sale_date_time = datetime.strptime(sale_date_time, "%Y/%m/%d %H:%M")
@@ -829,6 +850,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     await query.answer()
     choice = query.data
+    print(f'choice = {choice}')
 
     # en
     if get_user_language(str(user_id)) == 'en':
@@ -847,6 +869,35 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await query.edit_message_text(text="You already set your preferred language to English.")
         elif choice == 'start_chinese':
             await query.edit_message_text(text="沒問題! 你的偏好語言已設定為中文!")
+        elif choice.startswith('alarm_'):
+            # 获取所有按钮
+            buttons = query.message.reply_markup.inline_keyboard
+
+            # 找到按下的按钮的文本
+            button_text = None
+            for button_row in buttons:
+                for button in button_row:
+                    if button.callback_data == choice:
+                        button_text = button.text
+                        break
+            print(f"button_text = {button_text}")
+
+            """"""
+
+            index = choice.split('_')[1]
+            title = context.user_data.get(f'alarm_{index}_title', 'Unknown Title')
+            user_input = context.user_data.get(f'alarm_{index}_user_input', 'Unknown User Input')
+            total_seconds = convert_time_to_seconds(user_input)
+            reply_text_sale_date_time = datetime.strptime(button_text, "%Y/%m/%d %H:%M")
+            alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+            print(f"alarm_date_time = {alarm_date_time}")
+            alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
+            print(f"alarm_msg = {alarm_msg}")
+
+            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+
+            await query.edit_message_text(text=f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
     # zh
     elif get_user_language(str(user_id)) == 'zh':
         if choice == 'show_all':
@@ -864,6 +915,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await query.edit_message_text(text="No problem! Your preferred language has been set to English!")
         elif choice == 'start_chinese':
             await query.edit_message_text(text="你已經將偏好語言設置為中文!")
+        elif choice == 'alarm_0':
+            print('hello zh')
     else:
         if choice == 'start_english':
             txt = """
@@ -1328,6 +1381,8 @@ if __name__ == '__main__':
 
     lines = [line for line in lines]
     for line in lines:
+        if line == "":
+            continue
         user_id, alarm_date_time, alarm_msg = line.split('|')[0], datetime.strptime(line.split('|')[1],
                                                                                     "%Y-%m-%d %H:%M:%S"), \
             line.split('|')[2]
@@ -1339,7 +1394,8 @@ if __name__ == '__main__':
                                                 minute=alarm_date_time.minute,
                                                 second=alarm_date_time.second),
                           args=[user_id, alarm_msg])
-        print(f"{alarm_date_time} 提醒")
+        print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
+
     scheduler.start()
 
     print('Go!')
