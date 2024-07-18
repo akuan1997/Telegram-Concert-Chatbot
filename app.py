@@ -509,19 +509,19 @@ async def get_en_indexes(user_input, json_filename):
 
 # 定義三個處理不同指令的異步函式
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#     txt = f"""
-# 歡迎！ 請選擇你偏好的語言。
-# 輸入1 (中文)
-# 輸入2 (英文)
-# 語言可以隨時在左下角的menu當中選擇切換。
-# 如果沒有輸入我們將使用預設語言: 中文
-#
-# Welcome! Please choose your preferred language.
-# Enter 1 (Chinese)
-# Enter 2 (English)
-# You can always switch languages in the menu at the bottom left.
-# If no input is provided, we will use the default language: Chinese.
-# """
+    #     txt = f"""
+    # 歡迎！ 請選擇你偏好的語言。
+    # 輸入1 (中文)
+    # 輸入2 (英文)
+    # 語言可以隨時在左下角的menu當中選擇切換。
+    # 如果沒有輸入我們將使用預設語言: 中文
+    #
+    # Welcome! Please choose your preferred language.
+    # Enter 1 (Chinese)
+    # Enter 2 (English)
+    # You can always switch languages in the menu at the bottom left.
+    # If no input is provided, we will use the default language: Chinese.
+    # """
     # 添加選項
     keyboard = [
         [InlineKeyboardButton("English🇺🇸", callback_data='start_english')],
@@ -603,6 +603,24 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 print(f"title = {title}")
                 sale_date_time = reply_text.split("\n")[1].split('- 售票日期: ')[1]
                 print(f"sale_date_time = {sale_date_time}")
+                if ',' in sale_date_time:
+                    # 分割日期时间字符串并去除前后空格
+                    date_times = [dt.strip() for dt in sale_date_time.split(',')]
+                    print(f"date_times = {date_times}")
+                    # 初始化 keyboard 列表
+                    keyboard = []
+                    # 创建按钮并添加到键盘列表
+                    for i, dt in enumerate(date_times):
+                        context.user_data[f'alarm_{i}_title'] = title
+                        context.user_data[f'alarm_{i}_user_input'] = user_input
+                        keyboard.append([InlineKeyboardButton(dt, callback_data=f'alarm_{i}')])
+                    print(f"keyboard = {keyboard}")
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    print(f"reply_markup = {reply_markup}")
+                    await update.message.reply_text(f'您想要為哪個時間設置鬧鐘呢?',
+                                                    reply_markup=reply_markup)
+
+                    return
                 if ":" in sale_date_time:
                     # print(f"original user input = {user_input}")
                     # print(f"with function = {chinese_to_arabic(user_input)}")
@@ -614,15 +632,19 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
                     print(f"alarm_msg = {alarm_msg}")
 
-                    scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
-                                                            month=alarm_date_time.month,
-                                                            day=alarm_date_time.day,
-                                                            hour=alarm_date_time.hour,
-                                                            minute=alarm_date_time.minute,
-                                                            second=alarm_date_time.second),
-                                      args=[user_id, alarm_msg])
+                    with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                        f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+
+                    # scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
+                    #                                         month=alarm_date_time.month,
+                    #                                         day=alarm_date_time.day,
+                    #                                         hour=alarm_date_time.hour,
+                    #                                         minute=alarm_date_time.minute,
+                    #                                         second=alarm_date_time.second),
+                    #                   args=[user_id, alarm_msg])
+                    await reload_ticket_alarms()
                     await update.message.reply_text(
-                        f"沒問題！ 我將會在售票時間前 {format_seconds_zh(total_seconds)} 傳送一個訊息提醒您記得注意售票時間！")
+                        f"沒問題！ 我將會在 {alarm_date_time} 提醒您售票時間即將在 {format_seconds_zh(total_seconds)} 後開始！")
                 else:
                     await update.message.reply_text("不好意思，你回覆的這則訊息沒有售票時間 :(")
                 # await context.bot.send_message(chat_id=update.effective_chat.id,
@@ -680,6 +702,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # sale_date_time = reply_text.split("\n")[1].replace('\n', '')
                 sale_date_time = reply_text.split("\n")[1].split('- Sale Date: ')[1]
                 print(f"sale_date_time = {sale_date_time}")
+                if ',' in sale_date_time:
+                    # 分割日期时间字符串并去除前后空格
+                    date_times = [dt.strip() for dt in sale_date_time.split(',')]
+                    print(f"date_times = {date_times}")
+                    # 初始化 keyboard 列表
+                    keyboard = []
+                    # 创建按钮并添加到键盘列表
+                    for i, dt in enumerate(date_times):
+                        context.user_data[f'alarm_{i}_title'] = title
+                        context.user_data[f'alarm_{i}_user_input'] = user_input
+                        keyboard.append([InlineKeyboardButton(dt, callback_data=f'alarm_{i}')])
+                    print(f"keyboard = {keyboard}")
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    print(f"reply_markup = {reply_markup}")
+                    await update.message.reply_text(f'What Time Do You Want to Set the Alarm?',
+                                                    reply_markup=reply_markup)
+
+                    return
+
                 if ":" in sale_date_time:
                     total_seconds = convert_time_to_seconds(user_input)
                     reply_text_sale_date_time = datetime.strptime(sale_date_time, "%Y/%m/%d %H:%M")
@@ -688,15 +729,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
                     print(f"alarm_msg = {alarm_msg}")
 
-                    scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
-                                                            month=alarm_date_time.month,
-                                                            day=alarm_date_time.day,
-                                                            hour=alarm_date_time.hour,
-                                                            minute=alarm_date_time.minute,
-                                                            second=alarm_date_time.second),
-                                      args=[user_id, alarm_msg])
+                    with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                        f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+
+                    # scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
+                    #                                         month=alarm_date_time.month,
+                    #                                         day=alarm_date_time.day,
+                    #                                         hour=alarm_date_time.hour,
+                    #                                         minute=alarm_date_time.minute,
+                    #                                         second=alarm_date_time.second),
+                    #                   args=[user_id, alarm_msg])
+                    await reload_ticket_alarms()
                     await update.message.reply_text(
-                        f"No problem! we will send you a message {format_seconds(total_seconds)} before tickets start selling!")
+                        f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
+                    # await update.message.reply_text(
+                    #     f"No problem! we will send you a message at {alarm_date_time} {format_seconds(total_seconds)} before tickets start selling!")
                 else:
                     await update.message.reply_text("Sorry, this message does not contain selling time :(")
                 # await context.bot.send_message(chat_id=update.effective_chat.id,
@@ -746,68 +793,68 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             f'We found {len(found_indexes)} results, would you like to show all the results or add more keyword like genre, date or city?',
                             reply_markup=reply_markup)
 
-#     elif user_input.strip() in ('1', '2'):
-#         user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
-#         if user_language_preferences[user_id] == 'Chinese':
-#             txt = """
-# 沒問題! 你的偏好語言已設定為中文!
-#
-# ---
-#
-# 你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
-# 示例輸入：
-# "周杰倫"
-# "饒舌"
-# "台北"
-# "明天"
-#
-# 你也可以同時指定多個條件
-# 範例：
-# "蔡依林在台北的音樂會"
-# "Post Malone，下個月"
-# "嘻哈，這周，台南"
-#
-# 此外，你還可以查詢即將開始售票的音樂會
-# 範例：
-# "查找明天開始售票的音樂會"
-# "售票時間，今天和明天"
-#
-# 祝您演唱會玩得開心！
-# """
-#             await update.message.reply_text(txt)
-#             with open(user_language_file, 'a', encoding='utf-8') as f:
-#                 f.write(f"{user_id}|||zh\n")
-#         else:
-#             txt = """
-# No problem! Your preferred language has been set to English!
-#
-# ---
-#
-# Usage Instructions:
-#
-# You can inquire upcoming concerts by artist name, genre, city, or specific time.
-# Example inputs:
-# "Taylor Swift"
-# "Rap"
-# "Taipei"
-# "Tomorrow"
-#
-# You can also specify multiple criteria simultaneously.
-# Example inputs:
-# "Taylor Swift concerts in Taipei"
-# "Post Malone, next month"
-# "Hip-Hop, this week, and in Tainan city"
-#
-# Further more, you can inquire which concerts are going to start selling the tickets.
-# Example inputs:
-# "Find out which concerts are open for sale tomorrow"
-# "Ticketing time, today and tomorrow"
-#
-# Have Fun!
-# """
-#             await update.message.reply_text(txt)
-#             with open(user_language_file, 'a', encoding='utf-8') as f:
-#                 f.write(f"{user_id}|||en\n")
+    #     elif user_input.strip() in ('1', '2'):
+    #         user_language_preferences[user_id] = 'Chinese' if user_input.strip() == '1' else 'English'
+    #         if user_language_preferences[user_id] == 'Chinese':
+    #             txt = """
+    # 沒問題! 你的偏好語言已設定為中文!
+    #
+    # ---
+    #
+    # 你可以通過歌手名稱、音樂類型、城市或特定時間來查詢即將舉行的音樂會
+    # 示例輸入：
+    # "周杰倫"
+    # "饒舌"
+    # "台北"
+    # "明天"
+    #
+    # 你也可以同時指定多個條件
+    # 範例：
+    # "蔡依林在台北的音樂會"
+    # "Post Malone，下個月"
+    # "嘻哈，這周，台南"
+    #
+    # 此外，你還可以查詢即將開始售票的音樂會
+    # 範例：
+    # "查找明天開始售票的音樂會"
+    # "售票時間，今天和明天"
+    #
+    # 祝您演唱會玩得開心！
+    # """
+    #             await update.message.reply_text(txt)
+    #             with open(user_language_file, 'a', encoding='utf-8') as f:
+    #                 f.write(f"{user_id}|||zh\n")
+    #         else:
+    #             txt = """
+    # No problem! Your preferred language has been set to English!
+    #
+    # ---
+    #
+    # Usage Instructions:
+    #
+    # You can inquire upcoming concerts by artist name, genre, city, or specific time.
+    # Example inputs:
+    # "Taylor Swift"
+    # "Rap"
+    # "Taipei"
+    # "Tomorrow"
+    #
+    # You can also specify multiple criteria simultaneously.
+    # Example inputs:
+    # "Taylor Swift concerts in Taipei"
+    # "Post Malone, next month"
+    # "Hip-Hop, this week, and in Tainan city"
+    #
+    # Further more, you can inquire which concerts are going to start selling the tickets.
+    # Example inputs:
+    # "Find out which concerts are open for sale tomorrow"
+    # "Ticketing time, today and tomorrow"
+    #
+    # Have Fun!
+    # """
+    #             await update.message.reply_text(txt)
+    #             with open(user_language_file, 'a', encoding='utf-8') as f:
+    #                 f.write(f"{user_id}|||en\n")
     else:
         await update.message.reply_text("請先幫我設定您偏好的語言。\nPlease help me set your preferred language first.")
 
@@ -821,6 +868,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     await query.answer()
     choice = query.data
+    print(f'choice = {choice}')
 
     # en
     if get_user_language(str(user_id)) == 'en':
@@ -839,6 +887,36 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await query.edit_message_text(text="You already set your preferred language to English.")
         elif choice == 'start_chinese':
             await query.edit_message_text(text="沒問題! 你的偏好語言已設定為中文!")
+        elif choice.startswith('alarm_'):
+            # 获取所有按钮
+            buttons = query.message.reply_markup.inline_keyboard
+
+            # 找到按下的按钮的文本
+            button_text = None
+            for button_row in buttons:
+                for button in button_row:
+                    if button.callback_data == choice:
+                        button_text = button.text
+                        break
+            print(f"button_text = {button_text}")
+
+            """"""
+
+            index = choice.split('_')[1]
+            title = context.user_data.get(f'alarm_{index}_title', 'Unknown Title')
+            user_input = context.user_data.get(f'alarm_{index}_user_input', 'Unknown User Input')
+            total_seconds = convert_time_to_seconds(user_input)
+            reply_text_sale_date_time = datetime.strptime(button_text, "%Y/%m/%d %H:%M")
+            alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+            print(f"alarm_date_time = {alarm_date_time}")
+            alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
+            print(f"alarm_msg = {alarm_msg}")
+
+            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+            await reload_ticket_alarms()
+            await query.edit_message_text(
+                text=f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
     # zh
     elif get_user_language(str(user_id)) == 'zh':
         if choice == 'show_all':
@@ -856,6 +934,38 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await query.edit_message_text(text="No problem! Your preferred language has been set to English!")
         elif choice == 'start_chinese':
             await query.edit_message_text(text="你已經將偏好語言設置為中文!")
+        elif choice.startswith('alarm_'):
+            # 获取所有按钮
+            buttons = query.message.reply_markup.inline_keyboard
+
+            # 找到按下的按钮的文本
+            button_text = None
+            for button_row in buttons:
+                for button in button_row:
+                    if button.callback_data == choice:
+                        button_text = button.text
+                        break
+            print(f"button_text = {button_text}")
+
+            """"""
+
+            index = choice.split('_')[1]
+            title = context.user_data.get(f'alarm_{index}_title', 'Unknown Title')
+            user_input = context.user_data.get(f'alarm_{index}_user_input', 'Unknown User Input')
+            user_input = user_input.replace('半小時', '30分鐘')
+            total_seconds = convert_time_to_seconds_zh(user_input)
+            reply_text_sale_date_time = datetime.strptime(button_text, "%Y/%m/%d %H:%M")
+            alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+            print(f"alarm_date_time = {alarm_date_time}")
+            alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
+            print(f"alarm_msg = {alarm_msg}")
+
+            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+
+            await reload_ticket_alarms()
+            await query.edit_message_text(
+                f"沒問題！ 我將會在 {alarm_date_time} 提醒您售票時間即將在 {format_seconds_zh(total_seconds)} 後開始！")
     else:
         if choice == 'start_english':
             txt = """
@@ -1301,6 +1411,31 @@ async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if job:
         job.remove()
 
+async def reload_ticket_alarms():
+    print("ticket_alarm.txt has been modified, reloading alarms...")
+    # 读取并处理ticket_alarm.txt文件
+    with open('ticket_alarm.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    lines = [line.strip() for line in lines if line.strip()]
+    for line in lines:
+        user_id, alarm_date_time, alarm_msg = line.split('|')
+        alarm_date_time = datetime.strptime(alarm_date_time, "%Y-%m-%d %H:%M:%S")
+
+        # 删除旧的定时任务
+        job = scheduler.get_job(user_id)
+        if job:
+            job.remove()
+
+        # 添加新的定时任务
+        scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
+                                                month=alarm_date_time.month,
+                                                day=alarm_date_time.day,
+                                                hour=alarm_date_time.hour,
+                                                minute=alarm_date_time.minute,
+                                                second=alarm_date_time.second),
+                          args=[user_id, alarm_msg], id=user_id)
+        # print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
 
 if __name__ == '__main__':
     print('Starting bot...')
@@ -1315,6 +1450,26 @@ if __name__ == '__main__':
 
     # scheduler = AsyncIOScheduler()
     scheduler.add_job(send_daily_update, CronTrigger(hour=21))
+    with open('ticket_alarm.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    lines = [line for line in lines]
+    for line in lines:
+        if line == "":
+            continue
+        user_id, alarm_date_time, alarm_msg = line.split('|')[0], datetime.strptime(line.split('|')[1],
+                                                                                    "%Y-%m-%d %H:%M:%S"), \
+            line.split('|')[2]
+
+        scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
+                                                month=alarm_date_time.month,
+                                                day=alarm_date_time.day,
+                                                hour=alarm_date_time.hour,
+                                                minute=alarm_date_time.minute,
+                                                second=alarm_date_time.second),
+                          args=[user_id, alarm_msg])
+        print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
+
     scheduler.start()
 
     print('Go!')
