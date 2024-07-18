@@ -626,6 +626,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     #                                         minute=alarm_date_time.minute,
                     #                                         second=alarm_date_time.second),
                     #                   args=[user_id, alarm_msg])
+
                     await update.message.reply_text(
                         f"沒問題！ 我將會在 {alarm_date_time} 提醒您售票時間即將在 {format_seconds_zh(total_seconds)} 後開始！")
                 else:
@@ -722,6 +723,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     #                                         minute=alarm_date_time.minute,
                     #                                         second=alarm_date_time.second),
                     #                   args=[user_id, alarm_msg])
+                    await reload_ticket_alarms()
                     await update.message.reply_text(
                         f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
                     # await update.message.reply_text(
@@ -896,8 +898,9 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
             with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
-
-            await query.edit_message_text(text=f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
+            await reload_ticket_alarms()
+            await query.edit_message_text(
+                text=f"No problem! I will send a reminder message at {alarm_date_time} that the concert tickets will go on sale after {format_seconds(total_seconds)}!")
     # zh
     elif get_user_language(str(user_id)) == 'zh':
         if choice == 'show_all':
@@ -1362,6 +1365,31 @@ async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if job:
         job.remove()
 
+async def reload_ticket_alarms():
+    print("ticket_alarm.txt has been modified, reloading alarms...")
+    # 读取并处理ticket_alarm.txt文件
+    with open('ticket_alarm.txt', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    lines = [line.strip() for line in lines if line.strip()]
+    for line in lines:
+        user_id, alarm_date_time, alarm_msg = line.split('|')
+        alarm_date_time = datetime.strptime(alarm_date_time, "%Y-%m-%d %H:%M:%S")
+
+        # 删除旧的定时任务
+        job = scheduler.get_job(user_id)
+        if job:
+            job.remove()
+
+        # 添加新的定时任务
+        scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
+                                                month=alarm_date_time.month,
+                                                day=alarm_date_time.day,
+                                                hour=alarm_date_time.hour,
+                                                minute=alarm_date_time.minute,
+                                                second=alarm_date_time.second),
+                          args=[user_id, alarm_msg], id=user_id)
+        print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
 
 if __name__ == '__main__':
     print('Starting bot...')
