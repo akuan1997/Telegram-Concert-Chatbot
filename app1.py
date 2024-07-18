@@ -602,9 +602,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 title = reply_text.split("\n")[0].replace('- ', '')
                 print(f"title = {title}")
                 sale_date_time = reply_text.split("\n")[1].split('- 售票日期: ')[1]
-                if ',' in sale_date_time:
-                    print('hello')
                 print(f"sale_date_time = {sale_date_time}")
+                if ',' in sale_date_time:
+                    # 分割日期时间字符串并去除前后空格
+                    date_times = [dt.strip() for dt in sale_date_time.split(',')]
+                    print(f"date_times = {date_times}")
+                    # 初始化 keyboard 列表
+                    keyboard = []
+                    # 创建按钮并添加到键盘列表
+                    for i, dt in enumerate(date_times):
+                        context.user_data[f'alarm_{i}_title'] = title
+                        context.user_data[f'alarm_{i}_user_input'] = user_input
+                        keyboard.append([InlineKeyboardButton(dt, callback_data=f'alarm_{i}')])
+                    print(f"keyboard = {keyboard}")
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    print(f"reply_markup = {reply_markup}")
+                    await update.message.reply_text(f'您想要為哪個時間設置鬧鐘呢?',
+                                                    reply_markup=reply_markup)
+
+                    return
                 if ":" in sale_date_time:
                     # print(f"original user input = {user_input}")
                     # print(f"with function = {chinese_to_arabic(user_input)}")
@@ -626,7 +642,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     #                                         minute=alarm_date_time.minute,
                     #                                         second=alarm_date_time.second),
                     #                   args=[user_id, alarm_msg])
-
+                    await reload_ticket_alarms()
                     await update.message.reply_text(
                         f"沒問題！ 我將會在 {alarm_date_time} 提醒您售票時間即將在 {format_seconds_zh(total_seconds)} 後開始！")
                 else:
@@ -918,8 +934,38 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await query.edit_message_text(text="No problem! Your preferred language has been set to English!")
         elif choice == 'start_chinese':
             await query.edit_message_text(text="你已經將偏好語言設置為中文!")
-        elif choice == 'alarm_0':
-            print('hello zh')
+        elif choice.startswith('alarm_'):
+            # 获取所有按钮
+            buttons = query.message.reply_markup.inline_keyboard
+
+            # 找到按下的按钮的文本
+            button_text = None
+            for button_row in buttons:
+                for button in button_row:
+                    if button.callback_data == choice:
+                        button_text = button.text
+                        break
+            print(f"button_text = {button_text}")
+
+            """"""
+
+            index = choice.split('_')[1]
+            title = context.user_data.get(f'alarm_{index}_title', 'Unknown Title')
+            user_input = context.user_data.get(f'alarm_{index}_user_input', 'Unknown User Input')
+            user_input = user_input.replace('半小時', '30分鐘')
+            total_seconds = convert_time_to_seconds_zh(user_input)
+            reply_text_sale_date_time = datetime.strptime(button_text, "%Y/%m/%d %H:%M")
+            alarm_date_time = reply_text_sale_date_time - timedelta(seconds=total_seconds)
+            print(f"alarm_date_time = {alarm_date_time}")
+            alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
+            print(f"alarm_msg = {alarm_msg}")
+
+            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
+
+            await reload_ticket_alarms()
+            await query.edit_message_text(
+                f"沒問題！ 我將會在 {alarm_date_time} 提醒您售票時間即將在 {format_seconds_zh(total_seconds)} 後開始！")
     else:
         if choice == 'start_english':
             txt = """
@@ -1389,7 +1435,7 @@ async def reload_ticket_alarms():
                                                 minute=alarm_date_time.minute,
                                                 second=alarm_date_time.second),
                           args=[user_id, alarm_msg], id=user_id)
-        print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
+        # print(f"{alarm_date_time} 提醒 {user_id}: {alarm_msg}")
 
 if __name__ == '__main__':
     print('Starting bot...')
