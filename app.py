@@ -1175,12 +1175,28 @@ async def perform_search(update: Update, context: ContextTypes.DEFAULT_TYPE, lan
 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(f'Update {update} caused error {context.error}')
-    user_id = update.message.chat.id
-    if get_user_language(str(user_id)) == 'zh':
-        await app.bot.send_message(chat_id=user_id, text="對不起，我不太理解。")
-    else:
-        await app.bot.send_message(chat_id=user_id, text="Sorry, I don't understand.")
+    try:
+        print(f'Update {update} caused error {context.error}')
+        user_id = None
+
+        if update:
+            if update.message:
+                user_id = update.message.chat.id
+            elif update.callback_query:
+                user_id = update.callback_query.message.chat.id
+
+        if user_id:
+            try:
+                if get_user_language(str(user_id)) == 'zh':
+                    await context.bot.send_message(chat_id=user_id, text="對不起，我不太理解。")
+                else:
+                    await context.bot.send_message(chat_id=user_id, text="Sorry, I don't understand.")
+            except Exception as inner_exception:
+                print(f"An error occurred while sending a message: {inner_exception}")
+        else:
+            print("User ID could not be determined from the update.")
+    except Exception as e:
+        print(f"An error occurred while handling the error: {e}")
 
 
 async def send_daily_update():

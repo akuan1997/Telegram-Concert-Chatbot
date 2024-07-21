@@ -3590,17 +3590,6 @@ def get_latest_concert_info(json_filename):
     """"""
     zh_en("concert_zh.json", "concert_en.json")  # english version
     shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
-    """"""
-    while True:
-        try:
-            emails = get_enews_emails()
-            print(f"emails = {emails}")
-            content = email_content()
-            for email in emails:
-                send_email("新的演唱會資訊! New Concert Information!", content, email)
-            break
-        except:
-            continue
 
 
 def schedule_update():
@@ -3616,6 +3605,16 @@ def schedule_update():
 
         concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
         get_latest_concert_info(concert_today)
+        while True:
+            try:
+                emails = get_enews_emails()
+                print(f"emails = {emails}")
+                content = email_content()
+                for email in emails:
+                    send_email("新的演唱會資訊! New Concert Information!", content, email)
+                break
+            except:
+                continue
         print(f"Updated concert info for {concert_today}")
 
 
@@ -4049,6 +4048,9 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 # last_file = get_latest_json_filename(r"C:\Users\pfii1\akuan\git-repos\2024_Concert_Chatbot\concert_jsons")
 # print(last_file)
+
+""""""
+
 # concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
 # get_latest_concert_info(concert_today)
 schedule_update()
