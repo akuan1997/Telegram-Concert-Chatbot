@@ -22,8 +22,8 @@ from get_keyword_indexes_zh import *
 from get_city_date_indexes import *
 from read_json_function import *
 
-TOKEN: Final = '6732658127:AAHc75srUIqqplCdlisn-TeecqlYRyCPUFM'  # 定義Telegram Bot的token作為常量
-BOT_USERNAME: Final = '@kuan_concert_chatbot_test1_bot'  # 定義機器人的使用者名稱作為常量
+TOKEN: Final = ''  # 定義Telegram Bot的token作為常量
+BOT_USERNAME: Final = ''  # 定義機器人的使用者名稱作為常量
 
 # 创建调度器
 scheduler = AsyncIOScheduler()
@@ -1359,7 +1359,7 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- Ticket Date: {sale_date_str}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
 - Location: {location_str}
@@ -1395,7 +1395,7 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- Ticket Date: {sale_date_str}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
 - Location: {location_str}

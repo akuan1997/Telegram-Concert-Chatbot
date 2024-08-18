@@ -2920,31 +2920,22 @@ def get_kktix(website, json_filename, txt_filename):
 
 
 def threads_start():
-    # thread_era.start()
-    # thread_livenation.start()
-    # thread_indievox.start()
-    # thread_kktix.start()
-    # threading_ticketplus.start()
     thread_kktix.start()
     thread_kktix.join()
-
     success_msg("KKTIX")
-
+    """"""
     thread_era.start()
     thread_livenation.start()
     thread_era.join()
     thread_livenation.join()
-
     success_msg("Era, Livenation")
-
+    """"""
     thread_indievox.start()
     threading_ticketplus.start()
-
     thread_indievox.join()
     threading_ticketplus.join()
-
     success_msg("Indievox, Ticketplus")
-
+    """"""
 
 # def threads_join():
 #     thread_era.join()

@@ -610,7 +610,7 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- Ticket Date: {sale_date_str}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
 - Location: {location_str}
@@ -646,7 +646,7 @@ async def get_daily_msg(language):
 
                 formatted_str = f"""
 - {concert['tit']}
-- Ticket Date: {sale_date_str}
+- Sale Date: {sale_date_str}
 - Date: {concert_date_str}
 - Price: {sorted_prices_str}
 - Location: {location_str}
