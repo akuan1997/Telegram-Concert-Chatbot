@@ -1,25 +1,17 @@
 from typing import Final  # 引入Final類型，用於定義常量
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, Bot  # 從telegram模組引入Update類
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup  # 從telegram模組引入Update類
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, MessageHandler, filters, \
     ContextTypes  # 從telegram.ext模組引入多個類和模組
-import logging
-import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
 from rasa.core.agent import Agent
-from rasa.shared.utils.cli import print_info, print_success
-from rasa.shared.utils.io import json_to_string
+from rasa.shared.utils.cli import print_success
 
-from fuzzywuzzy import fuzz
-import yaml
-import re
-from datetime import datetime, timedelta
-
-from get_keyword_indexes_en import *
-from get_keyword_indexes_zh import *
-from get_city_date_indexes import *
+from functions.get_keyword_indexes_en import *
+from functions.get_keyword_indexes_zh import *
+from functions.get_city_date_indexes import *
 from read_json_function import *
 
 TOKEN: Final = ''  # 定義Telegram Bot的token作為常量
@@ -30,15 +22,15 @@ scheduler = AsyncIOScheduler()
 
 user_language_preferences = {}
 user_status = {}
-user_language_file = "user_preferred_language.txt"
+user_language_file = "custom/user_preferred_language.txt"
 
 """ zh config """
-zh_model_path = r'models\nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
+zh_model_path = r'models/nlu-20240704-160226-complex-bunker.tar.gz'  # zh model
 zh_agent = Agent.load(zh_model_path)
 zh_json = "concert_zh.json"
 
 """ en config """
-en_model_path = r'en_models\nlu-20240606-141412-glum-skirmish.tar.gz'
+en_model_path = r'en_models/nlu-20240606-141412-glum-skirmish.tar.gz'
 en_agent = Agent.load(en_model_path)
 en_json = "concert_en.json"
 
@@ -197,9 +189,9 @@ def show_concert_info(indexes, language):
 
     formatted_str_list = []
     if language == 'zh':
-        data = read_json("concert_zh.json")
+        data = read_json("../concert_data_json/concert_zh.json")
     elif language == 'en':
-        data = read_json("concert_en.json")
+        data = read_json("../concert_data_json/concert_en.json")
 
     for index in indexes:
         if index >= len(data):
@@ -632,7 +624,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
                     print(f"alarm_msg = {alarm_msg}")
 
-                    with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                    with open('custom/ticket_alarm.txt', 'a', encoding='utf-8') as f:
                         f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
 
                     # scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
@@ -729,7 +721,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
                     print(f"alarm_msg = {alarm_msg}")
 
-                    with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+                    with open('custom/ticket_alarm.txt', 'a', encoding='utf-8') as f:
                         f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
 
                     # scheduler.add_job(send_msg, CronTrigger(year=alarm_date_time.year,
@@ -912,7 +904,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             alarm_msg = f"{title} is going to start selling after {format_seconds(total_seconds)}!"
             print(f"alarm_msg = {alarm_msg}")
 
-            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+            with open('custom/ticket_alarm.txt', 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
             await reload_ticket_alarms()
             await query.edit_message_text(
@@ -960,7 +952,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             alarm_msg = f"售票提醒! {title} 將會在 {format_seconds_zh(total_seconds)} 後開始售票!"
             print(f"alarm_msg = {alarm_msg}")
 
-            with open('ticket_alarm.txt', 'a', encoding='utf-8') as f:
+            with open('custom/ticket_alarm.txt', 'a', encoding='utf-8') as f:
                 f.write(f"{user_id}|{alarm_date_time}|{alarm_msg}\n")
 
             await reload_ticket_alarms()
@@ -1253,7 +1245,7 @@ async def get_daily_msg(language):
     formatted_str_list = []
 
     if language == 'zh':
-        zh_data = read_json("concert_zh.json")
+        zh_data = read_json("../concert_data_json/concert_zh.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
@@ -1329,7 +1321,7 @@ async def get_daily_msg(language):
                 formatted_str_list.append(formatted_str.strip())
 
     if language == 'en':
-        en_data = read_json("concert_en.json")
+        en_data = read_json("../concert_data_json/concert_en.json")
 
         if check_if_today(new_file):
             new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
@@ -1430,7 +1422,7 @@ async def send_reset_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def reload_ticket_alarms():
     print("ticket_alarm.txt has been modified, reloading alarms...")
     # 读取并处理ticket_alarm.txt文件
-    with open('ticket_alarm.txt', 'r', encoding='utf-8') as f:
+    with open('custom/ticket_alarm.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     lines = [line.strip() for line in lines if line.strip()]
@@ -1466,7 +1458,7 @@ if __name__ == '__main__':
 
     # scheduler = AsyncIOScheduler()
     scheduler.add_job(send_daily_update, CronTrigger(hour=21))
-    with open('ticket_alarm.txt', 'r', encoding='utf-8') as f:
+    with open('custom/ticket_alarm.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     lines = [line for line in lines]
