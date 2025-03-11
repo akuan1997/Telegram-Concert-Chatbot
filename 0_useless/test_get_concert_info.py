@@ -4,13 +4,13 @@ from read_json_function import read_json
 new_all = read_json('concert_data_new_zh.json')
 old_all = read_json('concert_data_old_zh.json')
 
-era = read_json('../website_jsons/era.json')
-indievox = read_json('../website_jsons/indievox.json')
-kktix = read_json('../website_jsons/kktix.json')
-livenation = read_json('../website_jsons/livenation.json')
-ticketplus = read_json('../website_jsons/ticketplus.json')
+era = read_json('../concert_data_json/website_jsons/era.json')
+indievox = read_json('../concert_data_json/website_jsons/indievox.json')
+kktix = read_json('../concert_data_json/website_jsons/kktix.json')
+livenation = read_json('../concert_data_json/website_jsons/livenation.json')
+ticketplus = read_json('../concert_data_json/website_jsons/ticketplus.json')
 
-ab = read_json('../concert_jsons/concert_3_14_23.json')
+ab = read_json('../concert_data_json/concert_jsons/concert_3_14_23.json')
 
 
 # kktix1 = read_json('kktix1.json')

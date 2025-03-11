@@ -1256,7 +1256,7 @@ async def get_daily_msg(language):
         zh_data = read_json("concert_zh.json")
 
         if check_if_today(new_file):
-            new_data = read_json(f"new_concerts/{new_file}")
+            new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
             new_pins = [item['pin'] for item in new_data]
             new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
 
@@ -1292,7 +1292,7 @@ async def get_daily_msg(language):
                 formatted_str_list.append(formatted_str.strip())
 
         if check_if_today(plus_file):
-            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_data = read_json(f"concert_data_json/plus_concerts/{plus_file}")
             plus_pins = [item['pin'] for item in plus_data]
             plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
 
@@ -1332,7 +1332,7 @@ async def get_daily_msg(language):
         en_data = read_json("concert_en.json")
 
         if check_if_today(new_file):
-            new_data = read_json(f"new_concerts/{new_file}")
+            new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
             new_pins = [item['pin'] for item in new_data]
             new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
 
@@ -1369,7 +1369,7 @@ async def get_daily_msg(language):
 
         if check_if_today(plus_file):
             formatted_str_list.append('Additional Concert Announced!')
-            plus_data = read_json(f"plus_concerts/{plus_file}")
+            plus_data = read_json(f"concert_data_json/plus_concerts/{plus_file}")
             plus_pins = [item['pin'] for item in plus_data]
             plus_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in plus_pins]
 

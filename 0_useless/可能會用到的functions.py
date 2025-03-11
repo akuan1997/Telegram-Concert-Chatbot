@@ -25,4 +25,4 @@ def download_image():
         file_path = os.path.join(folder_path, image_name)
         page.screenshot(path=file_path)
 
-print(os_show_file_title("../concert_jsons"))
+print(os_show_file_title("../concert_data_json/concert_jsons"))

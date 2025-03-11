@@ -565,7 +565,7 @@ def data_comparison(start_index, json_filename, mode):
 
 # to do, index 0的所有演唱會要先post
 def initialize():
-    with open('../concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
+    with open('../concert_data_json/concert_jsons/concert_3_14_23.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     for i in range(len(data)):
         print(f"{i + 1}/{len(data)}")

@@ -307,7 +307,7 @@ def zh_en():
 
 
 def reset_failure_log():
-    with open('../failure_log.txt', 'w', encoding='utf-8') as f:
+    with open('../error/failure_log.txt', 'w', encoding='utf-8') as f:
         f.write('')
 
 

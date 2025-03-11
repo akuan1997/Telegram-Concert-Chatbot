@@ -1,17 +1,11 @@
-from playwright.sync_api import sync_playwright, Playwright, expect, Page, TimeoutError
-import json
+from playwright.sync_api import TimeoutError
 import os
 import threading
-import shutil
-import re
-import sys
-from datetime import datetime, time
-from googletrans import Translator
 from fuzzywuzzy import process
 
 from get_concert_new_old import *
 from get_data_from_text import *
-from concert_translation import *
+from functions.concert_translation import *
 from get_enews_emails import *
 from concert_send_email import *
 
@@ -112,7 +106,7 @@ def get_new_old(json_filename):
     print(f"old_json = {old_json}")
     print(f"new_json = {new_json}")
 
-    with open(f"concert_jsons/{old_json}", 'r', encoding='utf-8') as f:
+    with open(f"concert_data_json/concert_jsons/{old_json}", 'r', encoding='utf-8') as f:
         old_data = json.load(f)
     with open(f"{new_json}", 'r', encoding='utf-8') as f:
         new_data = json.load(f)
@@ -172,19 +166,19 @@ def write_data_json(json_name, new_data):
 
 
 def write_error(website, url, error):
-    with open('failure_log.txt', "r", encoding="utf-8") as f:
+    with open('error/failure_log.txt', "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     if url + '\n' not in lines:
         # txt檔案不存在或是裡面沒資料
-        if not os.path.exists('failure_log.txt') or os.path.getsize('failure_log.txt') <= 4:
+        if not os.path.exists('error/failure_log.txt') or os.path.getsize('error/failure_log.txt') <= 4:
             # 直接寫入第一筆資料
-            with open('failure_log.txt', "w", encoding="utf-8") as f:
+            with open('error/failure_log.txt', "w", encoding="utf-8") as f:
                 f.write(f'{website}\n{error}\n{url}\n')
         # txt檔案存在且裡面已經有一筆以上的資料
         else:
             # 讀取現在有的檔案
-            with open('failure_log.txt', "a", encoding="utf-8") as f:
+            with open('error/failure_log.txt', "a", encoding="utf-8") as f:
                 f.write(f'\n{website}\n{error}\n{url}\n')
     else:
         print('已經寫進錯誤裡面了!')
@@ -3175,7 +3169,7 @@ def load_data(file_name):
 
 
 def reset_failure_log():
-    with open('failure_log.txt', 'w', encoding='utf-8') as f:
+    with open('error/failure_log.txt', 'w', encoding='utf-8') as f:
         f.write('')
 
 
@@ -3399,10 +3393,11 @@ def get_city_from_stadium(json_file):
                         if city == '':
                             print('還是沒有找到 看一下第一個搜尋結果 看看有沒有東西')
                             search_results = page.query_selector_all(".MjjYud")
-                            for zh_city in zh_cities:
-                                if zh_city in search_results[0].inner_text():
-                                    city = zh_city
-                                    break
+                            if len(search_results) > 0:
+                                for zh_city in zh_cities:
+                                    if zh_city in search_results[0].inner_text():
+                                        city = zh_city
+                                        break
                             if city == '':
                                 print('真的找不到')
                             else:
@@ -3567,20 +3562,20 @@ def get_latest_concert_info(json_filename):
 
     # print(f"new_concerts = {new_concerts}")
     if new_concerts:
-        with open(f'new_concerts/new_{json_filename}', 'w', encoding='utf-8') as f:
+        with open(f'concert_data_json/new_concerts/new_{json_filename}', 'w', encoding='utf-8') as f:
             json.dump(new_concerts, f, ensure_ascii=False, indent=4)
             print('new concerts 寫入成功')
 
     print(f"plus_concerts = {plus_concerts}")
     if plus_concerts:
-        with open(f'plus_concerts/plus_{json_filename}', 'w', encoding='utf-8') as f:
+        with open(f'concert_data_json/plus_concerts/plus_{json_filename}', 'w', encoding='utf-8') as f:
             json.dump(plus_concerts, f, ensure_ascii=False, indent=4)
             print('plus concerts 寫入成功')
 
-    shutil.move(json_filename, "concert_jsons")
+    shutil.move(json_filename, "concert_data_json/concert_jsons")
     """"""
-    zh_en("concert_zh.json", "concert_en.json")  # english version
-    shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
+    # zh_en("concert_zh.json", "concert_en.json")  # english version
+    # shutil.copy("concert_en.json", f"en_concert_jsons/en_{json_filename}")
 
 
 def schedule_update():
@@ -3824,7 +3819,7 @@ def email_content():
     zh_data = read_json("concert_zh.json")
 
     if check_if_today(new_file):
-        new_data = read_json(f"new_concerts/{new_file}")
+        new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
         new_pins = [item['pin'] for item in new_data]
         new_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in new_pins]
 
@@ -3860,7 +3855,7 @@ def email_content():
             formatted_str_list.append(formatted_str.strip())
 
     if check_if_today(plus_file):
-        plus_data = read_json(f"plus_concerts/{plus_file}")
+        plus_data = read_json(f"concert_data_json/plus_concerts/{plus_file}")
         plus_pins = [item['pin'] for item in plus_data]
         plus_pin_indexes = [index for index, item in enumerate(zh_data) if item.get('pin') in plus_pins]
 
@@ -3900,7 +3895,7 @@ def email_content():
     en_data = read_json("concert_en.json")
 
     if check_if_today(new_file):
-        new_data = read_json(f"new_concerts/{new_file}")
+        new_data = read_json(f"concert_data_json/new_concerts/{new_file}")
         new_pins = [item['pin'] for item in new_data]
         new_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in new_pins]
 
@@ -3937,7 +3932,7 @@ def email_content():
 
     if check_if_today(plus_file):
         formatted_str_list.append('Additional Concert Announced!')
-        plus_data = read_json(f"plus_concerts/{plus_file}")
+        plus_data = read_json(f"concert_data_json/plus_concerts/{plus_file}")
         plus_pins = [item['pin'] for item in plus_data]
         plus_pin_indexes = [index for index, item in enumerate(en_data) if item.get('pin') in plus_pins]
 
@@ -4042,6 +4037,6 @@ thread_kktix = threading.Thread(target=get_kktix, args=('KKTIX', 'kktix.json', "
 
 """"""
 
-# concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
-# get_latest_concert_info(concert_today)
-schedule_update()
+concert_today = f'concert_{datetime.now().month}_{datetime.now().day}_{datetime.now().hour}.json'
+get_latest_concert_info(concert_today)
+# schedule_update()
