@@ -12,7 +12,7 @@ from rasa.shared.utils.cli import print_success
 from functions.get_keyword_indexes_en import *
 from functions.get_keyword_indexes_zh import *
 from functions.get_city_date_indexes import *
-from read_json_function import *
+from functions.read_json_function import *
 
 TOKEN: Final = ''  # 定義Telegram Bot的token作為常量
 BOT_USERNAME: Final = ''  # 定義機器人的使用者名稱作為常量
